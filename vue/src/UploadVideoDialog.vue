@@ -267,7 +267,7 @@ async function uploadPoster() {
 onUnmounted(() => files.value.forEach(v => URL.revokeObjectURL(v.url)));
 </script>
 
-<style module lang="less">
+<style module>
 @margin: 14px;
 
 .form {

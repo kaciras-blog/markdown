@@ -19,7 +19,7 @@ const start = computed(() => props.ctx.selection[0]);
 const end = computed(() => props.ctx.selection[1]);
 </script>
 
-<style module lang="less">
+<style module>
 .item {
 	margin: 0 .5em;
 }

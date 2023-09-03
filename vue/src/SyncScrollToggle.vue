@@ -28,7 +28,7 @@ const props = defineProps<TextStateGroupProps>();
 const scrollSynced = toRef(props.ctx, "scrollSynced");
 </script>
 
-<style module lang="less">
+<style module>
 .element {
 	cursor: pointer;
 	user-select: none;

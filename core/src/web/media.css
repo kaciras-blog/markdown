@@ -1,5 +1,6 @@
-.md-img,
-.gif {
+/* noinspection CssUnresolvedCustomProperty */
+
+.md-img, .gif {
 	width: var(--width);
 	max-width: 100%;
 	aspect-ratio: var(--aspect);
@@ -10,7 +11,7 @@
 	resize: none;
 }
 
-// 中文斜体不好看，还是别乱加样式了
+/* 中文斜体不好看，还是别乱加样式了 */
 .md-alt {
 	padding-top: .5em;
 

@@ -45,7 +45,7 @@ function ok() {
 }
 </script>
 
-<style module lang="less">
+<style module>
 .input {
 	width: 24rem;
 	margin-top: .3em;

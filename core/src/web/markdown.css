@@ -1,13 +1,12 @@
-@import "@kaciras-blog/uikit/src/css/exports";
-@import "media";
-@import "highlight";
+@import "./media.css";
+@import "./highlight.css";
 
-@quote-padding: #bfbfbf; // 引用块左边装饰颜色
-@quote-background: #f8f8f8; // 引用块背景颜色
+$quote-padding: #bfbfbf; /* 引用块左边装饰颜色 */
+$quote-background: #f8f8f8; /* 引用块背景颜色 */
 
-@details-color: #fda;
-@details-padding-v: 8px;
-@details-padding-h: 14px;
+$details-color: #fda;
+$details-padding-v: 8px;
+$details-padding-h: 14px;
 
 .markdown {
 	line-height: 1.8;
@@ -15,15 +14,15 @@
 	word-wrap: break-word;
 	word-break: break-word;
 
-	// 暂时不在全站用，因为在一些动画上会导致文字移动
+	/* 暂时不在全站用，因为在一些动画上会导致文字移动 */
 	letter-spacing: .5px;
 
-	// 是否应该删除全局的 margin ？
+	/* 是否应该删除全局的 margin ？ */
 	h1, h2, h3, h4, h5, h6 {
 		margin: revert;
 	}
 
-	// 通常用不到 4 以上的层级，不过还是写了样式。
+	/* 通常用不到 4 以上的层级，不过还是写了样式。 */
 	h1 { font-size: 1.75em; }
 
 	h2 { font-size: 1.5em; }
@@ -39,7 +38,7 @@
 	ol, ul {
 		margin: 1em 0;
 
-		@media screen and (max-width: @length-screen-mobile) {
+		@media (max-width: 768px) {
 			padding-left: 24px;
 		}
 	}
@@ -55,12 +54,12 @@
 		margin: 0;
 		padding: 0.5em;
 
-		// 使用小一号的字体，以便能看到更多代码。
+		/* 使用小一号的字体，以便能看到更多代码。 */
 		font-size: .875em;
 		tab-size: 4;
 
-		// 照顾手机，进一步减小字号。
-		@media screen and (max-width: @length-screen-mobile) {
+		/* 照顾手机，进一步减小字号。 */
+		@media (max-width: 768px) {
 			tab-size: 3;
 			font-size: .75em;
 		}
@@ -71,23 +70,23 @@
 		margin-right: 0;
 		padding: 1em;
 
-		background-color: @quote-background;
-		border-left: 6px solid @quote-padding;
+		background-color: $quote-background;
+		border-left: 6px solid $quote-padding;
 	}
 
 	details {
 		margin-bottom: 1em;
-		padding: @details-padding-v @details-padding-h;
+		padding: $details-padding-v $details-padding-h;
 
 		border-radius: 6px;
-		border: solid 2px @details-color;
+		border: solid 2px $details-color;
 
 		&[open] {
 			padding-bottom: 0;
 		}
 
 		&[open] > summary {
-			/* 因为用了段落仅下边距的设计，所以这里要补上。 */
+			/* 因为用了段落仅下边距的设计，所以这里要补上 */
 			margin-bottom: 1em;
 
 			border-bottom-left-radius: 0;
@@ -95,23 +94,22 @@
 		}
 	}
 
-	summary {
-		/* 在 details 里面，受填充影响，所以用负边距抵消。 */
-		margin: -@details-padding-v -@details-padding-h;
-		padding: @details-padding-v @details-padding-h;
-
-		border-radius: 5px;
-		cursor: pointer;
-		background: @details-color;
+	a {
+		word-break: break-all;
 	}
 
 	table {
 		margin: 0 auto 1rem auto;
 	}
 
-	a {
-		word-break: break-all;
-		.highlight-color(@color-link, @color-link);
+	summary {
+		/* 在 details 里面，受填充影响，所以用负边距抵消 */
+		margin: -$details-padding-v -$details-padding-h;
+		padding: $details-padding-v $details-padding-h;
+
+		border-radius: 5px;
+		cursor: pointer;
+		background: $details-color;
 	}
 }
 
@@ -121,7 +119,7 @@
 	background: #434647;
 	padding-left: 12px;
 
-	@media screen and (max-width: @length-screen-mobile) {
+	@media (max-width: 768px) {
 		font-size: 0.75em
 	}
 }
@@ -173,7 +171,7 @@
 	color: #fa0085;
 	border-radius: 5px;
 
-	// 如果在未达行尾就换行会跟多行代码块混淆，故改为 break-all
+	/* 如果在未达行尾就换行会跟多行代码块混淆，故改为 break-all */
 	word-break: break-all;
 }
 
@@ -186,7 +184,7 @@
 		text-decoration: underline;
 	}
 
-	@media screen and (max-width: @length-screen-mobile) {
+	@media (max-width: 768px) {
 		display: none;
 	}
 }

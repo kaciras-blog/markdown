@@ -1,20 +1,20 @@
-// 跟我的IDE一样的配色，为了醒目加亮了点
-@default-text: #ebf2f5;
-
 .hljs {
+	/* 跟我的IDE一样的配色，为了醒目加亮了点 */
+	--color: #ebf2f5;
+
 	background: #2b2b2b;
-	color: @default-text;
+	color: var(--color);
 }
 
 .hljs-title,
 .hljs-number,
 .hljs-tag,
 .hljs-subst {
-	color: @default-text;
+	color: var(--color);
 }
 
 .hljs-class .hljs-title {
-	color: @default-text;
+	color: var(--color);
 }
 
 .hljs-deletion,

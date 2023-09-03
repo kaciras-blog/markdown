@@ -140,9 +140,7 @@ function insertTab() {
 onMounted(() => scrollSynced.value = true);
 </script>
 
-<style module lang="less">
-@import "@kaciras-blog/uikit/src/css/exports";
-
+<style module>
 .container {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -197,11 +195,11 @@ onMounted(() => scrollSynced.value = true);
 	display: block;
 	grid-column: 1/3;
 
-	@media screen and (min-width: @length-screen-mobile) {
+	@media (min-width: 768px) {
 		padding-left: 10%;
 		padding-right: 10%;
 	}
-	@media screen and (min-width: @length-screen-wide) {
+	@media (min-width: 1200px) {
 		padding-left: 16%;
 		padding-right: 16%;
 	}
