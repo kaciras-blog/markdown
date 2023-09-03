@@ -1,11 +1,16 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.app.json"
-    }
-  ]
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"jsx": "preserve",
+		"noEmit": true,
+		"sourceMap": true,
+		"resolveJsonModule": true,
+		"strict": true,
+		"useUnknownInCatchVariables": false,
+		"allowImportingTsExtensions": true,
+		"allowArbitraryExtensions": true,
+		"allowSyntheticDefaultImports": true
+	},
 }

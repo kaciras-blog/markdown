@@ -61,7 +61,7 @@ type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 interface MarkdownEditorProps {
 	modelValue: string;
 	debounce?: number;
-	dropHandler: DropHandler;
+	dropHandler?: DropHandler;
 }
 
 const props = withDefaults(defineProps<MarkdownEditorProps>(), {
@@ -141,7 +141,7 @@ onMounted(() => scrollSynced.value = true);
 </script>
 
 <style module lang="less">
-@import "../css/imports";
+@import "@kaciras-blog/uikit/src/css/exports";
 
 .container {
 	display: grid;

@@ -1,5 +1,5 @@
 import MarkdownIt from "markdown-it";
-import { Anchor, Classify, Footnote, TOC, UGC } from "@kaciras-blog/markdown";
+import { Anchor, Classify, Footnote, TOC, UGC } from "../syntax/index.js";
 import fence from "./fence.js";
 import highlight from "./highlight.js";
 import { clientMediaPlugin } from "./media.js";

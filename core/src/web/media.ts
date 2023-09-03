@@ -1,7 +1,6 @@
 import type MarkdownIt from "markdown-it";
 import type Token from "markdown-it/lib/token";
-import { DirectiveMap, Media } from "@kaciras-blog/markdown";
-import { $HTML } from "@/utils";
+import { default as Media, DirectiveMap } from "../syntax/directive.js";
 
 /**
  * 从资源的链接参数（?vw=...&vh=...）里读取尺寸，生成防抖容器的 style 属性。
@@ -47,7 +46,7 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
 	const label = this.utils.escapeHtml(token.content);
 
 	// 【注意】MarkdownIt 遵守 CommonMark 规范对单引号不转义，所以 alt 必须用双引号。
-	return $HTML`
+	return `
 		<span class='center-wrapper'>
 			<a
 				${getSizeStyle(src)}
@@ -70,7 +69,7 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
 const directiveMap: DirectiveMap = {
 	// 大部分浏览器只允许无声视频自动播放，不过 GIF 视频本来就是无声的。
 	gif(src, alt, md) {
-		return $HTML`
+		return `
 			<p class='center-wrapper' ${getSizeStyle(src)}>
 				<video
 					class='gif'
@@ -78,7 +77,7 @@ const directiveMap: DirectiveMap = {
 					loop
 					muted
 					data-src="${src}"
-				/>
+				></video>
 				${alt ? `<span class='md-alt'>${alt}</span>` : ""}
 			</p>
 		`;
@@ -88,7 +87,7 @@ const directiveMap: DirectiveMap = {
 		if (!md.validateLink(poster)) {
 			poster = "";
 		}
-		return $HTML`
+		return `
 			<p class='center-wrapper'>
 				<video 
 					class='md-video'
@@ -96,14 +95,14 @@ const directiveMap: DirectiveMap = {
 					crossorigin
 					poster="${poster}"
 					data-src="${src}"
-				/>
+				></video>
 			</p>
 		`;
 	},
 	audio(src) {
-		return $HTML`
+		return `
 			<p class='center-wrapper'>
-				<audio controls src="${src}" crossorigin/>
+				<audio controls src="${src}" crossorigin></audio>
 			</p>`;
 	},
 };

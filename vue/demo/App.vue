@@ -1,47 +1,29 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+	<MarkdownEditor
+		v-model='content'
+		class='editor'
+	>
+		<template #toolbar-right='{ ctx }'>
+			<ConfigToolbar :ctx='ctx'/>
+		</template>
+	</MarkdownEditor>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
+<script setup lang="ts">
+import { shallowRef } from "vue";
+import "@kaciras-blog/uikit/dist/style.css";
+import MarkdownEditor from "../src/MarkdownEditor.vue";
+import ConfigToolbar from "../src/ConfigToolbar.vue";
+
+const content = shallowRef("Test!");
+</script>
+
+<style>
+body {
+	margin: 0;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.editor {
+	height: 100vh;
 }
 </style>

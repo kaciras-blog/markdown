@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { articleRenderer, discussionRenderer } from "../../core/web/renderer";
+import { articleRenderer, discussionRenderer } from "@kaciras/markdown-core/src/web/renderer";
 import FinishedMDView from "./FinishedMDView.vue";
 
 interface MarkdownViewProps {

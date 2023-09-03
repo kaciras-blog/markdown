@@ -8,8 +8,8 @@
 
 <script setup lang="ts">
 import { noop } from "@vueuse/core";
-import "../../core/web/markdown.less";
-import { activate } from "../../core/web/index";
+import { activate } from "@kaciras/markdown-core/src/web/index";
+import "@kaciras/markdown-core/src/web/markdown.less";
 
 interface FinishedMDViewProps {
 	html: string;
