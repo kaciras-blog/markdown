@@ -2,6 +2,11 @@
 	"name": "@kaciras-blog/markdown-vue",
 	"version": "1.0.0",
 	"license": "MIT",
+	"author": "Kaciras <Kaciras@outlook.com>",
+	"repository": {
+		"url": "https://github.com/kaciras-blog/markdown",
+		"directory": "vue"
+	},
 	"type": "module",
 	"scripts": {
 		"preview": "vite preview",

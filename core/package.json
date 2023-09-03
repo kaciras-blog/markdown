@@ -3,6 +3,11 @@
 	"version": "1.0.0",
 	"license": "MIT",
 	"description": "Kaciras Flavored Markdown",
+	"author": "Kaciras <Kaciras@outlook.com>",
+	"repository": {
+		"url": "https://github.com/kaciras-blog/markdown",
+		"directory": "core"
+	},
 	"type": "module",
 	"dependencies": {
 		"@kaciras/utilities": "^0.10.1",
