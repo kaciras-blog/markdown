@@ -1,0 +1,10 @@
+{
+	"private": true,
+	"type": "module",
+	"devDependencies": {
+		"@kaciras/eslint-config-core": "^2.5.1",
+		"@kaciras/eslint-config-typescript": "^2.5.1",
+		"eslint": "^8.43.0",
+		"typescript": "^5.1.3"
+	}
+}

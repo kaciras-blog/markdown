@@ -1,0 +1,24 @@
+{
+	"name": "@kaciras-blog/markdown-vue",
+	"version": "1.0.0",
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"preview": "vite preview",
+		"dev": "vite",
+		"build": "vite build"
+	},
+	"dependencies": {
+		"@kaciras/markdown-core": "workspace:^",
+		"highlight.js": "^11.8.0",
+		"markdown-it": "^13.0.1",
+		"@vueuse/core": "^10.3.0",
+		"@kaciras/utilities": "^0.10.1",
+		"bootstrap-icons": "^1.10.5"
+	},
+	"devDependencies": {
+		"vue": "^3.3.4",
+		"@vitejs/plugin-vue": "^4.2.3",
+		"vite": "^4.3.9"
+	}
+}

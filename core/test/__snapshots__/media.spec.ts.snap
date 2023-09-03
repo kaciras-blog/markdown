@@ -1,0 +1,30 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`default renderer > should avoid XSS attack 1`] = `"<video src=\\"\\" loop muted controls></video>"`;
+
+exports[`default renderer > should avoid XSS attack 2`] = `"<video src=\\"\\" loop muted controls></video>"`;
+
+exports[`default renderer > should avoid XSS attack 3`] = `"<audio src=\\"\\" controls></audio>"`;
+
+exports[`default renderer > should avoid XSS attack 4`] = `"<video src=\\"\\" controls></video>"`;
+
+exports[`default renderer > should cooperate with others 1`] = `
+"<p>text before</p>
+<video src=\\"/video/foo.mp4\\" loop muted controls></video><p>text after</p>
+"
+`;
+
+exports[`default renderer > should not escape html for href 1`] = `"<video src=\\"/bar?a=b&c=d\\" poster=\\"/f%22o%22o\\" controls></video>"`;
+
+exports[`default renderer > should render audio 1`] = `"<audio src=\\"/audio/music.flac\\" controls></audio>"`;
+
+exports[`default renderer > should render gif video 1`] = `"<video src=\\"https://example.com/video/foo.mp4\\" loop muted controls></video>"`;
+
+exports[`default renderer > should render unknown type 1`] = `"[Unknown media type: unknown]"`;
+
+exports[`default renderer > should render video 1`] = `"<video src=\\"/video/foo.mp4\\" poster=\\"/poster.png\\" controls></video>"`;
+
+exports[`tokenizer > should restrict statement is filled with a whole line 1`] = `
+"<p>@gif<a href=\\"\\"></a> text after</p>
+"
+`;

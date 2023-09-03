@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should add anchor to titles 1`] = `
+"<h1 id=\\"foobar\\" tabindex=\\"-1\\">foobar <a class=\\"anchor-link\\" href=\\"#foobar\\">#</a></h1>
+"
+`;
+
+exports[`should add class to inlined code block 1`] = `
+"<p><code class=\\"inline-code\\">foobar</code></p>
+"
+`;
+
+exports[`should support footnote syntax 1`] = `
+"<p>test<sup class=\\"footnote-ref\\"><a href=\\"#fn1\\" id=\\"fnref1\\">[1]</a></sup></p>
+<p>after</p>
+<h2 class='footnotes'>参考</h2><ol class='footnotes-list'><li id=\\"fn1\\" class=\\"footnote-item\\"><p>foobar <a href=\\"#fnref1\\" class=\\"footnote-backref\\">↩︎</a></p>
+</li>
+</ol>"
+`;
