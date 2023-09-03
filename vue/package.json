@@ -11,18 +11,19 @@
 	"dependencies": {
 		"@kaciras-blog/uikit": "^2.5.1",
 		"@kaciras/markdown-core": "workspace:^",
-		"markdown-it": "^13.0.1",
-		"@vueuse/core": "^10.3.0",
 		"@kaciras/utilities": "^0.10.1",
+		"@material-design-icons/svg": "^0.14.11",
+		"@vueuse/core": "^10.3.0",
 		"bootstrap-icons": "^1.10.5",
-		"@material-design-icons/svg": "^0.14.11"
+		"markdown-it": "^13.0.1",
+		"monaco-editor": "^0.41.0"
 	},
 	"devDependencies": {
-		"vue": "^3.3.4",
 		"@vitejs/plugin-vue": "^4.2.3",
-		"vite-plugin-svg-sfc": "^1.2.1",
-		"vite": "^4.3.9",
 		"postcss-nested": "^6.0.1",
-		"postcss-simple-vars": "^7.0.1"
+		"postcss-simple-vars": "^7.0.1",
+		"vite": "^4.3.9",
+		"vite-plugin-svg-sfc": "^1.2.1",
+		"vue": "^3.3.4"
 	}
 }

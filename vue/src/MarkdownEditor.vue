@@ -6,22 +6,15 @@
 			<slot name='toolbar-right' :ctx='ctx'/>
 		</div>
 
-		<textarea
+		<div
 			v-show='viewMode !== ViewMode.Preview'
 			ref='textareaEl'
 			:class='{
-				[$style.textarea]: true,
 				[$style.window]: true,
 				[$style.single]: viewMode === ViewMode.Edit,
 			}'
-			title='编辑区'
-			spellcheck='false'
-			v-model='content'
-			v-bind-selection.focus='selection'
-			v-on-selection-change='selection'
 			@dragover.prevent
 			@drop='handleDrop'
-			@keydown.tab.prevent='insertTab'
 			@scroll='lastScrollPreview = false'
 		/>
 		<MarkdownView
@@ -30,7 +23,7 @@
 			:is-article='true'
 			:value='outMarkdown'
 			:class='{
-				[$style.window]: true,
+				[$style.preview]: true,
 				[$style.single]: viewMode === ViewMode.Preview,
 			}'
 			@scroll='lastScrollPreview = true'
@@ -48,8 +41,9 @@
 </template>
 
 <script setup lang="ts">
-import { ComponentPublicInstance, computed, onMounted, reactive, ref } from "vue";
+import { ComponentPublicInstance, computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
+import * as monaco from "monaco-editor";
 import { syncScroll } from "@kaciras/utilities/browser";
 import { AddonContext, ViewMode } from "./editor-addon";
 import MarkdownView from "./MarkdownView.vue";
@@ -80,6 +74,13 @@ const textareaEl = ref<HTMLElement>();
 const previewEl = ref<ComponentPublicInstance>();
 const lastScrollPreview = ref(false);
 const disableSyncScroll = ref<(() => void) | null>(null);
+
+let editor: monaco.editor.IStandaloneCodeEditor;
+
+watch(viewMode, async () => {
+	await nextTick();
+	editor.layout();
+}, { flush: "post" });
 
 /**
  * 设置是否启用同步滚动，如果由关闭变为开启则会立即触发同步。
@@ -137,7 +138,23 @@ function insertTab() {
 	selection.value = [newEnd, newEnd];
 }
 
-onMounted(() => scrollSynced.value = true);
+onMounted(() => {
+	scrollSynced.value = true;
+
+	editor = monaco.editor.create(textareaEl.value, {
+		value: content.value,
+		language: "markdown",
+		minimap: { enabled: false },
+	});
+
+	editor.onDidChangeModelContent(event => {
+		content.value = editor.getValue();
+	});
+
+	// editor.onDidChangeCursorSelection(e => {
+	//
+	// })
+});
 </script>
 
 <style module>
@@ -145,17 +162,6 @@ onMounted(() => scrollSynced.value = true);
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: auto 1fr auto;
-}
-
-.window {
-	margin: 0;
-	padding: .5rem .8rem 0 .8rem;
-	border: none;
-
-	font-size: initial;
-	background-color: white;
-	resize: none;
-	overflow-y: scroll;
 }
 
 .toolbar {
@@ -180,15 +186,19 @@ onMounted(() => scrollSynced.value = true);
 	background-color: #003ee7;
 }
 
-.textarea {
-	font-size: initial;
-	word-break: break-all;
-	line-height: 1.8;
-	border-right: solid 1px #ddd;
+.window {
+	margin: 0;
+	border: none;
 
-	&:focus-within {
-		box-shadow: none;
-	}
+	font-size: initial;
+	background-color: white;
+	resize: none;
+	overflow-y: scroll;
+}
+
+.preview {
+	composes: window;
+	padding: .5rem .8rem 0 .8rem;
 }
 
 .single {
@@ -196,12 +206,12 @@ onMounted(() => scrollSynced.value = true);
 	grid-column: 1/3;
 
 	@media (min-width: 768px) {
-		padding-left: 10%;
-		padding-right: 10%;
+		margin-left: 10%;
+		margin-right: 10%;
 	}
 	@media (min-width: 1200px) {
-		padding-left: 16%;
-		padding-right: 16%;
+		margin-left: 16%;
+		margin-right: 16%;
 	}
 }
 </style>
