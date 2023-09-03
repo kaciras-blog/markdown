@@ -1,6 +1,9 @@
 name: Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   test:
@@ -18,6 +21,11 @@ jobs:
           version: 8
           run_install: true
 
-      - run: pnpm test -- --coverage
-
-      - uses: codecov/codecov-action@v3
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          silent: true
+          clean: true
+          branch: gh-pages
+          folder: vue/dist
+          single-commit: true
