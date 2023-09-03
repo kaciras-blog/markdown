@@ -7,7 +7,7 @@ import MarkdownIt from "markdown-it";
  * @param markdownIt 要安装到的 MarkdownIt 对象。
  * @param handler 找到的链接将传递给这个函数。
  */
-export function CollectLinks(markdownIt: MarkdownIt, handler: (url: string) => void) {
+export default function (markdownIt: MarkdownIt, handler: (url: string) => void) {
 
 	function check(tokens: Token[]) {
 		for (const token of tokens) {

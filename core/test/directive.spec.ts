@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import MarkdownIt from "markdown-it/lib";
 import Token from "markdown-it/lib/token.js";
-import MediaPlugin from "../../WebServer/packages/markdown/lib/media";
+import MediaPlugin from "../src/common/directive.js";
 
 describe("tokenizer", () => {
 	let token: Token | null = null;

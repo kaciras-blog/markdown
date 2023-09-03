@@ -1,7 +1,7 @@
 import { expect, it, vi } from "vitest";
 import MarkdownIt from "markdown-it";
-import MediaPlugin from "../../WebServer/packages/markdown/lib/media";
-import { Anchor, Classify, CollectLinks, Footnote } from "../../WebServer/packages/markdown/lib/index";
+import MediaPlugin from "../src/common/directive.js";
+import { Anchor, Classify, Collect, Footnote } from "../src/common/index.js";
 
 it("should add class to inlined code block", () => {
 	const markdownIt = new MarkdownIt();
@@ -17,7 +17,7 @@ it("should add anchor to titles", () => {
 	expect(markdownIt.render("# foobar")).toMatchSnapshot();
 });
 
-it("should support footnote syntax", () => {
+it("should support footnote common", () => {
 	const markdownIt = new MarkdownIt();
 	markdownIt.use(Footnote);
 
@@ -29,7 +29,7 @@ it("should collect file links", () => {
 	const handler = vi.fn();
 	const markdownIt = new MarkdownIt();
 	markdownIt.use(MediaPlugin);
-	markdownIt.use(CollectLinks, handler);
+	markdownIt.use(Collect, handler);
 
 	const lines = [
 		"[](//example.com:123/some-file)",

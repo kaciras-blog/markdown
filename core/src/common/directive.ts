@@ -79,7 +79,7 @@ interface GenericDirective {
 function tokenize(src: string) {
 	const match = /^@([a-z][a-z0-9\-_]*)/i.exec(src);
 	if (!match) {
-		throw new Error("Invalid type syntax");
+		throw new Error("Invalid type common");
 	}
 
 	const [typePart, type] = match;

@@ -1,6 +1,6 @@
 import MarkdownIt from "markdown-it/lib";
 import { expect, it } from "vitest";
-import Collapsible from "../../WebServer/packages/markdown/lib/collapsible";
+import Collapsible from "../src/common/collapsible.js";
 
 const markdownIt = new MarkdownIt();
 markdownIt.use(Collapsible);

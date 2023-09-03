@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import MarkdownIt from "markdown-it/lib";
-import UGC from "../../WebServer/packages/markdown/lib/ugc";
+import { UGC } from "../src/common/index.js";
 
 it("should set the attribute", () => {
 	const markdownIt = new MarkdownIt();
