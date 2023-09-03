@@ -80,7 +80,7 @@ let editor: monaco.editor.IStandaloneCodeEditor;
 watch(viewMode, async () => {
 	await nextTick();
 	editor.layout();
-}, { flush: "post" });
+});
 
 /**
  * 设置是否启用同步滚动，如果由关闭变为开启则会立即触发同步。
@@ -124,33 +124,22 @@ function handleDrop(event: DragEvent) {
 	}
 }
 
-/**
- * 浏览器默认的 tab 键用于切换选择的元素。
- * 在文本框上监听 @keydown.tab.prevent="inputTab"，使其能够输入 tab 字符。
- */
-function insertTab() {
-	const [selStart, selEnd] = selection.value;
-
-	const v = props.modelValue;
-	const newEnd = selStart + 1;
-
-	content.value = v.substring(0, selStart) + "\t" + v.substring(selEnd, v.length);
-	selection.value = [newEnd, newEnd];
-}
-
 onMounted(() => {
 	scrollSynced.value = true;
 
-	editor = monaco.editor.create(textareaEl.value, {
+	editor = monaco.editor.create(textareaEl.value!, {
 		value: content.value,
 		language: "markdown",
 		minimap: { enabled: false },
 	});
 
-	editor.onDidChangeModelContent(event => {
+	editor.onDidChangeModelContent(() => {
 		content.value = editor.getValue();
 	});
 
+	// editor.onDidScrollChange(e => {
+	// 	e.scrollTop
+	// })
 	// editor.onDidChangeCursorSelection(e => {
 	//
 	// })

@@ -9,8 +9,7 @@ export default defineConfig({
 			reporter: ["lcov"],
 		},
 		include: [
-			"test/*.spec.ts",
-			"test/rollup-test.ts",
+			"*/test/*.spec.ts",
 		],
 	},
 });
