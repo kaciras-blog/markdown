@@ -49,7 +49,7 @@ hljs.registerLanguage("sql", sql);
 hljs.registerLanguage("yaml", yaml);
 hljs.registerLanguage("typescript", typescript);
 
-export default function highlight(code: string, language: string, diff: boolean) {
+export default function (code: string, language: string, diff: boolean) {
 	if (!hljs.getLanguage(language)) {
 		return undefined;
 	}
@@ -57,16 +57,17 @@ export default function highlight(code: string, language: string, diff: boolean)
 		return hljs.highlight(code, { language }).value;
 	}
 
-	const changes: Record<number, boolean> = {};
 	let lines = code.split("\n");
+	const changes = new Map<number, boolean>();
+	const size = lines.length;
 
-	for (let i = 0; i < lines.length; i++) {
+	for (let i = 0; i < size; i++) {
 		switch (lines[i].charCodeAt(0)) {
 			case 43: /* + */
-				changes[i] = true;
+				changes.set(i, true);
 				break;
 			case 45: /* - */
-				changes[i] = false;
+				changes.set(i, false);
 				break;
 			default:
 				continue;
@@ -78,55 +79,22 @@ export default function highlight(code: string, language: string, diff: boolean)
 	code = hljs.highlight(code, { language }).value;
 	lines = code.split("\n");
 
-	const results = [];
-	for (let i = 0; i < lines.length; i++) {
-		if (changes[i - 1] !== undefined) {
-			results.push("</span>");
+	const htmlFragments = [];
+	for (let i = 0; i < size; i++) {
+		if (changes.has(i - 1)) {
+			htmlFragments.push("</span>");
 		}
-		switch (changes[i]) {
+		switch (changes.get(i)) {
 			case true:
-				results.push("<span class='hljs-insert'>+");
+				htmlFragments.push("<span class='hljs-insert'>");
 				break;
 			case false:
-				results.push("<span class='hljs-delete'>-");
+				htmlFragments.push("<span class='hljs-delete'>");
 				break;
 		}
-		results.push(lines[i], "\n");
+		htmlFragments.push(lines[i], "\n");
 	}
 
-	results.pop();
-	return results.join("");
+	htmlFragments.pop();
+	return htmlFragments.join("");
 }
-
-// import Prism from "prismjs/components/prism-core.js";
-//
-// import "prismjs/components/prism-markup.js";
-// import "prismjs/components/prism-clike.js";
-// import "prismjs/components/prism-c.js";
-// import "prismjs/components/prism-cpp.js";
-// import "prismjs/components/prism-csharp.js";
-// import "prismjs/components/prism-css.js";
-// import "prismjs/components/prism-go.js";
-// import "prismjs/components/prism-http.js";
-// import "prismjs/components/prism-ini.js";
-// import "prismjs/components/prism-java.js";
-// import "prismjs/components/prism-javascript.js";
-// import "prismjs/components/prism-json.js";
-// import "prismjs/components/prism-kotlin.js";
-// import "prismjs/components/prism-less.js";
-// import "prismjs/components/prism-lua.js";
-// import "prismjs/components/prism-protobuf.js";
-// import "prismjs/components/prism-python.js";
-// import "prismjs/components/prism-rust.js";
-// import "prismjs/components/prism-scss.js";
-// import "prismjs/components/prism-bash.js";
-// import "prismjs/components/prism-sql.js";
-// import "prismjs/components/prism-yaml.js";
-// import "prismjs/components/prism-typescript.js";
-// import "prismjs/components/prism-diff.js";
-//
-// import "prismjs/plugins/diff-highlight/prism-diff-highlight.js";
-//
-// export default function highlight(code: string, language: string) {
-// 	return Prism.highlight(code, Prism.languages[language], language);
-// }

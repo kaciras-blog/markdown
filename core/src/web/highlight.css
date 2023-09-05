@@ -8,12 +8,22 @@
 
 .hljs-insert {
 	display: block;
-	background-color: rgba(255, 0, 0, .2);
+	background: rgba(0, 255, 128, .15);
+
+	&::before {
+		content: "+";
+		color: lightgreen;
+	}
 }
 
 .hljs-delete {
 	display: block;
-	background-color: rgba(0, 255, 128, .2);
+	background: rgba(255, 0, 0, .2);
+
+	&::before {
+		content: "-";
+		color: red;
+	}
 }
 
 .hljs-title,
@@ -87,83 +97,4 @@
 
 .hljs-comment {
 	color: #75eb75
-}
-
-code[class*="language-"],
-pre[class*="language-"] {
-	--color: #ebf2f5;
-	background: #2b2b2b;
-	color: var(--color);
-}
-
-.token.comment,
-.token.block-comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-	color: #75eb75
-}
-
-.token.tag,
-.token.attr-name,
-.token.namespace,
-.token.deleted {
-	color: #e2777a;
-}
-
-.token.boolean {
-	color: #f558e8;
-}
-
-.token.property,
-.token.class-name,
-.token.constant,
-.token.symbol {
-	color: #67f0f0;
-}
-
-.token.selector,
-.token.important,
-.token.atrule,
-.token.keyword,
-.token.builtin {
-	color: #f558e8;
-}
-
-.token.string,
-.token.char,
-.token.attr-value,
-.token.regex,
-.token.variable {
-	color: #fa648c;
-}
-
-.token.important,
-.token.bold {
-	font-weight: bold;
-}
-.token.italic {
-	font-style: italic;
-}
-
-.token.entity {
-	cursor: help;
-}
-
-.token.inserted {
-	color: green;
-}
-
-pre.diff-highlight > code .token.deleted:not(.prefix),
-pre > code.diff-highlight .token.deleted:not(.prefix) {
-	background-color: rgba(255, 0, 0, .1);
-	color: inherit;
-	display: block;
-}
-
-pre.diff-highlight > code .token.inserted:not(.prefix),
-pre > code.diff-highlight .token.inserted:not(.prefix) {
-	background-color: rgba(0, 255, 128, .1);
-	color: inherit;
-	display: block;
 }
