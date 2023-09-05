@@ -1,7 +1,13 @@
-/// <reference types="vitest" />
 import { defineConfig } from "vite";
+import nested from "postcss-nested";
+import vars from "postcss-simple-vars";
 
 export default defineConfig({
+	css: {
+		postcss: {
+			plugins: [nested(), vars()],
+		},
+	},
 	test: {
 		clearMocks: true,
 		coverage: {
@@ -9,7 +15,7 @@ export default defineConfig({
 			reporter: ["lcov"],
 		},
 		include: [
-			"*/test/*.spec.ts",
+			"test/*.spec.ts",
 		],
 	},
 });
