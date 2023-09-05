@@ -5,7 +5,7 @@ import CopiedIcon from "bootstrap-icons/icons/clipboard-check.svg?raw";
 /**
  * 高亮代码的函数，返回带有高亮标签的 HTML，language 为空或不支持则返回 falsy 值。
  */
-type HighLighter = (code: string, language: string) => string | undefined;
+type HighLighter = (code: string, language: string, diff: boolean) => string | undefined;
 
 /**
  * 自定义代码块的插件，因为 MarkdownIt 自带的渲染函数要求最外层是 pre，限制了扩展性，
@@ -27,12 +27,18 @@ export default function fencePlugin(md: MarkdownIt, highlight: HighLighter) {
 	md.renderer.rules.fence = (tokens, idx) => {
 		const { content, info } = tokens[idx];
 		let language = "";
+		let diff = false;
 
 		if (info) {
 			[language] = unescapeAll(info).trim().split(/(\s+)/g);
 		}
+		if (language.startsWith("diff-")) {
+			diff = true;
+			language = language.slice(5);
+		}
 
-		const codeHTML = highlight(content, language) || escapeHtml(content);
+		const codeHTML = highlight(content, language, diff)
+			|| escapeHtml(content);
 
 		// Copy 是个很常见的单词，谁都看得懂，就不做本地化了。
 		if (language) {
