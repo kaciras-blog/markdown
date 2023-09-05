@@ -1,4 +1,4 @@
-name: Test
+name: Deploy Demo
 
 on:
   push:
@@ -20,6 +20,9 @@ jobs:
         with:
           version: 8
           run_install: true
+
+      - run: pnpm run build
+        working-directory: vue
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4

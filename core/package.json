@@ -9,6 +9,9 @@
 		"directory": "core"
 	},
 	"type": "module",
+	"scripts": {
+		"test": "vitest run"
+	},
 	"dependencies": {
 		"@kaciras/utilities": "^0.10.1",
 		"bootstrap-icons": "^1.10.5",

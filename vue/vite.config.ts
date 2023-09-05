@@ -1,16 +1,10 @@
-import { defineConfig } from "vite";
+import { mergeConfig, UserConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueSvgSfc from "vite-plugin-svg-sfc";
-import nested from "postcss-nested";
-import vars from "postcss-simple-vars";
 import { visualizer } from "rollup-plugin-visualizer";
+import coreConfig from "../core/vite.config.ts";
 
-export default defineConfig({
-	css: {
-		postcss: {
-			plugins: [nested(), vars()],
-		},
-	},
+export default mergeConfig(coreConfig as UserConfig,{
 	plugins: [
 		visualizer(),
 		vue(),
