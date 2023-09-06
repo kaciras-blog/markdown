@@ -21,15 +21,13 @@
 		"@vueuse/core": "^10.3.0",
 		"bootstrap-icons": "^1.10.5",
 		"markdown-it": "^13.0.1",
-		"monaco-editor": "^0.41.0"
+		"monaco-editor": "^0.41.0",
+		"vue": "^3.3.4"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^4.2.3",
-		"postcss-nested": "^6.0.1",
-		"postcss-simple-vars": "^7.0.1",
 		"rollup-plugin-visualizer": "^5.9.2",
 		"vite": "^4.3.9",
-		"vite-plugin-svg-sfc": "^1.2.1",
-		"vue": "^3.3.4"
+		"vite-plugin-svg-sfc": "^1.2.1"
 	}
 }

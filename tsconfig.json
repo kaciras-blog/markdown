@@ -3,11 +3,13 @@
 		"target": "ESNext",
 		"module": "ESNext",
 		"lib": ["ESNext", "DOM.Iterable"],
-		"moduleResolution": "NodeNext",
-		"sourceMap": true,
+		"moduleResolution": "bundler",
+		"jsx": "preserve",
+		"resolveJsonModule": true,
 		"strict": true,
 		"skipLibCheck": true,
 		"useUnknownInCatchVariables": false,
+		"allowImportingTsExtensions": true,
 		"allowSyntheticDefaultImports": true
 	},
 }

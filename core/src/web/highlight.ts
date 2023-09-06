@@ -49,6 +49,16 @@ hljs.registerLanguage("sql", sql);
 hljs.registerLanguage("yaml", yaml);
 hljs.registerLanguage("typescript", typescript);
 
+/*
+ * # 差分的实现
+ * Prism.js 虽有个插件，但它使用 Git 的补丁语法，跟我需要的不一样。
+ * 另外 Prism 对 TypeScript 的识别不佳，故仍然用 Highlight.js。
+ * https://prismjs.com/plugins/diff-highlight
+ *
+ * 由于 Highlight.js 没有原生和插件支持，作者也没实现的想法，所以只能自己做了。
+ * https://github.com/highlightjs/highlight.js/issues/480
+ */
+
 export default function (code: string, language: string, diff: boolean) {
 	if (!hljs.getLanguage(language)) {
 		return undefined;
@@ -57,6 +67,7 @@ export default function (code: string, language: string, diff: boolean) {
 		return hljs.highlight(code, { language }).value;
 	}
 
+	// 记录以 +/- 开头的行号，并去掉该符号使高亮能够正确解析。
 	let lines = code.split("\n");
 	const changes = new Map<number, boolean>();
 	const size = lines.length;
@@ -79,6 +90,7 @@ export default function (code: string, language: string, diff: boolean) {
 	code = hljs.highlight(code, { language }).value;
 	lines = code.split("\n");
 
+	// 底层的高亮完成后重新按行分割，并给记录的行加上标签。
 	const htmlFragments = [];
 	for (let i = 0; i < size; i++) {
 		if (changes.has(i - 1)) {
@@ -96,5 +108,5 @@ export default function (code: string, language: string, diff: boolean) {
 	}
 
 	htmlFragments.pop();
-	return htmlFragments.join("");
+	return htmlFragments.join(""); // 最后合并行，相当于两次高亮处理。
 }

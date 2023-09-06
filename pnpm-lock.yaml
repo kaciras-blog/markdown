@@ -96,16 +96,13 @@ importers:
       monaco-editor:
         specifier: ^0.41.0
         version: 0.41.0
+      vue:
+        specifier: ^3.3.4
+        version: 3.3.4
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^4.2.3
         version: 4.3.4(vite@4.4.9)(vue@3.3.4)
-      postcss-nested:
-        specifier: ^6.0.1
-        version: 6.0.1(postcss@8.4.28)
-      postcss-simple-vars:
-        specifier: ^7.0.1
-        version: 7.0.1(postcss@8.4.28)
       rollup-plugin-visualizer:
         specifier: ^5.9.2
         version: 5.9.2
@@ -115,9 +112,6 @@ importers:
       vite-plugin-svg-sfc:
         specifier: ^1.2.1
         version: 1.2.1
-      vue:
-        specifier: ^3.3.4
-        version: 3.3.4
 
 packages:
 
