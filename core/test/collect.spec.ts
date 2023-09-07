@@ -1,7 +1,7 @@
 import { expect, it, vi } from "vitest";
 import MarkdownIt from "markdown-it";
-import MediaPlugin from "../src/common/directive.js";
-import { Collect } from "../src/common/index.js";
+import MediaPlugin from "../src/directive.ts";
+import Collect from "../src/collect.ts";
 
 it("should collect file links", () => {
 	const handler = vi.fn();

@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import MarkdownIt from "markdown-it/lib";
-import { Anchor, Classify, Footnote, UGC } from "../src/common/index.js";
+import { Anchor, Classify, Footnote, UGC } from "../src/index.ts";
 
 it("should set the attribute", () => {
 	const markdownIt = new MarkdownIt();

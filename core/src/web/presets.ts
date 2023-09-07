@@ -1,5 +1,5 @@
 import MarkdownIt from "markdown-it";
-import { Anchor, Classify, Footnote, TOC, UGC } from "../common/index.js";
+import { Anchor, Classify, Footnote, TOC, UGC } from "../index.ts";
 import fence from "./fence.js";
 import highlight from "./highlight.js";
 import { clientMediaPlugin } from "./media.js";

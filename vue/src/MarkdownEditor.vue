@@ -41,9 +41,9 @@
 </template>
 
 <script setup lang="ts">
-import { ComponentPublicInstance, computed, nextTick, onMounted, reactive, ref, watch } from "vue";
+import { ComponentPublicInstance, computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
-import * as monaco from "monaco-editor";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { syncScroll } from "@kaciras/utilities/browser";
 import { AddonContext, ViewMode } from "./editor-addon";
 import MarkdownView from "./MarkdownView.vue";
@@ -140,10 +140,13 @@ onMounted(() => {
 	// editor.onDidScrollChange(e => {
 	// 	e.scrollTop
 	// })
+
 	// editor.onDidChangeCursorSelection(e => {
 	//
 	// })
 });
+
+onUnmounted(() => editor.dispose());
 </script>
 
 <style module>

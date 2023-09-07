@@ -6,9 +6,10 @@ import { visualizer } from "rollup-plugin-visualizer";
 import coreConfig from "../core/vite.config.ts";
 
 export default mergeConfig(coreConfig as UserConfig, defineConfig({
+	// Deployed to https://kaciras-blog.github.io/markdown
 	base: env.CI ? "/markdown/" : undefined,
 	plugins: [
-		visualizer(),
+		visualizer({ emitFile: true }),
 		vue(),
 		vueSvgSfc({ svgProps: attrs => delete attrs.class }),
 	],
