@@ -1,12 +1,12 @@
 import { expect, it, vi } from "vitest";
 import MarkdownIt from "markdown-it";
-import MediaPlugin from "../src/directive.ts";
+import Directive from "../src/directive.ts";
 import Collect from "../src/collect.ts";
 
 it("should collect file links", () => {
 	const handler = vi.fn();
 	const markdownIt = new MarkdownIt();
-	markdownIt.use(MediaPlugin);
+	markdownIt.use(Directive);
 	markdownIt.use(Collect, handler);
 
 	const lines = [

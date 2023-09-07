@@ -16,7 +16,7 @@ export default function (markdownIt: MarkdownIt, handler: (url: string) => void)
 					check(token.children!);
 					break;
 				case "link_open":
-				case "media":
+				case "directive":
 					handler(token.attrGet("href")!);
 					break;
 				case "image":

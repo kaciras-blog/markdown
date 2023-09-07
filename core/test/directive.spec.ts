@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import MarkdownIt from "markdown-it/lib";
 import Token from "markdown-it/lib/token.js";
-import MediaPlugin from "../src/directive.ts";
+import Directive from "../src/directive.ts";
 
 describe("tokenizer", () => {
 	let token: Token | null = null;
 
 	const markdownIt = new MarkdownIt();
-	markdownIt.use(MediaPlugin);
+	markdownIt.use(Directive);
 
-	markdownIt.renderer.rules.media = (t, i) => {
+	markdownIt.renderer.rules.directive = (t, i) => {
 		token = t[i];
 		return "No render result for tokenizer test";
 	};
@@ -55,9 +55,9 @@ describe("escaping", () => {
 	let token: Token;
 
 	const markdownIt = new MarkdownIt();
-	markdownIt.use(MediaPlugin);
+	markdownIt.use(Directive);
 
-	markdownIt.renderer.rules.media = (t, i) => {
+	markdownIt.renderer.rules.directive = (t, i) => {
 		token = t[i];
 		return "No render result for tokenizer test";
 	};
@@ -92,7 +92,7 @@ describe("escaping", () => {
 
 describe("default renderer", () => {
 	const markdownIt = new MarkdownIt();
-	markdownIt.use(MediaPlugin);
+	markdownIt.use(Directive);
 
 	it("should cooperate with others", () => {
 		const markdown = `
@@ -137,7 +137,7 @@ text after
 it("should support render custom type", () => {
 	const markdownIt = new MarkdownIt();
 
-	markdownIt.use(MediaPlugin, {
+	markdownIt.use(Directive, {
 		CUSTOM: (href, label) => `Custom [href=${href}, label=${label}]`,
 	});
 

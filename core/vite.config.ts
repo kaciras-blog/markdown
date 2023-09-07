@@ -1,8 +1,10 @@
 import { defineConfig } from "vite";
 import nested from "postcss-nested";
 import vars from "postcss-simple-vars";
+import inlineHTML from "./html-string.ts";
 
 export default defineConfig({
+	plugins: [inlineHTML()],
 	css: {
 		postcss: {
 			plugins: [nested(), vars()],
@@ -11,11 +13,9 @@ export default defineConfig({
 	test: {
 		clearMocks: true,
 		coverage: {
-			provider: "v8",
 			reporter: ["lcov"],
+			provider: "v8",
 		},
-		include: [
-			"test/*.spec.ts",
-		],
+		include: ["test/**/*.spec.ts"],
 	},
 });

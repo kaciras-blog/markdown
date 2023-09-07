@@ -42,7 +42,7 @@ export default function fencePlugin(md: MarkdownIt, highlight: HighLighter) {
 
 		// Copy 是个很常见的单词，谁都看得懂，就不做本地化了。
 		if (language) {
-			return `
+			return $HTML`
 				<div class='hljs'>
 					<div class='code-meta'>
 						${language}

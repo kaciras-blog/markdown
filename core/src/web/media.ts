@@ -46,7 +46,7 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
 	const label = this.utils.escapeHtml(token.content);
 
 	// 【注意】MarkdownIt 遵守 CommonMark 规范对单引号不转义，所以 alt 必须用双引号。
-	return `
+	return $HTML`
 		<span class='center-wrapper'>
 			<a
 				${getSizeStyle(src)}
@@ -69,7 +69,7 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
 const directiveMap: DirectiveMap = {
 	// 大部分浏览器只允许无声视频自动播放，不过 GIF 视频本来就是无声的。
 	gif(src, alt, md) {
-		return `
+		return $HTML`
 			<p class='center-wrapper' ${getSizeStyle(src)}>
 				<video
 					class='gif'
@@ -77,7 +77,7 @@ const directiveMap: DirectiveMap = {
 					loop
 					muted
 					data-src="${src}"
-				></video>
+				/>
 				${alt ? `<span class='md-alt'>${alt}</span>` : ""}
 			</p>
 		`;
@@ -87,7 +87,7 @@ const directiveMap: DirectiveMap = {
 		if (!md.validateLink(poster)) {
 			poster = "";
 		}
-		return `
+		return $HTML`
 			<p class='center-wrapper'>
 				<video 
 					class='md-video'
@@ -95,14 +95,14 @@ const directiveMap: DirectiveMap = {
 					crossorigin
 					poster="${poster}"
 					data-src="${src}"
-				></video>
+				/>
 			</p>
 		`;
 	},
 	audio(src) {
-		return `
+		return $HTML`
 			<p class='center-wrapper'>
-				<audio controls src="${src}" crossorigin></audio>
+				<audio controls src="${src}" crossorigin/>
 			</p>`;
 	},
 };

@@ -34,7 +34,7 @@ import MarkdownIt from "markdown-it";
 import { unescapeMd } from "markdown-it/lib/common/utils.js";
 import StateBlock from "markdown-it/lib/rules_block/state_block.js";
 
-function parseMedia(state: StateBlock, startLine: number, endLine: number, silent: boolean) {
+function parse(state: StateBlock, startLine: number, endLine: number, silent: boolean) {
 	const offset = state.tShift[startLine] + state.bMarks[startLine];
 
 	// JS 的傻逼正则不能设置结束位置，必须得截字符串。
@@ -49,7 +49,7 @@ function parseMedia(state: StateBlock, startLine: number, endLine: number, silen
 
 	if (!silent) {
 		const { type, label, href } = directive;
-		const token = state.push("media", type, 0);
+		const token = state.push("directive", type, 0);
 		token.attrs = [["href", href]];
 		token.content = label;
 		token.map = [startLine, state.line];
@@ -184,27 +184,19 @@ export const defaultDirectiveMap: Readonly<DirectiveMap> = {
 	},
 };
 
-/**
- * MarkdownIt的插件函数，用法：markdownIt.use(require("markdown-media"), { ... })
- *
- * 可以自定义map参数设置自定义渲染函数，也可以直接修改 markdownIt.renderer.rules.media
- *
- * @param markdownIt markdownIt实例
- * @param map 渲染函数选项，用于自定义
- */
 export default function (markdownIt: MarkdownIt, map = defaultDirectiveMap) {
-	markdownIt.renderer.rules.media = (tokens, idx) => {
+	markdownIt.renderer.rules.directive = (tokens, idx) => {
 		const token = tokens[idx];
 		const { tag, content } = token;
 		const href = token.attrGet("href")!;
 
 		const renderFn = map[tag];
 		if (!renderFn) {
-			return `[Unknown media type: ${tag}]`;
+			return `[Unknown directive: ${tag}]`;
 		}
 
 		return renderFn(checkLink(markdownIt, href), content, markdownIt);
 	};
 
-	markdownIt.block.ruler.before("html_block", "media", parseMedia);
+	markdownIt.block.ruler.before("html_block", "directive", parse);
 }
