@@ -4,13 +4,40 @@ import vue from "@vitejs/plugin-vue";
 import vueSvgSfc from "vite-plugin-svg-sfc";
 import { visualizer } from "rollup-plugin-visualizer";
 import coreConfig from "../core/vite.config.ts";
+import packageJson from "./package.json" assert { type: "json" };
 
-export default mergeConfig(coreConfig as UserConfig, defineConfig({
-	// Deployed to https://kaciras-blog.github.io/markdown
-	base: env.CI ? "/markdown/" : undefined,
-	plugins: [
-		visualizer({ emitFile: true }),
-		vue(),
-		vueSvgSfc({ svgProps: attrs => delete attrs.class }),
-	],
-}));
+const deps = Object.keys(packageJson.dependencies);
+const re = new RegExp(`^(?:${deps.join("|")})`);
+
+function isExternalForLibrary(id: string) {
+	return !id.includes("?") && re.test(id);
+}
+
+export default defineConfig(({ mode }) => {
+	const overrides = defineConfig({
+		// Deployed to https://kaciras-blog.github.io/markdown
+		base: env.CI ? "/markdown/" : undefined,
+		plugins: [
+			vue(),
+			vueSvgSfc({ svgProps: attrs => delete attrs.class }),
+		],
+	});
+
+	if (mode === "lib") {
+		coreConfig.build = {
+			lib: {
+				entry: "src/index.ts",
+				formats: ["es"],
+				fileName: "index",
+			},
+			rollupOptions: {
+				external: isExternalForLibrary,
+			},
+			copyPublicDir: false,
+		};
+	} else {
+		overrides.plugins!.push(visualizer({ emitFile: true }));
+	}
+
+	return mergeConfig(coreConfig as UserConfig, overrides);
+});

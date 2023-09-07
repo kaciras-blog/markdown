@@ -9,7 +9,6 @@
 <script setup lang="ts">
 import { noop } from "@vueuse/core";
 import { activate } from "@kaciras/markdown-core/src/web/activate.ts";
-import "@kaciras/markdown-core/src/web/markdown.css";
 
 interface FinishedMDViewProps {
 	html: string;

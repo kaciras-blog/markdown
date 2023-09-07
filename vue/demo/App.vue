@@ -10,11 +10,12 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef } from "vue";
 import "@kaciras-blog/uikit/dist/style.css";
+import "@kaciras/markdown-core/src/web/markdown.css";
+import { shallowRef } from "vue";
+import readme from "./KFM-zh.md?raw";
 import MarkdownEditor from "../src/MarkdownEditor.vue";
 import ConfigToolbar from "../src/ConfigToolbar.vue";
-import readme from "./KFM-zh.md?raw";
 
 const content = shallowRef(readme);
 </script>
