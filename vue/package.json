@@ -18,7 +18,7 @@
 		"@kaciras-blog/uikit": "^2.5.1",
 		"@kaciras/markdown-core": "workspace:^",
 		"@kaciras/utilities": "^0.10.1",
-		"@material-design-icons/svg": "^0.14.11",
+		"@material-design-icons/svg": "^0.14.12",
 		"@vueuse/core": "^10.3.0",
 		"bootstrap-icons": "^1.10.5",
 		"monaco-editor": "^0.41.0",

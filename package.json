@@ -5,7 +5,7 @@
 		"@kaciras/eslint-config-core": "^2.5.1",
 		"@kaciras/eslint-config-typescript": "^2.5.1",
 		"@kaciras/eslint-config-vue": "^2.6.0",
-		"eslint": "^8.43.0",
+		"eslint": "^8.49.0",
 		"typescript": "^5.1.3"
 	}
 }
