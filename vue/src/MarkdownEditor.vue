@@ -1,14 +1,14 @@
 <template>
 	<div :class='$style.container'>
 		<div :class='$style.toolbar' role='toolbar'>
-			<slot name='toolbar-left' :ctx='ctx'/>
-			<span :class='$style.span'></span>
-			<slot name='toolbar-right' :ctx='ctx'/>
+			<slot name='toolbar-left'/>
+			<span :class='$style.span'/>
+			<slot name='toolbar-right'/>
 		</div>
 
 		<div
 			v-show='viewMode !== ViewMode.Preview'
-			ref='textareaEl'
+			ref='editorEl'
 			:class='{
 				[$style.window]: true,
 				[$style.single]: viewMode === ViewMode.Edit,
@@ -29,19 +29,18 @@
 			@scroll='lastScrollPreview = true'
 		/>
 
-		<div :class='$style.statebar'>
-			<slot name='statebar-left' :ctx='ctx'/>
-			<span :class='$style.span'></span>
-			<slot name='statebar-right' :ctx='ctx'/>
+		<div :class='$style.status' role='toolbar'>
+			<slot name='status-left'/>
+			<span :class='$style.span'/>
+			<slot name='status-right'/>
 
-			<TextStateGroup :ctx='ctx'/>
-			<SyncScrollToggle :ctx='ctx'/>
+			<CommonStatusWeights></CommonStatusWeights>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ComponentPublicInstance, computed, nextTick, onMounted, onUnmounted, provide, shallowRef, watch, } from "vue";
+import { ComponentPublicInstance, computed, nextTick, onMounted, onUnmounted, provide, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
@@ -67,21 +66,14 @@ const props = withDefaults(defineProps<MarkdownEditorProps>(), {
 const emit = defineEmits(["update:modelValue"]);
 
 const content = useVModel(props, "modelValue", emit);
-const selection = ref<[number, number]>([0, 0]);
-const viewMode = ref(ViewMode.Split);
 const outMarkdown = refDebounced(content, props.debounce);
+const editorEl = shallowRef<HTMLElement>();
+const previewEl = shallowRef<ComponentPublicInstance>();
+const viewMode = shallowRef(ViewMode.Split);
+const lastScrollPreview = shallowRef(false);
+const disableSyncScroll = shallowRef<(() => void) | null>(null);
 
-const textareaEl = ref<HTMLElement>();
-const previewEl = ref<ComponentPublicInstance>();
-const lastScrollPreview = ref(false);
-const disableSyncScroll = ref<(() => void) | null>(null);
-
-let editor: monaco.editor.IStandaloneCodeEditor;
-
-watch(viewMode, async () => {
-	await nextTick();
-	editor.layout();
-});
+let editor: monaco.editor.IStandaloneCodeEditor = undefined!;
 
 /**
  * 设置是否启用同步滚动，如果由关闭变为开启则会立即触发同步。
@@ -99,7 +91,7 @@ const scrollSynced = computed({
 		}
 
 		const preview = previewEl.value!.$el;
-		const textarea = textareaEl.value!;
+		const textarea = editorEl.value!;
 
 		disableSyncScroll.value = lastScrollPreview.value
 			? syncScroll(preview, textarea)
@@ -107,44 +99,48 @@ const scrollSynced = computed({
 	},
 });
 
-/**
- * 官网上说紧密耦合的组件使用可变 props 也行。
- * https://vuejs.org/guide/components/props.html#mutating-object-array-props
- */
-const ctx = reactive({
+
+const addonContext: AddonContext = {
 	viewMode,
-	selection,
-	content,
 	scrollSynced,
-});
+	text: content,
+	model: shallowRef(monaco.editor.createModel("")),
+	selection: shallowRef(Selection.createWithDirection(0, 0, 0, 0, 0)),
+};
+
+provide(kContext, addonContext);
+
+watch(viewMode, () => nextTick(() => editor.layout()));
 
 function handleDrop(event: DragEvent) {
 	const { files } = event.dataTransfer!;
-	if (props.dropHandler(files, ctx)) {
+	if (props.dropHandler(files, addonContext)) {
 		return event.preventDefault();
 	}
 }
 
 onMounted(() => {
-	scrollSynced.value = true;
-
-	editor = monaco.editor.create(textareaEl.value!, {
+	editor = monaco.editor.create(editorEl.value!, {
 		value: content.value,
 		language: "markdown",
+		wordWrap: "on",
 		minimap: { enabled: false },
 	});
+
+	scrollSynced.value = true;
+	addonContext.model.value = editor.getModel()!;
 
 	editor.onDidChangeModelContent(() => {
 		content.value = editor.getValue();
 	});
 
-	// editor.onDidScrollChange(e => {
-	// 	e.scrollTop
-	// })
+	editor.onDidChangeCursorSelection(e => {
+		addonContext.selection.value = e.selection;
+	});
 
-	// editor.onDidChangeCursorSelection(e => {
-	//
-	// })
+	editor.onDidScrollChange(e => {
+		e.scrollTop;
+	});
 });
 
 onUnmounted(() => editor.dispose());
@@ -169,7 +165,7 @@ onUnmounted(() => editor.dispose());
 	flex: 1;
 }
 
-.statebar {
+.status {
 	grid-column: 1/3;
 
 	display: flex;
@@ -180,23 +176,22 @@ onUnmounted(() => editor.dispose());
 }
 
 .window {
-	margin: 0;
-	border: none;
+	/*margin: 0;*/
+	/*border: none;*/
 
-	font-size: initial;
-	background-color: white;
-	resize: none;
-	overflow-y: scroll;
+	/*background-color: white;*/
+	/*resize: none;*/
 }
 
 .preview {
-	composes: window;
 	padding: .5rem .8rem 0 .8rem;
+	font-size: initial;
+	overflow-y: scroll;
 }
 
 .single {
-	display: block;
 	grid-column: 1/3;
+	display: block;
 
 	@media (min-width: 768px) {
 		margin-left: 10%;
