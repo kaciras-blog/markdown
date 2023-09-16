@@ -25,7 +25,7 @@
 				[$style.preview]: true,
 				[$style.single]: viewMode === ViewMode.Preview,
 			}'
-			@scroll='handleScroll'
+			@scroll='scrollEditorToPreview'
 		/>
 
 		<div :class='$style.status' role='toolbar'>
@@ -91,6 +91,7 @@ function handleDrop(event: DragEvent) {
 	}
 }
 
+let lastScrollEditor = false;
 let ignoreScroll = false;
 
 function runScrollAction(callback: FrameRequestCallback) {
@@ -106,14 +107,38 @@ function runScrollAction(callback: FrameRequestCallback) {
 	});
 }
 
-function handleScroll(event: Event) {
-	const el = event.currentTarget as HTMLElement;
+function scrollEditorToPreview() {
+	lastScrollEditor = false;
 	runScrollAction(() => {
-		const p = el.scrollTop / (el.scrollHeight - el.offsetHeight);
+		const { $el } = previewEl.value!;
+		const p = $el.scrollTop / ($el.scrollHeight - $el.offsetHeight);
 		const { clientHeight } = editorEl.value!;
 		editor.setScrollTop(p * (editor.getScrollHeight() - clientHeight));
 	});
 }
+
+function scrollPreviewToEditor() {
+	lastScrollEditor = true;
+	runScrollAction(() => {
+		const { offsetHeight } = editorEl.value!;
+		const { $el } = previewEl.value!;
+		const p = editor.getScrollTop() / (editor.getScrollHeight() - offsetHeight * 2);
+		$el.scrollTop = p * ($el.scrollHeight - $el.offsetHeight);
+	});
+}
+
+watch(scrollSynced, enabled => {
+	if (!enabled) {
+		return;
+	}
+	if (lastScrollEditor) {
+		scrollPreviewToEditor();
+	} else {
+		scrollEditorToPreview();
+	}
+});
+
+onUnmounted(() => editor.dispose());
 
 onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
@@ -133,15 +158,8 @@ onMounted(() => {
 		addonContext.selection.value = e.selection;
 	});
 
-	editor.onDidScrollChange(e => runScrollAction(() => {
-		const { offsetHeight } = editorEl.value!;
-		const { $el } = previewEl.value!;
-		const p = e.scrollTop / (e.scrollHeight - offsetHeight * 2);
-		$el.scrollTop = p * ($el.scrollHeight - $el.offsetHeight);
-	}));
+	editor.onDidScrollChange(scrollPreviewToEditor);
 });
-
-onUnmounted(() => editor.dispose());
 </script>
 
 <style module>
