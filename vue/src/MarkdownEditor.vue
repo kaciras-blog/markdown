@@ -41,14 +41,15 @@
 </template>
 
 <script setup lang="ts">
-import { ComponentPublicInstance, computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from "vue";
+import { ComponentPublicInstance, computed, nextTick, onMounted, onUnmounted, provide, shallowRef, watch, } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
 import { syncScroll } from "@kaciras/utilities/browser";
-import { AddonContext, ViewMode } from "./editor-addon";
+import { AddonContext, kContext, ViewMode } from "./editor-addon";
 import MarkdownView from "./MarkdownView.vue";
-import TextStateGroup from "./TextStateGroup.vue";
-import SyncScrollToggle from "./SyncScrollToggle.vue";
+import CommonStatusWeights from "./TextStateGroup.vue";
+import { Selection } from "monaco-editor";
 
 type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
