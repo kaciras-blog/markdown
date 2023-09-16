@@ -10,7 +10,7 @@
 			v-show='viewMode !== ViewMode.Preview'
 			ref='editorEl'
 			:class='{
-				[$style.window]: true,
+				[$style.editor]: true,
 				[$style.single]: viewMode === ViewMode.Edit,
 			}'
 			@dragover.prevent
@@ -41,12 +41,13 @@
 <script setup lang="ts">
 import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, provide, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
+import { Selection } from "monaco-editor";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
-import { AddonContext, kContext, ViewMode } from "./editor-addon";
+import { AddonContext, kContext, ViewMode } from "./editor-addon.ts";
 import MarkdownView from "./MarkdownView.vue";
 import CommonStatusWeights from "./CommonStatusWeights.vue";
-import { Selection } from "monaco-editor";
 
 type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
@@ -55,6 +56,16 @@ interface MarkdownEditorProps {
 	debounce?: number;
 	dropHandler?: DropHandler;
 }
+
+// For our Markdown editor, only the editor worker is required.
+self.MonacoEnvironment = {
+	getWorker(_: unknown, label: string) {
+		if (label === "editorWorkerService") {
+			return new EditorWorker();
+		}
+		throw new Error(`Unexpected worker label: ${label}`);
+	},
+};
 
 const props = withDefaults(defineProps<MarkdownEditorProps>(), {
 	debounce: 500,
@@ -191,12 +202,9 @@ onMounted(() => {
 	background-color: #003ee7;
 }
 
-.window {
-	/*margin: 0;*/
-	/*border: none;*/
-
-	/*background-color: white;*/
-	/*resize: none;*/
+/* Ensure editor width controlled by grid */
+.editor {
+	overflow-x: hidden;
 }
 
 .preview {

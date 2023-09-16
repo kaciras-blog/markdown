@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { shallowRef, watchEffect } from "vue";
-import { useAddonContext } from "./editor-addon";
+import { useAddonContext } from "./editor-addon.ts";
 import { Selection } from "monaco-editor";
 
 const { model, text, selection, scrollSynced } = useAddonContext();
