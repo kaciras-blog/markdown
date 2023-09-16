@@ -15,7 +15,6 @@
 			}'
 			@dragover.prevent
 			@drop='handleDrop'
-			@scroll='lastScrollPreview = false'
 		/>
 		<MarkdownView
 			v-show='viewMode !== ViewMode.Edit'
@@ -26,7 +25,7 @@
 				[$style.preview]: true,
 				[$style.single]: viewMode === ViewMode.Preview,
 			}'
-			@scroll='lastScrollPreview = true'
+			@scroll='handleScroll'
 		/>
 
 		<div :class='$style.status' role='toolbar'>
@@ -40,14 +39,13 @@
 </template>
 
 <script setup lang="ts">
-import { ComponentPublicInstance, computed, nextTick, onMounted, onUnmounted, provide, shallowRef, watch } from "vue";
+import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, provide, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
-import { syncScroll } from "@kaciras/utilities/browser";
 import { AddonContext, kContext, ViewMode } from "./editor-addon";
 import MarkdownView from "./MarkdownView.vue";
-import CommonStatusWeights from "./TextStateGroup.vue";
+import CommonStatusWeights from "./CommonStatusWeights.vue";
 import { Selection } from "monaco-editor";
 
 type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
@@ -70,35 +68,9 @@ const outMarkdown = refDebounced(content, props.debounce);
 const editorEl = shallowRef<HTMLElement>();
 const previewEl = shallowRef<ComponentPublicInstance>();
 const viewMode = shallowRef(ViewMode.Split);
-const lastScrollPreview = shallowRef(false);
-const disableSyncScroll = shallowRef<(() => void) | null>(null);
+const scrollSynced = shallowRef(true);
 
 let editor: monaco.editor.IStandaloneCodeEditor = undefined!;
-
-/**
- * 设置是否启用同步滚动，如果由关闭变为开启则会立即触发同步。
- *
- * 立即同步时以最后滚动的一方作为目标，另一方调整滚动位置与对方同步。
- */
-const scrollSynced = computed({
-	get: () => Boolean(disableSyncScroll.value),
-	set(enabled) {
-		const disable = disableSyncScroll.value;
-
-		if (!enabled && disable) {
-			disableSyncScroll.value = null;
-			return disable();
-		}
-
-		const preview = previewEl.value!.$el;
-		const textarea = editorEl.value!;
-
-		disableSyncScroll.value = lastScrollPreview.value
-			? syncScroll(preview, textarea)
-			: syncScroll(textarea, preview);
-	},
-});
-
 
 const addonContext: AddonContext = {
 	viewMode,
@@ -119,6 +91,30 @@ function handleDrop(event: DragEvent) {
 	}
 }
 
+let ignoreScroll = false;
+
+function runScrollAction(callback: FrameRequestCallback) {
+	if (!scrollSynced.value || ignoreScroll) {
+		return;
+	}
+	ignoreScroll = true;
+
+	// Must delay to the next frame if the user uses smooth scrolling.
+	requestAnimationFrame(arg => {
+		callback(arg);
+		requestAnimationFrame(() => ignoreScroll = false);
+	});
+}
+
+function handleScroll(event: Event) {
+	const el = event.currentTarget as HTMLElement;
+	runScrollAction(() => {
+		const p = el.scrollTop / (el.scrollHeight - el.offsetHeight);
+		const { clientHeight } = editorEl.value!;
+		editor.setScrollTop(p * (editor.getScrollHeight() - clientHeight));
+	});
+}
+
 onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
 		value: content.value,
@@ -127,7 +123,6 @@ onMounted(() => {
 		minimap: { enabled: false },
 	});
 
-	scrollSynced.value = true;
 	addonContext.model.value = editor.getModel()!;
 
 	editor.onDidChangeModelContent(() => {
@@ -138,9 +133,12 @@ onMounted(() => {
 		addonContext.selection.value = e.selection;
 	});
 
-	editor.onDidScrollChange(e => {
-		e.scrollTop;
-	});
+	editor.onDidScrollChange(e => runScrollAction(() => {
+		const { offsetHeight } = editorEl.value!;
+		const { $el } = previewEl.value!;
+		const p = e.scrollTop / (e.scrollHeight - offsetHeight * 2);
+		$el.scrollTop = p * ($el.scrollHeight - $el.offsetHeight);
+	}));
 });
 
 onUnmounted(() => editor.dispose());
