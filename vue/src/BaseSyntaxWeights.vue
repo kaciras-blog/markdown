@@ -40,7 +40,7 @@ import ListIcon from "@material-design-icons/svg/round/format_list_bulleted.svg?
 import AddLinkIcon from "@material-design-icons/svg/round/add_link.svg?sfc";
 import { KxButton, useDialog } from "@kaciras-blog/uikit";
 import AddLinkDialog from "./AddLinkDialog.vue";
-import { AddonContext, overwrite } from "./editor-addon";
+import { AddonContext, overwrite } from "./editor-addon.ts";
 
 interface TextStateGroupProps {
 	ctx: AddonContext;

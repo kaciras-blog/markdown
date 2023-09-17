@@ -1,10 +1,10 @@
 <template>
-	<MarkdownEditor
-		v-model='content'
-		class='editor'
-	>
-		<template #toolbar-right='{ ctx }'>
-			<ConfigToolbar :ctx='ctx'/>
+	<MarkdownEditor v-model='content' class='editor'>
+		<template #toolbar-left>
+			<MediaWeights></MediaWeights>
+		</template>
+		<template #toolbar-right>
+			<ConfigWeights></ConfigWeights>
 		</template>
 	</MarkdownEditor>
 </template>
@@ -15,7 +15,8 @@ import "@kaciras/markdown-core/src/web/markdown.css";
 import { shallowRef } from "vue";
 import readme from "./KFM-zh.md?raw";
 import MarkdownEditor from "../src/MarkdownEditor.vue";
-import ConfigToolbar from "../src/ConfigToolbar.vue";
+import MediaWeights from "../src/MediaWeights.vue";
+import ConfigWeights from "../src/ConfigWeights.vue";
 
 const content = shallowRef(readme);
 </script>

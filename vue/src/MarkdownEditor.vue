@@ -86,6 +86,7 @@ let editor: monaco.editor.IStandaloneCodeEditor = undefined!;
 const addonContext: AddonContext = {
 	viewMode,
 	scrollSynced,
+	editor,
 	text: content,
 	model: shallowRef(monaco.editor.createModel("")),
 	selection: shallowRef(Selection.createWithDirection(0, 0, 0, 0, 0)),
@@ -105,15 +106,15 @@ function handleDrop(event: DragEvent) {
 let lastScrollEditor = false;
 let ignoreScroll = false;
 
-function runScrollAction(callback: FrameRequestCallback) {
+function runScrollAction(callback: () => void) {
 	if (!scrollSynced.value || ignoreScroll) {
 		return;
 	}
 	ignoreScroll = true;
 
 	// Must delay to the next frame if the user uses smooth scrolling.
-	requestAnimationFrame(arg => {
-		callback(arg);
+	requestAnimationFrame(() => {
+		callback();
 		requestAnimationFrame(() => ignoreScroll = false);
 	});
 }
@@ -155,14 +156,19 @@ onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
 		value: content.value,
 		language: "markdown",
+		quickSuggestions: false,
 		wordWrap: "on",
 		minimap: { enabled: false },
 	});
 
+	addonContext.editor = editor;
 	addonContext.model.value = editor.getModel()!;
 
 	editor.onDidChangeModelContent(() => {
-		content.value = editor.getValue();
+		content.value = editor.getValue({
+			lineEnding: "\n",
+			preserveBOM: false,
+		});
 	});
 
 	editor.onDidChangeCursorSelection(e => {
