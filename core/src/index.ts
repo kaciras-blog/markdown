@@ -1,3 +1,8 @@
+declare global {
+	// Processed by Vite, see ../html-string.ts
+	const $HTML: (..._: unknown[]) => string;
+}
+
 export * from "./directive.ts";
 export * from "./miscellaneous.ts";
 

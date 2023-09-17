@@ -49,8 +49,7 @@ export function Footnote(markdownIt: MarkdownIt) {
 	const { rules } = markdownIt.renderer;
 
 	rules.footnote_block_open = () => (
-		"<h2 class='footnotes'>参考</h2>" +
-		"<ol class='footnotes-list'>"
+		"<hr><ol class='footnotes-list'>"
 	);
 	rules.footnote_block_close = () => "</ol>";
 }
