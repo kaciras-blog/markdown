@@ -14,7 +14,7 @@
 	},
 	"dependencies": {
 		"@kaciras/utilities": "^0.10.1",
-		"bootstrap-icons": "^1.10.5",
+		"bootstrap-icons": "^1.11.0",
 		"highlight.js": "^11.8.0",
 		"markdown-it": "^13.0.1",
 		"markdown-it-anchor": "^8.6.7",
