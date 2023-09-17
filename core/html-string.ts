@@ -12,6 +12,7 @@ const minifyOptions = {
 	collapseBooleanAttributes: true,
 	collapseWhitespace: true,
 	collapseInlineTagWhitespace: true,
+	caseSensitive: true,
 	removeComments: true,
 	removeAttributeQuotes: true,
 };
