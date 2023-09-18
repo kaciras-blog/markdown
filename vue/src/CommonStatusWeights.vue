@@ -3,21 +3,6 @@
 		选择：{{ start }} - {{ start + count }} | {{ count }} 字
 	</span>
 	<span :class='$style.item'>总字数：{{ text.length }}</span>
-
-	<span
-		v-if='scrollSynced'
-		:class='[$style.element, $style.on]'
-		@click='scrollSynced = false'
-	>
-		同步滚动开
-	</span>
-	<span
-		v-else
-		:class='[$style.element, $style.off]'
-		@click='scrollSynced = true'
-	>
-		同步滚动关
-	</span>
 </template>
 
 <script setup lang="ts">
@@ -25,7 +10,7 @@ import { shallowRef, watchEffect } from "vue";
 import { useAddonContext } from "./editor-addon.ts";
 import { Selection } from "monaco-editor";
 
-const { model, text, selection, scrollSynced } = useAddonContext();
+const { model, text, selection } = useAddonContext();
 
 const start = shallowRef(0);
 const count = shallowRef(0);

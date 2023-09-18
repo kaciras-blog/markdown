@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, provide, shallowRef, watch } from "vue";
+import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, provide, ref, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
 import { Selection } from "monaco-editor";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
@@ -84,6 +84,11 @@ const scrollSynced = shallowRef(true);
 let editor: monaco.editor.IStandaloneCodeEditor = undefined!;
 
 const addonContext: AddonContext = {
+	options: ref({
+		quickSuggestions: false,
+		wordWrap: "on",
+		minimap: { enabled: false },
+	}),
 	viewMode,
 	scrollSynced,
 	editor,
@@ -150,15 +155,17 @@ watch(scrollSynced, enabled => {
 	}
 });
 
+watch(addonContext.options,
+	value => editor.updateOptions(value),
+	{ deep: true });
+
 onUnmounted(() => editor.dispose());
 
 onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
 		value: content.value,
 		language: "markdown",
-		quickSuggestions: false,
-		wordWrap: "on",
-		minimap: { enabled: false },
+		...addonContext.options.value,
 	});
 
 	addonContext.editor = editor;
@@ -205,7 +212,7 @@ onMounted(() => {
 	line-height: 22px;
 	padding: 0 .5em;
 	color: white;
-	background-color: #003ee7;
+	background-color: #0074e8;
 }
 
 /* Ensure editor width controlled by grid */
