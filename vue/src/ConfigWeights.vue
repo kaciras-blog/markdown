@@ -1,35 +1,44 @@
 <template>
-	<KxButton type='icon' title='双列视图' @click='viewMode = 0'>
+	<ToolButton title='双列视图' :active='viewMode === 0' @click='viewMode = 0'>
 		<SplitIcon/>
-	</KxButton>
-	<KxButton type='icon' title='Markdown 视图' @click='viewMode = 1'>
+	</ToolButton>
+	<ToolButton title='Markdown 视图' :active='viewMode === 1' @click='viewMode = 1'>
 		<EditIcon/>
-	</KxButton>
-	<KxButton type='icon' title='预览视图' @click='viewMode = 2'>
+	</ToolButton>
+	<ToolButton title='预览视图' :active='viewMode === 2' @click='viewMode = 2'>
 		<EyeIcon/>
-	</KxButton>
+	</ToolButton>
 
-	<KxButton type='icon' color='primary' title='同步滚动' @click='scrollSynced = !scrollSynced'>
+	<ToolButton title='同步滚动' :active='scrollSynced' @click='scrollSynced = !scrollSynced'>
 		<DownUpIcon/>
-	</KxButton>
-	<KxButton type='icon' color='primary' title='小地图' @click='options.minimap.enabled = !options.minimap.enabled'>
+	</ToolButton>
+	<ToolButton title='小地图' :active='options.minimap!.enabled' @click='toggleMinimap'>
 		<MapIcon/>
-	</KxButton>
-	<KxButton type='icon' color='primary' title='自动换行'
-			  @click='options.wordWrap = options.wordWrap == "on" ? "off": "on"'>
+	</ToolButton>
+	<ToolButton title='自动换行' :active='options.wordWrap==="on"' @click='toggleSoftWrap'>
 		<ReturnLeftIcon/>
-	</KxButton>
+	</ToolButton>
 </template>
 
 <script setup lang="ts">
-import { KxButton } from "@kaciras-blog/uikit";
 import SplitIcon from "@material-design-icons/svg/round/vertical_split.svg?sfc";
 import EditIcon from "bootstrap-icons/icons/pencil-square.svg?sfc";
 import EyeIcon from "bootstrap-icons/icons/eye-fill.svg?sfc";
 import DownUpIcon from "bootstrap-icons/icons/arrow-down-up.svg?sfc";
 import ReturnLeftIcon from "bootstrap-icons/icons/arrow-return-left.svg?sfc";
 import MapIcon from "bootstrap-icons/icons/pin-map-fill.svg?sfc";
+import ToolButton from "./ToolButton.vue";
 import { useAddonContext } from "./editor-addon.ts";
 
 const { viewMode, scrollSynced, options } = useAddonContext();
+
+function toggleMinimap() {
+	const minimap = options.value.minimap!;
+	minimap.enabled = !minimap.enabled;
+}
+
+function toggleSoftWrap() {
+	const { wordWrap } = options.value;
+	options.value.wordWrap = wordWrap === "on" ? "off" : "on";
+}
 </script>

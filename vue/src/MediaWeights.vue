@@ -1,23 +1,23 @@
 <template>
-	<KxButton type='icon' title='插入图片' @click='addImage'>
+	<ToolButton type='icon' title='插入图片' @click='addImage'>
 		<ImageIcon/>
-	</KxButton>
-	<KxButton type='icon' title='插入视频' @click='addVideo'>
+	</ToolButton>
+	<ToolButton type='icon' title='插入视频' @click='addVideo'>
 		<VideoIcon/>
-	</KxButton>
-	<KxButton type='icon' title='插入音频' @click='addAudio'>
+	</ToolButton>
+	<ToolButton type='icon' title='插入音频' @click='addAudio'>
 		<MusicIcon/>
-	</KxButton>
+	</ToolButton>
 </template>
 
 <script setup lang="ts">
 import { selectFile } from "@kaciras/utilities/browser";
-import { KxButton } from "@kaciras-blog/uikit";
 import ImageIcon from "bootstrap-icons/icons/image-fill.svg?sfc";
 import VideoIcon from "bootstrap-icons/icons/play-btn.svg?sfc";
 import MusicIcon from "bootstrap-icons/icons/music-note-beamed.svg?sfc";
 import { useAddonContext } from "./editor-addon.ts";
 import { editor, Selection } from "monaco-editor";
+import ToolButton from "./ToolButton.vue";
 import ICommand = editor.ICommand;
 import IEditOperationBuilder = editor.IEditOperationBuilder;
 import ITextModel = editor.ITextModel;

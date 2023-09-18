@@ -165,6 +165,7 @@ onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
 		value: content.value,
 		language: "markdown",
+		scrollbar: { useShadows: false },
 		...addonContext.options.value,
 	});
 
@@ -194,11 +195,11 @@ onMounted(() => {
 }
 
 .toolbar {
-	grid-column: 1/3;
+	--btn-radius: 0;
 
+	grid-column: 1/3;
 	display: flex;
 	background-color: whitesmoke;
-	--btn-radius: 0;
 }
 
 .span {
