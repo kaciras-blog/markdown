@@ -33,7 +33,7 @@
 			<span :class='$style.span'/>
 			<slot name='status-right'/>
 
-			<CommonStatusWeights></CommonStatusWeights>
+			<SelectionWeight></SelectionWeight>
 		</div>
 	</div>
 </template>
@@ -41,13 +41,12 @@
 <script setup lang="ts">
 import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, provide, ref, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
-import { Selection } from "monaco-editor";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
-import { AddonContext, kContext, ViewMode } from "./editor-addon.ts";
+import { AddonContext, kContext, ViewMode } from "./addon-api.ts";
 import MarkdownView from "./MarkdownView.vue";
-import CommonStatusWeights from "./CommonStatusWeights.vue";
+import SelectionWeight from "./SelectionWeight.vue";
 
 type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
@@ -94,7 +93,7 @@ const addonContext: AddonContext = {
 	editor,
 	text: content,
 	model: shallowRef(monaco.editor.createModel("")),
-	selection: shallowRef(Selection.createWithDirection(0, 0, 0, 0, 0)),
+	selection: shallowRef(monaco.Selection.createWithDirection(0, 0, 0, 0, 0)),
 };
 
 provide(kContext, addonContext);

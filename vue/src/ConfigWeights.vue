@@ -28,7 +28,7 @@ import DownUpIcon from "bootstrap-icons/icons/arrow-down-up.svg?sfc";
 import ReturnLeftIcon from "bootstrap-icons/icons/arrow-return-left.svg?sfc";
 import MapIcon from "bootstrap-icons/icons/pin-map-fill.svg?sfc";
 import ToolButton from "./ToolButton.vue";
-import { useAddonContext } from "./editor-addon.ts";
+import { useAddonContext } from "./addon-api.ts";
 
 const { viewMode, scrollSynced, options } = useAddonContext();
 

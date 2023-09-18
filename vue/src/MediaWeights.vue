@@ -15,7 +15,7 @@ import { selectFile } from "@kaciras/utilities/browser";
 import ImageIcon from "bootstrap-icons/icons/image-fill.svg?sfc";
 import VideoIcon from "bootstrap-icons/icons/play-btn.svg?sfc";
 import MusicIcon from "bootstrap-icons/icons/music-note-beamed.svg?sfc";
-import { useAddonContext } from "./editor-addon.ts";
+import { useAddonContext } from "./addon-api.ts";
 import { editor, Selection } from "monaco-editor";
 import ToolButton from "./ToolButton.vue";
 import ICommand = editor.ICommand;
@@ -76,7 +76,7 @@ class InsertDirectiveCommand implements ICommand {
 
 async function addImage() {
 	const [file] = await selectFile("image/*");
-	context.editor.executeCommand("InsertImage", new InsertImageCommand(file));
+	context.editor.executeCommand("MD.Insert", new InsertImageCommand(file));
 	context.editor.focus();
 }
 

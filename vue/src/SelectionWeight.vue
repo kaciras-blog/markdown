@@ -7,8 +7,8 @@
 
 <script setup lang="ts">
 import { shallowRef, watchEffect } from "vue";
-import { useAddonContext } from "./editor-addon.ts";
 import { Selection } from "monaco-editor";
+import { useAddonContext } from "./addon-api.ts";
 
 const { model, text, selection } = useAddonContext();
 
