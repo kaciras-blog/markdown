@@ -25,14 +25,15 @@ export default defineConfig(({ mode }) => {
 
 	if (mode === "lib") {
 		coreConfig.build = {
+			rollupOptions: {
+				external: isExternalForLibrary,
+			},
 			lib: {
 				entry: "src/index.ts",
 				formats: ["es"],
 				fileName: "index",
 			},
-			rollupOptions: {
-				external: isExternalForLibrary,
-			},
+			outDir: "lib",
 			copyPublicDir: false,
 		};
 	} else {
