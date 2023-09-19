@@ -173,6 +173,7 @@ $details-padding-h: 14px;
 
 	/* 如果在未达行尾就换行会跟多行代码块混淆，故改为 break-all */
 	word-break: break-all;
+	text-decoration: inherit;
 }
 
 .anchor-link {
