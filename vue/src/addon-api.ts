@@ -1,5 +1,5 @@
 import { inject, Ref, ShallowRef } from "vue";
-import { editor, Selection } from "monaco-editor";
+import { editor, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 import ITextModel = editor.ITextModel;
 import IEditorOptions = editor.IEditorOptions;
 

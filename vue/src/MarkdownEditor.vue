@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, provide, ref, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
 import { AddonContext, kContext, ViewMode } from "./addon-api.ts";

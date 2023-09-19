@@ -16,7 +16,7 @@ import VideoIcon from "bootstrap-icons/icons/play-btn.svg?sfc";
 import MusicIcon from "bootstrap-icons/icons/music-note-beamed.svg?sfc";
 import { selectFile } from "@kaciras/utilities/browser";
 import { useAddonContext } from "./addon-api.ts";
-import { editor, Selection } from "monaco-editor/esm/vs/editor/editor.api";
+import { editor, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 import ToolButton from "./ToolButton.vue";
 import ICommand = editor.ICommand;
 import IEditOperationBuilder = editor.IEditOperationBuilder;

@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api";
+import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 import BoldIcon from "@material-design-icons/svg/round/format_bold.svg?sfc";
 import ItalicIcon from "@material-design-icons/svg/round/format_italic.svg?sfc";
 import StrikethroughIcon from "@material-design-icons/svg/round/strikethrough_s.svg?sfc";
@@ -43,7 +43,7 @@ class WarpCommand implements editor.ICommand {
 		this.remove = remove;
 	}
 
-	computeCursorState(model: editor.ITextModel, helper: editor.ICursorStateComputerData) {
+	computeCursorState(_: editor.ITextModel, __: editor.ICursorStateComputerData) {
 		const { range, addCount, remove } = this;
 		const delta = addCount - remove;
 		return new Selection(
@@ -92,8 +92,8 @@ function switchWrapper(type: TextWrapper) {
 	const changed = wrappers ^ type;
 
 	const command = new WarpCommand(range, changed, length);
-	context.editor.executeCommand("MD.Wrap", command);
 	context.editor.focus();
+	context.editor.executeCommand("MD.Wrap", command);
 }
 
 class PrefixCommand implements editor.ICommand {
@@ -106,7 +106,7 @@ class PrefixCommand implements editor.ICommand {
 		this.prefix = prefix;
 	}
 
-	computeCursorState(model: editor.ITextModel, helper: editor.ICursorStateComputerData) {
+	computeCursorState(_: editor.ITextModel, __: editor.ICursorStateComputerData) {
 		const { range, prefix } = this;
 		return new Selection(
 			range.startLineNumber,
@@ -116,7 +116,7 @@ class PrefixCommand implements editor.ICommand {
 		);
 	}
 
-	getEditOperations(model: editor.ITextModel, builder: editor.IEditOperationBuilder) {
+	getEditOperations(_: editor.ITextModel, builder: editor.IEditOperationBuilder) {
 		const { range, prefix } = this;
 		for (let i = range.startLineNumber; i <= range.endLineNumber; i++) {
 			builder.addEditOperation(new Range(i, 0, i, 0), prefix);
@@ -126,7 +126,7 @@ class PrefixCommand implements editor.ICommand {
 
 function addPrefix(prefix: string) {
 	const command = new PrefixCommand(context.selection.value, prefix);
-	context.editor.executeCommand("MD.Prefix", command);
 	context.editor.focus();
+	context.editor.executeCommand("MD.Prefix", command);
 }
 </script>
