@@ -11,12 +11,12 @@
 </template>
 
 <script setup lang="ts">
-import { selectFile } from "@kaciras/utilities/browser";
 import ImageIcon from "bootstrap-icons/icons/image-fill.svg?sfc";
 import VideoIcon from "bootstrap-icons/icons/play-btn.svg?sfc";
 import MusicIcon from "bootstrap-icons/icons/music-note-beamed.svg?sfc";
+import { selectFile } from "@kaciras/utilities/browser";
 import { useAddonContext } from "./addon-api.ts";
-import { editor, Selection } from "monaco-editor";
+import { editor, Selection } from "monaco-editor/esm/vs/editor/editor.api";
 import ToolButton from "./ToolButton.vue";
 import ICommand = editor.ICommand;
 import IEditOperationBuilder = editor.IEditOperationBuilder;
@@ -25,81 +25,100 @@ import ICursorStateComputerData = editor.ICursorStateComputerData;
 
 const context = useAddonContext();
 
+class InsertCommand implements ICommand {
+
+	readonly selection: Selection;
+	readonly text: string;
+	readonly isBlock: boolean;
+
+	deltaLine = 0;
+
+	constructor(text: string, selection: Selection, isBlock: boolean) {
+		this.text = text;
+		this.selection = selection;
+		this.isBlock = isBlock;
+	}
+
+	computeCursorState(_: ITextModel, __: ICursorStateComputerData) {
+		const { selection, deltaLine } = this;
+		if (deltaLine === 0) {
+			return Selection.fromRange(selection.collapseToEnd(),0);
+		}
+		const line = selection.startLineNumber + deltaLine;
+		return new Selection(line, 0, line, 0);
+	}
+
+	private notEmpty(model: ITextModel, n: number) {
+		if (n <= 0 || n >= model.getLineCount()) {
+			return false;
+		}
+		return model.getLineLength(n) > 0;
+	}
+
+	getEditOperations(model: ITextModel, builder: IEditOperationBuilder) {
+		const { selection, text, isBlock } = this;
+		const range = selection.getDirection() === 0
+			? selection.collapseToEnd()
+			: selection.collapseToStart();
+
+		const inserts = ["", "", text, "", ""];
+		if (isBlock) {
+			const line = range.startLineNumber;
+			const eol = model.getEOL();
+
+			if (range.startColumn !== 1) {
+				inserts[0] = inserts[1] = eol;
+				this.deltaLine += 2;
+			} else if (this.notEmpty(model, line - 1)) {
+				inserts[0] = eol;
+				this.deltaLine += 1;
+			}
+
+			if (range.endColumn !== model.getLineLength(line) + 1) {
+				inserts[3] = inserts[4] = eol;
+				this.deltaLine += 2;
+			} else if (this.notEmpty(model, line + 1)) {
+				inserts[4] = eol;
+				this.deltaLine += 1;
+			}
+		}
+
+		builder.addEditOperation(range, inserts.join(""));
+	}
+}
+
 function basename(name: string) {
 	const i = name.lastIndexOf(".");
 	return i === -1 ? name : name.slice(0, i);
 }
 
-class InsertImageCommand implements ICommand {
-
-	readonly file: File;
-	readonly url: string;
-
-	deltaColumn = NaN;
-
-	constructor(file: File) {
-		this.file = file;
-		this.url = URL.createObjectURL(file);
-	}
-
-	computeCursorState(_: ITextModel, __: ICursorStateComputerData) {
-		const range = context.selection.value;
-		return new Selection(
-			range.selectionStartLineNumber,
-			range.selectionStartColumn,
-			range.positionLineNumber,
-			range.positionColumn + this.deltaColumn,
-		);
-	}
-
-	getEditOperations(model: ITextModel, builder: IEditOperationBuilder) {
-		const range = context.selection.value;
-		const label = range.isEmpty()
-			? basename(this.file.name)
-			: model.getValueInRange(range).replaceAll("\n", "");
-
-		const text = `![${label}](${this.url})`;
-		this.deltaColumn = text.length;
-		builder.addEditOperation(range, text);
-	}
-}
-
-class InsertDirectiveCommand implements ICommand {
-
-	computeCursorState(model: ITextModel, helper: ICursorStateComputerData) {
-		return undefined;
-	}
-
-	getEditOperations(model: ITextModel, builder: IEditOperationBuilder) {
-	}
-}
-
 async function addImage() {
 	const [file] = await selectFile("image/*");
-	context.editor.executeCommand("MD.Insert", new InsertImageCommand(file));
+	const url = URL.createObjectURL(file);
+	const text = `![${basename(file.name)}](${url})`;
+
+	const range = context.selection.value;
 	context.editor.focus();
+	context.editor.executeCommand("MD.Insert", new InsertCommand(text, range, false));
 }
 
-async function addVideo(initFiles: File[] = []) {
-	const result = await dialog
-		.show<VideoStatement>(VideoVideoDialog, { initFiles });
+async function addVideo() {
+	const [file] = await selectFile("video/*");
+	const url = URL.createObjectURL(file);
+	const text = `@video[](${url})`;
 
-	if (!result.isConfirm) {
-		return;
-	}
-	const { src, vw, vh, label, poster, isVideo } = result.data;
-	const text = isVideo
-		? `@video[${poster}](${src})`
-		: `@gif[${label}](${src})`;
-
-
+	const range = context.selection.value;
+	context.editor.focus();
+	context.editor.executeCommand("MD.Insert", new InsertCommand(text, range, true));
 }
 
-async function addAudio(file?: File) {
-	file ??= await selectFile("audio/*");
-	const res = await api.media.uploadAudio(file);
+async function addAudio() {
+	const [file] = await selectFile("image/*");
+	const url = URL.createObjectURL(file);
+	const text = `@audio[${basename(file.name)}](${url})`;
 
+	const range = context.selection.value;
+	context.editor.focus();
+	context.editor.executeCommand("MD.Insert", new InsertCommand(text, range, true));
 }
-
-defineExpose({ addImage, addVideo, addAudio });
 </script>
