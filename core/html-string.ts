@@ -14,7 +14,7 @@ const minifyOptions = {
 	collapseInlineTagWhitespace: true,
 	caseSensitive: true,
 	removeComments: true,
-	removeAttributeQuotes: true,
+	// 不要移除属性的引号，里面可能有转义内容。
 };
 
 function transformHTML(html: string) {
