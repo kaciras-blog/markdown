@@ -11,7 +11,7 @@
 	<ToolButton type='icon' title='行内代码' @click='switchWrapper(TextWrapper.Code)'>
 		<CodeIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='引用块' @click='addPrefixToLines(">")'>
+	<ToolButton type='icon' title='引用块' @click='addPrefix("> ")'>
 		<QuoteIcon/>
 	</ToolButton>
 </template>
@@ -96,20 +96,37 @@ function switchWrapper(type: TextWrapper) {
 	context.editor.focus();
 }
 
-function addPrefixToLines(prefix: string) {
-	const [selStart, selEnd] = getSelectedRange(true);
-	const lines = context.content.substring(selStart, selEnd).split("\n");
+class PrefixCommand implements editor.ICommand {
 
-	let text = "";
-	for (let line of lines) {
-		text += "\n";
-		if (/^\s*$/.test(line)) {
-			text += line;
-		} else {
-			text += prefix + line;
+	readonly range: Selection;
+	readonly prefix: string;
+
+	constructor(range: Selection, prefix: string) {
+		this.range = range;
+		this.prefix = prefix;
+	}
+
+	computeCursorState(model: editor.ITextModel, helper: editor.ICursorStateComputerData) {
+		const { range, prefix } = this;
+		return new Selection(
+			range.startLineNumber,
+			range.startColumn + prefix.length,
+			range.endLineNumber,
+			range.endColumn + prefix.length,
+		);
+	}
+
+	getEditOperations(model: editor.ITextModel, builder: editor.IEditOperationBuilder) {
+		const { range, prefix } = this;
+		for (let i = range.startLineNumber; i <= range.endLineNumber; i++) {
+			builder.addEditOperation(new Range(i, 0, i, 0), prefix);
 		}
 	}
-	text = text.substring(1);
+}
+
+function addPrefix(prefix: string) {
+	const command = new PrefixCommand(context.selection.value, prefix);
 	context.editor.executeCommand("MD.Prefix", command);
+	context.editor.focus();
 }
 </script>
