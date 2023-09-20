@@ -1,7 +1,8 @@
-import { activateCopyButtons } from "./fence.js";
-import observeLazyLoad, { LazyLoadOptions } from "./lazy-loading.js";
+import { activateCopyButtons } from "./fence.ts";
+import observeLazyLoad, { LazyLoadOptions } from "./lazy-loading.ts";
 
-export { LazyLoadOptions };
+// ESBuild 不会去识别 type import，所以这里 export 后要加 type 来显示注明。
+export type { LazyLoadOptions };
 
 /**
  * 激活 Markdown 元素，其实就是添加各种监听。返回一个清理函数，卸载组件后记得调用哦。

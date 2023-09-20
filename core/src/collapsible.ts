@@ -1,4 +1,4 @@
-import StateBlock from "markdown-it/lib/rules_block/state_block.js";
+import type StateBlock from "markdown-it/lib/rules_block/state_block.js";
 import MarkdownIt from "markdown-it";
 
 function isWholeLine(state: StateBlock, lineNum: number, text: string) {

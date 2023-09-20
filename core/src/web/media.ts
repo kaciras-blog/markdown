@@ -68,7 +68,7 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
  */
 const directiveMap: DirectiveMap = {
 	// 大部分浏览器只允许无声视频自动播放，不过 GIF 视频本来就是无声的。
-	gif(src, alt, md) {
+	gif(src, alt) {
 		return $HTML`
 			<p class='center-wrapper' ${getSizeStyle(src)}>
 				<video
@@ -111,7 +111,7 @@ const directiveMap: DirectiveMap = {
  * 自定义媒体元素的前端版，覆盖 Media 插件和默认的图片渲染器，
  * 在这里，媒体将被渲染成具有更复杂的布局的元素，同时还启用了延迟加载。
  */
-export function clientMediaPlugin(markdownIt: MarkdownIt) {
+export default function (markdownIt: MarkdownIt) {
 	markdownIt.use(Media, directiveMap);
 	markdownIt.renderer.rules.image = renderImage.bind(markdownIt);
 }
