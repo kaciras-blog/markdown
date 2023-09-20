@@ -1,3 +1,3 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should output minimized HTML 1`] = `"<p class=center-wrapper><video class=md-video controls crossorigin poster= data-src=/file.mp4></video></p>"`;
+exports[`should output minimized HTML 1`] = `"<p class=\\"center-wrapper\\"><video class=\\"md-video\\" controls crossorigin poster=\\"\\" data-src=\\"/file.mp4\\"></video></p>"`;

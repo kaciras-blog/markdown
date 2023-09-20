@@ -1,11 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`should process diff 1`] = `
-"<span class='hljs-insert'>A
-</span><span class='hljs-delete'>B
-</span>C"
-`;
-
 exports[`should support diff syntax 1`] = `
 "<span class='hljs-insert'>A
 </span><span class='hljs-delete'>B
