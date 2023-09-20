@@ -37,6 +37,7 @@ export default defineConfig(({ mode }) => {
 			copyPublicDir: false,
 		};
 	} else {
+		delete coreConfig.build;
 		overrides.plugins!.push(visualizer({ emitFile: true }));
 	}
 

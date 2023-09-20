@@ -8,8 +8,17 @@
 		"url": "https://github.com/kaciras-blog/markdown",
 		"directory": "core"
 	},
+	"exports": {
+		".": "./lib/index.js",
+		"./activate": "./lib/activate.js",
+		"./presets": "./lib/presets.js"
+	},
 	"type": "module",
+	"files": [
+		"lib"
+	],
 	"scripts": {
+		"build": "vite build",
 		"test": "vitest run"
 	},
 	"dependencies": {
@@ -30,6 +39,7 @@
 		"postcss-nested": "^6.0.1",
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^4.3.9",
+		"vite-plugin-dts": "^3.5.3",
 		"vitest": "^0.34.4"
 	}
 }
