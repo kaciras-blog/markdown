@@ -19,7 +19,7 @@
 		<MarkdownView
 			v-show='viewMode !== ViewMode.Edit'
 			ref='previewEl'
-			:is-article='true'
+			:trust='trust'
 			:value='outMarkdown'
 			:class='{
 				[$style.preview]: true,
@@ -52,6 +52,7 @@ type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
 interface MarkdownEditorProps {
 	modelValue: string;
+	trust?: boolean;
 	debounce?: number;
 	dropHandler?: DropHandler;
 }

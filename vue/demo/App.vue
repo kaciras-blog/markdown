@@ -1,6 +1,11 @@
 <template>
-	<MarkdownEditor v-model='content' class='editor'>
+	<MarkdownEditor
+		v-model='content'
+		:trust='true'
+		class='editor'
+	>
 		<template #toolbar-left>
+			<BaseSyntaxWeights></BaseSyntaxWeights>
 			<MediaWeights></MediaWeights>
 		</template>
 		<template #toolbar-right>
@@ -17,6 +22,7 @@ import readme from "./KFM-zh.md?raw";
 import MarkdownEditor from "../src/MarkdownEditor.vue";
 import MediaWeights from "../src/MediaWeights.vue";
 import ConfigWeights from "../src/ConfigWeights.vue";
+import BaseSyntaxWeights from "../src/BaseSyntaxWeights.vue";
 
 const content = shallowRef(readme);
 </script>

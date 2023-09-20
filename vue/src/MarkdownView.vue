@@ -1,12 +1,13 @@
 <!-- 将 Markdown 转换成 HTML 并显示出来的组件。-->
 <template>
-	<FinishedMDView :html='html'/>
+	<MarkdownBox :html='html' :lazy-loading='lazyLoading'/>
 </template>
 
 <script setup lang="ts">
+import { guestRenderer, trustedRenderer } from "@kaciras/markdown-core/src/web/presets.ts";
+import { LazyLoadOptions } from "@kaciras/markdown-core/src/web/lazy-loading.ts";
 import { computed } from "vue";
-import { articleRenderer, discussionRenderer } from "@kaciras/markdown-core/src/web/presets.ts";
-import FinishedMDView from "./MarkdownBox.vue";
+import MarkdownBox from "./MarkdownBox.vue";
 
 interface MarkdownViewProps {
 
@@ -16,19 +17,22 @@ interface MarkdownViewProps {
 	/** 给文本设置个唯一 ID，由于区分锚点。*/
 	docId?: string;
 
-	/** 是否使用文章转换器，默认使用功能更少也更安全的评论转换器。*/
-	isArticle?: boolean;
+	/** 是否使用文章转换器，默认使用功能更少也更安全的转换配置。*/
+	trust?: boolean;
+
+	/** 懒加载相关的选项，默认为空 */
+	lazyLoading?: LazyLoadOptions;
 }
 
 const props = withDefaults(defineProps<MarkdownViewProps>(), {
-	isArticle: false,
+	trust: false,
 });
 
 const html = computed(() => {
-	const { value, isArticle, docId } = props;
-	const renderer = isArticle
-		? articleRenderer
-		: discussionRenderer;
+	const { value, trust, docId } = props;
+	const renderer = trust
+		? trustedRenderer
+		: guestRenderer;
 	return renderer.render(value, { docId });
 });
 </script>

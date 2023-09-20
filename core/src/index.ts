@@ -6,10 +6,10 @@ declare global {
 export * from "./directive.ts";
 export * from "./miscellaneous.ts";
 
-export { default as Collapsible } from "./collapsible.ts";
+export { default as TOC } from "markdown-it-toc-done-right";
 export { default as Collect } from "./collect.ts";
 export { default as Media } from "./directive.ts";
-export { default as TOC } from "markdown-it-toc-done-right";
+export { default as Collapsible } from "./collapsible.ts";
 
 export enum TextWrapper {
 	None = 0,

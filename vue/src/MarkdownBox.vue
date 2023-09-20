@@ -7,14 +7,15 @@
 </template>
 
 <script setup lang="ts">
-import { noop } from "@vueuse/core";
-import { activate } from "@kaciras/markdown-core/src/web/activate.ts";
+import { activate, LazyLoadOptions } from "@kaciras/markdown-core/src/web/activate.ts";
+import { noop } from "@kaciras/utilities/browser";
 
-interface FinishedMDViewProps {
+interface MarkdownBoxProps {
 	html: string;
+	lazyLoading?: LazyLoadOptions;
 }
 
-const props = defineProps<FinishedMDViewProps>();
+const props = defineProps<MarkdownBoxProps>();
 
 /*
  * 无论是 :ref 还是自定义指令，它们在上层组件渲染时都会调用，即使 html 没有变化。
@@ -28,12 +29,13 @@ let prev: string;
 let disconnect = noop;
 
 function setup(el: HTMLElement | null) {
+	const { html, lazyLoading } = props;
 	if (!el) {
 		disconnect();
 		disconnect = noop;
-	} else if (disconnect === noop || prev !== props.html) {
-		prev = props.html;
-		disconnect = activate(el);
+	} else if (disconnect === noop || prev !== html) {
+		prev = html;
+		disconnect = activate(el, lazyLoading);
 	}
 }
 </script>
