@@ -45,7 +45,7 @@ import "monaco-editor/esm/vs/editor/contrib/dnd/browser/dnd.js";
 import "monaco-editor/esm/vs/base/browser/ui/codicons/codiconStyles.js";
 import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
 import MarkdownView from "./MarkdownView.vue";
-import { AddonContext, initContext, ViewMode } from "./addon-api.ts";
+import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
 
 type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
@@ -72,7 +72,7 @@ const scrollSynced = shallowRef(true);
 
 let editor: monaco.editor.IStandaloneCodeEditor = undefined!;
 
-const addonContext: AddonContext = {
+const addonContext: AddonContext = <any>{
 	options: ref({
 		quickSuggestions: false,
 		wordWrap: "on",
@@ -85,7 +85,7 @@ const addonContext: AddonContext = {
 	selection: shallowRef(new monaco.Selection(0, 0, 0, 0)),
 };
 
-provide(kContext, addonContext);
+createAddonContext(addonContext);
 
 watch(viewMode, () => nextTick(() => editor.layout()));
 
