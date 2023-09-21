@@ -37,14 +37,15 @@
 </template>
 
 <script setup lang="ts">
-import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, provide, ref, shallowRef, watch } from "vue";
+import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
 import "monaco-editor/esm/vs/editor/contrib/dnd/browser/dnd.js";
+import "monaco-editor/esm/vs/base/browser/ui/codicons/codiconStyles.js";
 import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
 import MarkdownView from "./MarkdownView.vue";
-import { AddonContext, kContext, ViewMode } from "./addon-api.ts";
+import { AddonContext, initContext, ViewMode } from "./addon-api.ts";
 
 type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
