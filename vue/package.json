@@ -1,6 +1,6 @@
 {
 	"name": "@kaciras-blog/markdown-vue",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"license": "MIT",
 	"author": "Kaciras <Kaciras@outlook.com>",
 	"repository": {
@@ -9,6 +9,9 @@
 	},
 	"main": "lib/index.js",
 	"type": "module",
+	"files": [
+		"lib"
+	],
 	"scripts": {
 		"preview": "vite preview",
 		"dev": "vite",
@@ -30,5 +33,8 @@
 		"rollup-plugin-visualizer": "^5.9.2",
 		"vite": "^4.3.9",
 		"vite-plugin-svg-sfc": "^1.2.1"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

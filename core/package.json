@@ -1,6 +1,6 @@
 {
-	"name": "@kaciras/markdown-core",
-	"version": "0.1.0",
+	"name": "@kaciras-blog/markdown",
+	"version": "3.0.0",
 	"license": "MIT",
 	"description": "Kaciras Flavored Markdown",
 	"author": "Kaciras <Kaciras@outlook.com>",
@@ -41,5 +41,8 @@
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^4.3.9",
 		"vitest": "^0.34.4"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

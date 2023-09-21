@@ -36,7 +36,12 @@ jobs:
           version: 8
           run_install: true
 
-      - run: pnpm run build
+      - name: Build core package
+        run: pnpm run build
+        working-directory: core
+
+      - name: Build Demo page
+        run: pnpm run build
         working-directory: vue
 
       - uses: actions/upload-pages-artifact@v2
