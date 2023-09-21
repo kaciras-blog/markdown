@@ -49,6 +49,14 @@ $details-padding-h: 14px;
 		border-radius: 5px;
 	}
 
+	.footnotes::before {
+		content: "References";
+	}
+
+	.footnotes:lang(zh)::before {
+		content: "参考";
+	}
+
 	pre {
 		overflow-x: auto;
 		margin: 0;
