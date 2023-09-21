@@ -15,7 +15,7 @@
 	<ToolButton title='小地图' :active='options.minimap!.enabled' @click='toggleMinimap'>
 		<MapIcon/>
 	</ToolButton>
-	<ToolButton title='自动换行' :active='options.wordWrap==="on"' @click='toggleSoftWrap'>
+	<ToolButton title='自动换行' :active='options.wordWrap === "on"' @click='toggleSoftWrap'>
 		<ReturnLeftIcon/>
 	</ToolButton>
 </template>

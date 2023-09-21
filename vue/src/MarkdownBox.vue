@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { activate, LazyLoadOptions } from "@kaciras/markdown-core/src/web/activate.ts";
+import { activate, LazyLoadOptions } from "@kaciras/markdown-core/activate";
 import { noop } from "@kaciras/utilities/browser";
 
 interface MarkdownBoxProps {

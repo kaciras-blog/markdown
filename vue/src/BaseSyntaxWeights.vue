@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
+import { getWrappers, TextWrapper } from "@kaciras/markdown-core";
 import BoldIcon from "@material-design-icons/svg/round/format_bold.svg?sfc";
 import ItalicIcon from "@material-design-icons/svg/round/format_italic.svg?sfc";
 import StrikethroughIcon from "@material-design-icons/svg/round/strikethrough_s.svg?sfc";
@@ -25,7 +26,6 @@ import QuoteIcon from "bootstrap-icons/icons/quote.svg?sfc";
 import CodeIcon from "@material-design-icons/svg/round/code.svg?sfc";
 import ToolButton from "./ToolButton.vue";
 import { useAddonContext } from "./addon-api.ts";
-import { getWrappers, TextWrapper } from "@kaciras/markdown-core/src/index.ts";
 
 const context = useAddonContext();
 
