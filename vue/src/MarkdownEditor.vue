@@ -210,7 +210,6 @@ onMounted(() => {
 
 .preview {
 	padding: .5rem .8rem 0 .8rem;
-	font-size: initial;
 	overflow-y: scroll;
 }
 

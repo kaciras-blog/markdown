@@ -18,8 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import "@kaciras-blog/uikit/dist/style.css";
-import "@kaciras/markdown-core/style.css";
+import "@kaciras-blog/markdown/style.css";
 import { shallowRef } from "vue";
 import readme from "./KFM-zh.md?raw";
 import MarkdownEditor from "../src/MarkdownEditor.vue";
@@ -34,6 +33,8 @@ const content = shallowRef(readme);
 <style>
 body {
 	margin: 0;
+	font-family: sans-serif;
+	font-size: 1rem;
 }
 
 .editor {

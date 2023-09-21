@@ -8,6 +8,9 @@ $details-color: #fda;
 $details-padding-v: 8px;
 $details-padding-h: 14px;
 
+$table-border-color: #bbb;
+$table-border-width: 1px;
+
 .markdown {
 	line-height: 1.8;
 
@@ -107,7 +110,25 @@ $details-padding-h: 14px;
 	}
 
 	table {
+		border-collapse: collapse;
 		margin: 0 auto 1rem auto;
+	}
+
+	th, td {
+		padding: .5rem 1rem;
+		border: $table-border-width solid $table-border-color;
+	}
+
+	thead th {
+		vertical-align: bottom;
+	}
+
+	tbody + tbody {
+		border-top: calc(2 * $table-border-width) solid $table-border-color;
+	}
+
+	tbody > tr:hover {
+		background-color: rgba(0, 0, 0, 0.04);
 	}
 
 	summary {
@@ -141,6 +162,7 @@ $details-padding-h: 14px;
 	padding: 6px 12px;
 	font-size: inherit;
 	color: #60e177;
+	background: none;
 
 	&:enabled {
 		color: inherit;

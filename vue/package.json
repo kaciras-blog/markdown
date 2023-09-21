@@ -28,7 +28,6 @@
 		"vue": "^3.3.4"
 	},
 	"devDependencies": {
-		"@kaciras-blog/uikit": "^2.5.1",
 		"@vitejs/plugin-vue": "^4.2.3",
 		"rollup-plugin-visualizer": "^5.9.2",
 		"vite": "^4.3.9",
