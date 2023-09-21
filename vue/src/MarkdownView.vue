@@ -4,8 +4,8 @@
 </template>
 
 <script setup lang="ts">
-import { guestRenderer, trustedRenderer } from "@kaciras/markdown-core/presets";
-import { LazyLoadOptions } from "@kaciras/markdown-core/activate";
+import { guestRenderer, trustedRenderer } from "@kaciras-blog/markdown/presets";
+import { LazyLoadOptions } from "@kaciras-blog/markdown/activate";
 import { computed } from "vue";
 import MarkdownBox from "./MarkdownBox.vue";
 

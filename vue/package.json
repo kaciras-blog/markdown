@@ -19,7 +19,7 @@
 		"build-lib": "vite build --mode lib"
 	},
 	"dependencies": {
-		"@kaciras/markdown-core": "workspace:^",
+		"@kaciras-blog/markdown": "workspace:^",
 		"@kaciras/utilities": "^0.10.1",
 		"@material-design-icons/svg": "^0.14.12",
 		"@vueuse/core": "^10.3.0",

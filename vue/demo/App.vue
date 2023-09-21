@@ -33,6 +33,7 @@ const content = shallowRef(readme);
 <style>
 body {
 	margin: 0;
+	color: #222;
 	font-family: sans-serif;
 	font-size: 1rem;
 }

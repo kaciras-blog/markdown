@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
-import { Emphasis, getEmphasis } from "@kaciras/markdown-core";
+import { Emphasis, getEmphasis } from "@kaciras-blog/markdown";
 import BoldIcon from "@material-design-icons/svg/round/format_bold.svg?sfc";
 import ItalicIcon from "@material-design-icons/svg/round/format_italic.svg?sfc";
 import StrikethroughIcon from "@material-design-icons/svg/round/strikethrough_s.svg?sfc";

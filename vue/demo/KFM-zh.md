@@ -146,14 +146,14 @@ Markdown 使用很多字符表示特定的意思，要显示原义字符，请�
 
 方括号内是视频的封面，如果留空则由浏览器自动选择。视频无法自动播放，只能由用户点击开始。
 
-@video[/poster.png](/video.mp4)
+@video[/poster.png](./video.mp4)
 
 ### 视频作为动态图
 
 传统的 GIF 图片算法落后，很多平台已经用视频来替换它们，KFM 也支持这种做法。GIF 视频默认是静音的，且会自动播放。
 
-@gif[GIF 视频](/gif-video.mp4)
+@gif[GIF 视频](./gif-video.mp4)
 
 ### 音频
 
-@audio[](/audio.mp3)
+@audio[](./audio.mp3)

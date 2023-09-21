@@ -1,4 +1,4 @@
-export { useAddonContext, ViewMode, AddonContext } from "./addon-api.ts";
+export { useAddonContext, ViewMode, type AddonContext } from "./addon-api.ts";
 
 export { default as MarkdownBox } from "./MarkdownBox.vue";
 export { default as MarkdownView } from "./MarkdownView.vue";
