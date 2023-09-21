@@ -1,0 +1,10 @@
+{
+	"extends": "../tsconfig.json",
+	"include": ["src"],
+	"compilerOptions": {
+		"types": ["./missing-types.d.ts", "./env.d.ts"],
+		"outDir": "lib",
+		"declaration": true,
+		"emitDeclarationOnly": true
+	},
+}

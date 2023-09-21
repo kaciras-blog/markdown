@@ -1,6 +1,6 @@
 import type MarkdownIt from "markdown-it";
 import type Token from "markdown-it/lib/token.js";
-import { default as Media, DirectiveMap } from "../directive.ts";
+import { default as Directive, DirectiveMap } from "../directive.js";
 
 /**
  * 从资源的链接参数（?vw=...&vh=...）里读取尺寸，生成防抖容器的 style 属性。
@@ -66,7 +66,7 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
  *
  * 对于其它的环境，比如 RSS，使用的是另外的渲染方案。
  */
-const directiveMap: DirectiveMap = {
+const mediaMap: DirectiveMap = {
 	// 大部分浏览器只允许无声视频自动播放，不过 GIF 视频本来就是无声的。
 	gif(src, alt) {
 		return $HTML`
@@ -112,6 +112,6 @@ const directiveMap: DirectiveMap = {
  * 在这里，媒体将被渲染成具有更复杂的布局的元素，同时还启用了延迟加载。
  */
 export default function (markdownIt: MarkdownIt) {
-	markdownIt.use(Media, directiveMap);
+	markdownIt.use(Directive, mediaMap);
 	markdownIt.renderer.rules.image = renderImage.bind(markdownIt);
 }

@@ -29,11 +29,11 @@ export default defineConfig({
 			external: isExternalForLibrary,
 		},
 		lib: {
-			entry: [
-				"src/presets.ts",
-				"src/index.ts",
-				"src/web/activate.ts",
-			],
+			entry: {
+				"presets": "src/presets.ts",
+				"index": "src/index.ts",
+				"web/activate": "src/web/activate.ts",
+			},
 			formats: ["es"],
 		},
 		outDir: "lib",

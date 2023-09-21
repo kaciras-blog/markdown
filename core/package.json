@@ -10,15 +10,16 @@
 	},
 	"exports": {
 		".": "./lib/index.js",
-		"./activate": "./lib/activate.js",
-		"./presets": "./lib/presets.js"
+		"./activate": "./lib/web/activate.js",
+		"./presets": "./lib/presets.js",
+		"./style.css": "./lib/style.css"
 	},
 	"type": "module",
 	"files": [
 		"lib"
 	],
 	"scripts": {
-		"build": "vite build",
+		"build": "vite build && tsc --project ./tsconfig.types.json",
 		"test": "vitest run"
 	},
 	"dependencies": {
@@ -39,7 +40,6 @@
 		"postcss-nested": "^6.0.1",
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^4.3.9",
-		"vite-plugin-dts": "^3.5.3",
 		"vitest": "^0.34.4"
 	}
 }

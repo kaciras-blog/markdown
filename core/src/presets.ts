@@ -1,5 +1,5 @@
 import MarkdownIt from "markdown-it";
-import { Anchor, Classify, Collapsible, Fence, Footnote, highlight, Media, TOC, UGC } from "./index.ts";
+import { Anchor, Classify, Collapsible, Fence, Footnote, highlight, Media, TOC, UGC } from "./index.js";
 
 export const coreRenderer = new MarkdownIt();
 coreRenderer.use(Media);

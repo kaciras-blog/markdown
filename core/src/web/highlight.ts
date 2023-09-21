@@ -1,6 +1,6 @@
 import hljs from "highlight.js/lib/core";
 
-// TreeShaking 优化，只添加我常用的语言。
+// 只添加我常用的语言。
 import c from "highlight.js/lib/languages/c";
 import cpp from "highlight.js/lib/languages/cpp";
 import xml from "highlight.js/lib/languages/xml";

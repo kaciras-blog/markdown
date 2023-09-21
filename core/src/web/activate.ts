@@ -1,5 +1,5 @@
-import { activateCopyButtons } from "./fence.ts";
-import observeLazyLoad, { LazyLoadOptions } from "./lazy-loading.ts";
+import { activateCopyButtons } from "./fence.js";
+import observeLazyLoad, { LazyLoadOptions } from "./lazy-loading.js";
 
 // ESBuild 不会去识别 type import，所以这里 export 后要加 type 来显示注明。
 export type { LazyLoadOptions };
