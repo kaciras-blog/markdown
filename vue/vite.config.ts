@@ -10,7 +10,7 @@ const deps = Object.keys(packageJson.dependencies);
 const re = new RegExp(`^(?:${deps.join("|")})`);
 
 function isExternalForLibrary(id: string) {
-	return !id.includes("?sfc") && re.test(id);
+	return !id.includes(".svg") && re.test(id);
 }
 
 export default defineConfig(({ mode }) => {
