@@ -42,8 +42,9 @@
 import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, provide, ref, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
-import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
+import "monaco-editor/esm/vs/editor/contrib/dnd/browser/dnd.js";
+import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
 import { AddonContext, kContext, ViewMode } from "./addon-api.ts";
 import MarkdownView from "./MarkdownView.vue";
 import SelectionWeight from "./SelectionWeight.vue";
@@ -56,16 +57,6 @@ interface MarkdownEditorProps {
 	debounce?: number;
 	dropHandler?: DropHandler;
 }
-
-// For our Markdown editor, only the editor worker is required.
-self.MonacoEnvironment = {
-	getWorker(_: unknown, label: string) {
-		if (label === "editorWorkerService") {
-			return new EditorWorker();
-		}
-		throw new Error(`Unexpected worker label: ${label}`);
-	},
-};
 
 const props = withDefaults(defineProps<MarkdownEditorProps>(), {
 	debounce: 500,
