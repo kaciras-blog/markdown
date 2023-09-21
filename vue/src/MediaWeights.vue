@@ -99,7 +99,7 @@ async function addImage() {
 
 	const range = context.selection.value;
 	context.editor.focus();
-	context.editor.executeCommand("MD.Insert", new InsertCommand(text, range, false));
+	context.editor.executeCommand("md.insert", new InsertCommand(text, range, false));
 }
 
 async function addVideo() {
@@ -109,7 +109,7 @@ async function addVideo() {
 
 	const range = context.selection.value;
 	context.editor.focus();
-	context.editor.executeCommand("MD.Insert", new InsertCommand(text, range, true));
+	context.editor.executeCommand("md.insert", new InsertCommand(text, range, true));
 }
 
 async function addAudio() {
@@ -119,6 +119,6 @@ async function addAudio() {
 
 	const range = context.selection.value;
 	context.editor.focus();
-	context.editor.executeCommand("MD.Insert", new InsertCommand(text, range, true));
+	context.editor.executeCommand("md.insert", new InsertCommand(text, range, true));
 }
 </script>

@@ -20,7 +20,7 @@
 			v-show='viewMode !== ViewMode.Edit'
 			ref='previewEl'
 			:trust='trust'
-			:value='outMarkdown'
+			:value='debounced'
 			:class='{
 				[$style.preview]: true,
 				[$style.single]: viewMode === ViewMode.Preview,
@@ -32,8 +32,6 @@
 			<slot name='status-left'/>
 			<span :class='$style.span'/>
 			<slot name='status-right'/>
-
-			<SelectionWeight></SelectionWeight>
 		</div>
 	</div>
 </template>
@@ -45,9 +43,8 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
 import "monaco-editor/esm/vs/editor/contrib/dnd/browser/dnd.js";
 import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
-import { AddonContext, kContext, ViewMode } from "./addon-api.ts";
 import MarkdownView from "./MarkdownView.vue";
-import SelectionWeight from "./SelectionWeight.vue";
+import { AddonContext, kContext, ViewMode } from "./addon-api.ts";
 
 type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
@@ -66,7 +63,7 @@ const props = withDefaults(defineProps<MarkdownEditorProps>(), {
 const emit = defineEmits(["update:modelValue"]);
 
 const content = useVModel(props, "modelValue", emit);
-const outMarkdown = refDebounced(content, props.debounce);
+const debounced = refDebounced(content, props.debounce);
 const editorEl = shallowRef<HTMLElement>();
 const previewEl = shallowRef<ComponentPublicInstance>();
 const viewMode = shallowRef(ViewMode.Split);
@@ -84,8 +81,7 @@ const addonContext: AddonContext = {
 	scrollSynced,
 	editor,
 	text: content,
-	model: shallowRef(monaco.editor.createModel("")),
-	selection: shallowRef(monaco.Selection.createWithDirection(0, 0, 0, 0, 0)),
+	selection: shallowRef(new monaco.Selection(0, 0, 0, 0)),
 };
 
 provide(kContext, addonContext);
@@ -161,7 +157,6 @@ onMounted(() => {
 	});
 
 	addonContext.editor = editor;
-	addonContext.model.value = editor.getModel()!;
 
 	editor.onDidChangeModelContent(() => {
 		content.value = editor.getValue({

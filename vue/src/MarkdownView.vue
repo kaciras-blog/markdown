@@ -11,22 +11,23 @@ import MarkdownBox from "./MarkdownBox.vue";
 
 interface MarkdownViewProps {
 
-	/** 要渲染的 Markdown 文本，注意转换过程是同步的。*/
+	/** 要渲染的 Markdown 文本，转换过程是同步的。*/
 	value: string;
 
-	/** 给文本设置个唯一 ID，由于区分锚点。*/
+	/** 设置个唯一 ID，由于区分锚点。*/
 	docId?: string;
 
-	/** 是否使用文章转换器，默认使用功能更少也更安全的转换配置。*/
+	/**
+	 * 使用 trustedRenderer 渲染，默认使用的是 guestRenderer。
+	 * 两者的差别见它们的注释，无论哪一个都不存在 XSS 问题。
+	 */
 	trust?: boolean;
 
 	/** 懒加载相关的选项，默认为空 */
 	lazyLoading?: LazyLoadOptions;
 }
 
-const props = withDefaults(defineProps<MarkdownViewProps>(), {
-	trust: false,
-});
+const props = defineProps<MarkdownViewProps>();
 
 const html = computed(() => {
 	const { value, trust, docId } = props;

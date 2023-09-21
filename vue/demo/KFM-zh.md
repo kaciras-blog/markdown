@@ -25,7 +25,6 @@ Markdown 是一种轻量级的标记语言，可用于将格式设置元素添�
 ##### h5 Heading
 ###### h6 Heading
 
-
 ## 横线
 
 ___
@@ -70,13 +69,13 @@ _单个下划线也表示斜体。_
 2. Consectetur adipiscing elit
 3. Integer molestie lorem at massa
 
-# 链接
+## 链接
 
 创建链接时。首先再方括号中填写链接文本（例如[链接名称]），然后再紧跟方括号的括号（例如(https://www.baidu.com/)）中填写链接地址URL。
 
 [这个链接指向本项目的 GitHub 仓库](https://github.com/kaciras-blog/markdown)
 
-# 脚注
+## 脚注
 
 脚注使您可以添加注释和参考，而不会使文档正文混乱。创建脚注时，带有脚注引用的链接将出现带有链接的上标编号。读者可以单击链接跳至页面底部的脚注内容。
 
@@ -88,7 +87,7 @@ _单个下划线也表示斜体。_
 [^1]: [脚注通常是一个链接](https://example.com)。
 [^文本脚注]: Gruber, John (8 January 2014). [The Markdown File Extension](https://daringfireball.net/linked/2014/01/08/markdown-extension)
 
-# 表格
+## 表格
 
 要添加表格，请使用三个或多个连字符 — 创建每列的标题，并使用竖线 | 分隔每列。表格语法较为复杂，建议先用支持补全的 IDE 或是使用生成器写好，然后再复制过来。
 
@@ -103,13 +102,13 @@ _单个下划线也表示斜体。_
 | AVIF + YUV444                  | 19.7KB  | 4.45        | 
 | [内层支持行内语法](http://example.com) | 24.2 KB | 0           |
 
-# 行内代码
+## 行内代码
 
 要将段落中的函数或其他表达式表示为代码，请将其括在反引号 ` 中，当然也可以用它来高亮单词。
 
 `main()` 函数中调用 `printf()` 函数。
 
-# 代码块
+## 代码块
 
 多行代码可以使用代码块进行展示。在需要展示的代码之前和之后的行上使用三个反引号 ``` ；如果需要高亮显示，请指定对应的语言，诸如C、typescript、JAVA、Python 等等。
 
@@ -125,7 +124,7 @@ export function activate(el: HTMLElement) {
 }
 ```
 
-# 转义
+## 转义
 
 Markdown 使用很多字符表示特定的意思，要显示原义字符，请在字符的前面添加反斜杠 \ ,这样就可以转义字符了。
 

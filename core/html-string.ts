@@ -22,7 +22,7 @@ function transformHTML(html: string) {
 }
 
 /**
- * 支持自闭和标签，以及去除标签间的空白。
+ * 处理由 $HTML 标记的字符串，移除标记，展开自闭合的标签，以及去除空白。
  */
 export default function htmlStringPlugin(): Plugin {
 	let sourcemap: boolean | string;

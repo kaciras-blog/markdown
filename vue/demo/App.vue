@@ -11,6 +11,9 @@
 		<template #toolbar-right>
 			<ConfigWeights></ConfigWeights>
 		</template>
+		<template #status-right>
+			<SelectionWeight></SelectionWeight>
+		</template>
 	</MarkdownEditor>
 </template>
 
@@ -23,6 +26,7 @@ import MarkdownEditor from "../src/MarkdownEditor.vue";
 import MediaWeights from "../src/MediaWeights.vue";
 import ConfigWeights from "../src/ConfigWeights.vue";
 import BaseSyntaxWeights from "../src/BaseSyntaxWeights.vue";
+import SelectionWeight from "../src/SelectionWeight.vue";
 
 const content = shallowRef(readme);
 </script>

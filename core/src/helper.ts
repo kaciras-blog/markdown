@@ -1,4 +1,4 @@
-export enum TextWrapper {
+export enum Emphasis {
 	None = 0,
 	Italic = 1,
 	Bold = 2,
@@ -7,39 +7,39 @@ export enum TextWrapper {
 }
 
 /**
- * 搜索一段文本所有的包装，包装是指两端具有对称字符的语法，如 **bold**, `code` 等等。
+ * 搜索一段文本所有的强调，强调是指两端具有对称字符的语法，如 **bold**, `code` 等等。
  *
- * @return [文本拥有的包装, 包装字符串的长度] 二元组。
+ * @return [强调类型, 强调字符串的长度（一侧）] 二元组。
  */
-export function getWrappers(text: string): [TextWrapper, number] {
-	let wrappers = TextWrapper.None;
+export function getEmphasis(text: string): [Emphasis, number] {
+	let emphasis = Emphasis.None;
 	let i = 0;
 	let k = text.length - 1;
 	let repeat = 0;
 	let prev = text.charCodeAt(0);
 
 	if (k < 1) {
-		return [TextWrapper.None, 0]; // 长度不足 2 的肯定没有包装。
+		return [Emphasis.None, 0]; // 长度不足 2 的肯定没有强调。
 	}
 
-	// 通过前一个字符和它重复的次数来断包装的类型。
-	function getWrapperType() {
+	// 通过前一个字符和它重复的次数来判断强调的类型。
+	function check() {
 		if (prev === 126 /* ~ */ && repeat === 2) {
-			return TextWrapper.StrikeThrough;
+			return Emphasis.StrikeThrough;
 		}
 		if (prev === 96 /* ` */ && repeat > 0) {
-			return TextWrapper.Code;
+			return Emphasis.Code;
 		}
 		if (prev !== 42 /* * */ && prev !== 95 /* _ */) {
-			return TextWrapper.None;
+			return Emphasis.None;
 		}
 		if (repeat === 1) {
-			return TextWrapper.Italic;
+			return Emphasis.Italic;
 		}
 		if (repeat === 2) {
-			return TextWrapper.Bold;
+			return Emphasis.Bold;
 		}
-		return TextWrapper.Bold | TextWrapper.Italic;
+		return Emphasis.Bold | Emphasis.Italic;
 	}
 
 	for (; i < k; i++, k--, repeat++) {
@@ -48,17 +48,17 @@ export function getWrappers(text: string): [TextWrapper, number] {
 			break; // 前后对称位置的字符不一样。
 		}
 		if (c !== prev) {
-			const w = getWrapperType();
+			const w = check();
 			if (w === 0) {
 				break;
 			}
 			repeat = 0;
 			prev = c;
-			wrappers |= w;
+			emphasis |= w;
 		}
 	}
 
-	// 如果前面字符串的不是有效的包装，则要把长度回退到最后一个包装。
-	const w = getWrapperType();
-	return [wrappers | w, w === TextWrapper.None ? i - repeat : i];
+	// 如果前面字符串的不是有效的强调，则要把长度回退到最后一个。
+	const w = check();
+	return [emphasis | w, w === Emphasis.None ? i - repeat : i];
 }

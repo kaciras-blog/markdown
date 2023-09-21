@@ -3,12 +3,9 @@ import AnchorRaw from "markdown-it-anchor";
 import FootnoteRaw from "markdown-it-footnote";
 
 /**
- * 处理第三方用户输入的 MarkdownIt 插件，用于防止刷外链。
+ * 给所有链接加上 rel="ugc,nofollow" 防止刷外链，推荐用于渲染用户的输入。
  *
- * 用户的输入的链接必须加个 rel="ugc,nofollow" 防止滥用。
  * https://support.google.com/webmasters/answer/96569?hl=zh-Hans
- *
- * @param markdownIt 要安装的实例
  */
 export function UGC(markdownIt: MarkdownIt) {
 	const { renderer } = markdownIt;
@@ -61,7 +58,7 @@ export function Footnote(markdownIt: MarkdownIt) {
 }
 
 /**
- * 给行内代码加个 inline-code 类以便跟代码块区别开。
+ * 给行内代码加个 inline-code 类以便跟代码块区分。
  */
 export function Classify(markdownIt: MarkdownIt) {
 	const { rules } = markdownIt.renderer;

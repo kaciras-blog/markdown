@@ -67,12 +67,11 @@ export default function (code: string, language: string, diff: boolean) {
 		return hljs.highlight(code, { language }).value;
 	}
 
-	// 记录以 +/- 开头的行号，并去掉该符号使高亮能够正确解析。
+	// 遍历每一行，记录以差分符号（+/-）开头的行号。
 	let lines = code.split("\n");
 	const changes = new Map<number, boolean>();
-	const size = lines.length;
 
-	for (let i = 0; i < size; i++) {
+	for (let i = 0; i < lines.length; i++) {
 		switch (lines[i].charCodeAt(0)) {
 			case 43: /* + */
 				changes.set(i, true);
@@ -83,6 +82,7 @@ export default function (code: string, language: string, diff: boolean) {
 			default:
 				continue;
 		}
+		// 去掉差分符号使 highlight.js 能够处理。
 		lines[i] = lines[i].slice(1);
 	}
 
@@ -92,7 +92,7 @@ export default function (code: string, language: string, diff: boolean) {
 
 	// 底层的高亮完成后重新按行分割，并给记录的行加上标签。
 	const htmlFragments = [];
-	for (let i = 0; i < size; i++) {
+	for (let i = 0; i < lines.length; i++) {
 		if (changes.has(i - 1)) {
 			htmlFragments.push("</span>");
 		}

@@ -18,8 +18,8 @@ type HighLighter = (code: string, language: string, diff: boolean) => string | u
  * 但实际上文档中本没有 Recommend 或 Should 等字眼，它仅是一个示例而已。
  * [这里也有讨论](https://stackoverflow.com/q/11742907/7065321)
  *
- * 本站为了性能和调试，会尽量减少 DOM 中元素的层级，所以选择在代码外仅用一个标签。
- * 考虑到存在非代码，但又要格式化的文本，选择 pre 更通用，GitHub 也是如此。
+ * 为了性能和可调试性，应当减少 DOM 中元素的层级，所以这里选择仅用一个标签。
+ * 考虑到存在非代码，但又要格式化的文本，选择 pre 比 code 更通用，GitHub 也是如此。
  */
 export default function fencePlugin(md: MarkdownIt, highlight: HighLighter) {
 	const { unescapeAll, escapeHtml } = md.utils;
@@ -75,7 +75,7 @@ function handleMouseLeave(event: Event) {
 }
 
 /**
- * 实现点击按钮复制代码，考虑到代码一行可能很长，以及手机端框选困难，这个功能还是必要的。
+ * 实现点击按钮复制代码。考虑到代码一行可能很长，以及手机端框选困难，这个功能还是必要的。
  */
 export function activateCopyButtons(root: HTMLElement) {
 	for (const button of root.querySelectorAll(".copy")) {

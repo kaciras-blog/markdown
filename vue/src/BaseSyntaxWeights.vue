@@ -1,14 +1,14 @@
 <template>
-	<ToolButton type='icon' title='粗体' @click='switchWrapper(TextWrapper.Bold)'>
+	<ToolButton type='icon' title='粗体' @click='toggleEmphasis(Emphasis.Bold)'>
 		<BoldIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='斜体' @click='switchWrapper(TextWrapper.Italic)'>
+	<ToolButton type='icon' title='斜体' @click='toggleEmphasis(Emphasis.Italic)'>
 		<ItalicIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='删除线' @click='switchWrapper(TextWrapper.StrikeThrough)'>
+	<ToolButton type='icon' title='删除线' @click='toggleEmphasis(Emphasis.StrikeThrough)'>
 		<StrikethroughIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='行内代码' @click='switchWrapper(TextWrapper.Code)'>
+	<ToolButton type='icon' title='行内代码' @click='toggleEmphasis(Emphasis.Code)'>
 		<CodeIcon/>
 	</ToolButton>
 	<ToolButton type='icon' title='引用块' @click='addPrefix("> ")'>
@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
-import { getWrappers, TextWrapper } from "@kaciras/markdown-core";
+import { Emphasis, getEmphasis } from "@kaciras/markdown-core";
 import BoldIcon from "@material-design-icons/svg/round/format_bold.svg?sfc";
 import ItalicIcon from "@material-design-icons/svg/round/format_italic.svg?sfc";
 import StrikethroughIcon from "@material-design-icons/svg/round/strikethrough_s.svg?sfc";
@@ -29,17 +29,17 @@ import { useAddonContext } from "./addon-api.ts";
 
 const context = useAddonContext();
 
-class WarpCommand implements editor.ICommand {
+class EmphasisCommand implements editor.ICommand {
 
 	readonly range: Selection;
-	readonly wrappers: TextWrapper;
+	readonly emphasis: Emphasis;
 	readonly remove: number;
 
 	addCount = 0;
 
-	constructor(range: Selection, wrappers: TextWrapper, remove: number) {
+	constructor(range: Selection, emphasis: Emphasis, remove: number) {
 		this.range = range;
-		this.wrappers = wrappers;
+		this.emphasis = emphasis;
 		this.remove = remove;
 	}
 
@@ -55,19 +55,19 @@ class WarpCommand implements editor.ICommand {
 	}
 
 	getEditOperations(_: editor.ITextModel, builder: editor.IEditOperationBuilder) {
-		const { range, wrappers, remove } = this;
+		const { range, emphasis, remove } = this;
 		const strings = [];
 
-		if ((wrappers & TextWrapper.Bold) !== 0) {
+		if ((emphasis & Emphasis.Bold) !== 0) {
 			strings.push("**");
 		}
-		if ((wrappers & TextWrapper.Italic) !== 0) {
+		if ((emphasis & Emphasis.Italic) !== 0) {
 			strings.push("*");
 		}
-		if ((wrappers & TextWrapper.StrikeThrough) !== 0) {
+		if ((emphasis & Emphasis.StrikeThrough) !== 0) {
 			strings.push("~~");
 		}
-		if ((wrappers & TextWrapper.Code) !== 0) {
+		if ((emphasis & Emphasis.Code) !== 0) {
 			strings.push("`");
 		}
 
@@ -84,16 +84,16 @@ class WarpCommand implements editor.ICommand {
 	}
 }
 
-function switchWrapper(type: TextWrapper) {
+function toggleEmphasis(type: Emphasis) {
 	const range = context.selection.value;
-	const text = context.model.value.getValueInRange(range);
+	const text = context.editor.getModel()!.getValueInRange(range);
 
-	const [wrappers, length] = getWrappers(text);
-	const changed = wrappers ^ type;
+	const [emphasis, length] = getEmphasis(text);
+	const changed = emphasis ^ type;
 
-	const command = new WarpCommand(range, changed, length);
+	const command = new EmphasisCommand(range, changed, length);
 	context.editor.focus();
-	context.editor.executeCommand("MD.Wrap", command);
+	context.editor.executeCommand("md.emphasis", command);
 }
 
 class PrefixCommand implements editor.ICommand {
@@ -127,6 +127,6 @@ class PrefixCommand implements editor.ICommand {
 function addPrefix(prefix: string) {
 	const command = new PrefixCommand(context.selection.value, prefix);
 	context.editor.focus();
-	context.editor.executeCommand("MD.Prefix", command);
+	context.editor.executeCommand("md.prefix", command);
 }
 </script>

@@ -21,17 +21,8 @@ defineProps<{ active?: boolean }>();
 	font-size: 24px;
 	color: #555;
 
-	&:hover, &:focus-visible {
+	&:hover, &:focus-visible, .active {
 		color: #0059ff;
 	}
-
-	/*&:active {*/
-	/*	background: rgba(0, 0, 0, 0.08);*/
-	/*}*/
-}
-
-.active {
-	color: #0059ff;
-	border-radius: 4px;
 }
 </style>
