@@ -17,10 +17,11 @@ defineProps<{ active?: boolean }>();
 	align-items: center;
 	justify-content: center;
 
-	padding: 5px;
+	/* SVG 可能被设为 1em 尺寸 */
 	font-size: 24px;
-	color: #555;
 
+	padding: 5px;
+	color: #555;
 	border: none;
 	background: none;
 	cursor: pointer;

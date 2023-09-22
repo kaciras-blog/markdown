@@ -1,29 +1,25 @@
 <template>
 	<ToolButton title='粗体' @click='toggleEmphasis(Emphasis.Bold)'>
-		<BoldIcon/>
+		<IconBold/>
 	</ToolButton>
 	<ToolButton title='斜体' @click='toggleEmphasis(Emphasis.Italic)'>
-		<ItalicIcon/>
+		<IconItalic/>
 	</ToolButton>
 	<ToolButton title='删除线' @click='toggleEmphasis(Emphasis.StrikeThrough)'>
-		<StrikethroughIcon/>
+		<IconStrikethrough/>
 	</ToolButton>
 	<ToolButton title='行内代码' @click='toggleEmphasis(Emphasis.Code)'>
-		<CodeIcon/>
+		<IconCode/>
 	</ToolButton>
 	<ToolButton title='引用块' @click='addPrefix("> ")'>
-		<QuoteIcon/>
+		<IconBlockquote/>
 	</ToolButton>
 </template>
 
 <script setup lang="ts">
 import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 import { Emphasis, getEmphasis } from "@kaciras-blog/markdown";
-import BoldIcon from "@material-design-icons/svg/round/format_bold.svg?sfc";
-import ItalicIcon from "@material-design-icons/svg/round/format_italic.svg?sfc";
-import StrikethroughIcon from "@material-design-icons/svg/round/strikethrough_s.svg?sfc";
-import QuoteIcon from "bootstrap-icons/icons/quote.svg?sfc";
-import CodeIcon from "@material-design-icons/svg/round/code.svg?sfc";
+import { IconBlockquote, IconBold, IconCode, IconItalic, IconStrikethrough } from "@tabler/icons-vue";
 import ToolButton from "./ToolButton.vue";
 import { useAddonContext } from "./addon-api.ts";
 

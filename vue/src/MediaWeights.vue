@@ -1,20 +1,18 @@
 <template>
 	<ToolButton title='插入图片' @click='addImage'>
-		<ImageIcon/>
+		<IconPhoto/>
 	</ToolButton>
 	<ToolButton title='插入视频' @click='addVideo'>
-		<VideoIcon/>
+		<IconVideo/>
 	</ToolButton>
 	<ToolButton title='插入音频' @click='addAudio'>
-		<MusicIcon/>
+		<IconMusic/>
 	</ToolButton>
 </template>
 
 <script setup lang="ts">
-import ImageIcon from "bootstrap-icons/icons/image-fill.svg?sfc";
-import VideoIcon from "bootstrap-icons/icons/play-btn.svg?sfc";
-import MusicIcon from "bootstrap-icons/icons/music-note-beamed.svg?sfc";
 import { selectFile } from "@kaciras/utilities/browser";
+import { IconMusic, IconPhoto, IconVideo } from "@tabler/icons-vue";
 import { useAddonContext } from "./addon-api.ts";
 import ToolButton from "./ToolButton.vue";
 
