@@ -117,8 +117,8 @@ function scrollEditorToPreview() {
 	runScrollAction(() => {
 		const { $el } = previewEl.value!;
 		const p = $el.scrollTop / ($el.scrollHeight - $el.offsetHeight);
-		const { clientHeight } = editorEl.value!;
-		editor.setScrollTop(p * (editor.getScrollHeight() - clientHeight));
+		const { offsetHeight } = editorEl.value!;
+		editor.setScrollTop(p * (editor.getScrollHeight() - offsetHeight * 2));
 	});
 }
 
