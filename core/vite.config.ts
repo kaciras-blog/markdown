@@ -14,9 +14,6 @@ function isExternalForLibrary(id: string) {
 export default defineConfig({
 	plugins: [inlineHTML()],
 	css: {
-		modules: {
-			generateScopedName: "[hash:base64:5]",
-		},
 		postcss: {
 			plugins: [nested(), vars()],
 		},
@@ -32,11 +29,11 @@ export default defineConfig({
 			external: isExternalForLibrary,
 		},
 		lib: {
-			entry: {
-				"presets": "src/presets.ts",
-				"index": "src/index.ts",
-				"web/activate": "src/web/activate.ts",
-			},
+			entry: [
+				"src/presets.ts",
+				"src/index.ts",
+				"src/activate.ts",
+			],
 			formats: ["es"],
 		},
 		outDir: "lib",

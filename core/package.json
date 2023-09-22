@@ -10,7 +10,7 @@
 	},
 	"exports": {
 		".": "./lib/index.js",
-		"./activate": "./lib/web/activate.js",
+		"./activate": "./lib/activate.js",
 		"./presets": "./lib/presets.js",
 		"./style.css": "./lib/style.css"
 	},
@@ -41,8 +41,5 @@
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^4.3.9",
 		"vitest": "^0.34.4"
-	},
-	"publishConfig": {
-		"access": "public"
 	}
 }

@@ -14,6 +14,11 @@ function isExternalForLibrary(id: string) {
 
 export default defineConfig(({ mode }) => {
 	const overrides = defineConfig({
+		css: {
+			modules: {
+				generateScopedName: "[hash:base64:5]",
+			},
+		},
 		plugins: [vue()],
 
 		// Deployed to https://kaciras-blog.github.io/markdown
