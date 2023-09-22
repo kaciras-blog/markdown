@@ -1,17 +1,17 @@
 <template>
-	<ToolButton type='icon' title='粗体' @click='toggleEmphasis(Emphasis.Bold)'>
+	<ToolButton title='粗体' @click='toggleEmphasis(Emphasis.Bold)'>
 		<BoldIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='斜体' @click='toggleEmphasis(Emphasis.Italic)'>
+	<ToolButton title='斜体' @click='toggleEmphasis(Emphasis.Italic)'>
 		<ItalicIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='删除线' @click='toggleEmphasis(Emphasis.StrikeThrough)'>
+	<ToolButton title='删除线' @click='toggleEmphasis(Emphasis.StrikeThrough)'>
 		<StrikethroughIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='行内代码' @click='toggleEmphasis(Emphasis.Code)'>
+	<ToolButton title='行内代码' @click='toggleEmphasis(Emphasis.Code)'>
 		<CodeIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='引用块' @click='addPrefix("> ")'>
+	<ToolButton title='引用块' @click='addPrefix("> ")'>
 		<QuoteIcon/>
 	</ToolButton>
 </template>

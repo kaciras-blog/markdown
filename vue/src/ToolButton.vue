@@ -1,8 +1,8 @@
 <template>
-	<button :class='[
-		$style.button,
-		active && $style.active,
-	]'>
+	<button
+		type='button'
+		:class='[$style.button, active && $style.active]'
+	>
 		<slot/>
 	</button>
 </template>

@@ -1,12 +1,12 @@
 import MarkdownIt from "markdown-it";
-import { Anchor, Classify, Collapsible, Fence, Footnote, highlight, Media, TOC, UGC } from "./index.js";
+import { Anchor, Classify, Collapsible, Directive, Fence, Footnote, highlight, Media, TOC, UGC } from "./index.js";
 
 /**
  * 仅添加语法类插件，渲染的结果只有必要的标签，
  * 用于给第三方阅读器使用（RSS,阅读模式……）。
  */
 export const coreRenderer = new MarkdownIt();
-coreRenderer.use(Media);
+coreRenderer.use(Directive);
 coreRenderer.use(TOC);
 coreRenderer.use(Footnote);
 coreRenderer.use(Collapsible);

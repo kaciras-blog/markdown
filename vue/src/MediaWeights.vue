@@ -1,11 +1,11 @@
 <template>
-	<ToolButton type='icon' title='插入图片' @click='addImage'>
+	<ToolButton title='插入图片' @click='addImage'>
 		<ImageIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='插入视频' @click='addVideo'>
+	<ToolButton title='插入视频' @click='addVideo'>
 		<VideoIcon/>
 	</ToolButton>
-	<ToolButton type='icon' title='插入音频' @click='addAudio'>
+	<ToolButton title='插入音频' @click='addAudio'>
 		<MusicIcon/>
 	</ToolButton>
 </template>

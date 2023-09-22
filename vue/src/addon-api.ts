@@ -1,10 +1,11 @@
 import { inject, provide, Ref, ShallowRef } from "vue";
 import { editor, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
-import IEditorOptions = editor.IEditorOptions;
-import ICommand = editor.ICommand;
-import IEditOperationBuilder = editor.IEditOperationBuilder;
-import ITextModel = editor.ITextModel;
-import ICursorStateComputerData = editor.ICursorStateComputerData;
+
+type IEditorOptions = editor.IEditorOptions;
+type ICommand = editor.ICommand;
+type IEditOperationBuilder = editor.IEditOperationBuilder;
+type ITextModel = editor.ITextModel;
+type ICursorStateComputerData = editor.ICursorStateComputerData;
 
 export enum ViewMode { Split, Edit, Preview}
 
