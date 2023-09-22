@@ -14,6 +14,9 @@ function isExternalForLibrary(id: string) {
 export default defineConfig({
 	plugins: [inlineHTML()],
 	css: {
+		modules: {
+			generateScopedName: "[hash:base64:5]",
+		},
 		postcss: {
 			plugins: [nested(), vars()],
 		},
