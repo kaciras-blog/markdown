@@ -18,7 +18,6 @@
 </template>
 
 <script setup lang="ts">
-import "@kaciras-blog/markdown/style.css";
 import { shallowRef } from "vue";
 import readme from "./KFM-zh.md?raw";
 import MarkdownEditor from "../src/MarkdownEditor.vue";

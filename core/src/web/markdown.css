@@ -162,6 +162,7 @@ $table-border-width: 1px;
 	padding: 6px 12px;
 	font-size: inherit;
 	color: #60e177;
+	border: none;
 	background: none;
 
 	&:enabled {
