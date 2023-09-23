@@ -7,11 +7,6 @@ import coreConfig from "../core/vite.config.ts";
 import packageJson from "./package.json" assert { type: "json" };
 
 const deps = Object.keys(packageJson.dependencies);
-const re = new RegExp(`^(?:${deps.join("|")})`);
-
-function isExternalForLibrary(id: string) {
-	return !id.includes(".svg") && re.test(id);
-}
 
 export default defineConfig(({ mode }) => {
 	const overrides = defineConfig({
@@ -32,7 +27,7 @@ export default defineConfig(({ mode }) => {
 	if (mode === "lib") {
 		coreConfig.build = {
 			rollupOptions: {
-				external: isExternalForLibrary,
+				external: new RegExp(`^(?:${deps.join("|")})`),
 			},
 			lib: {
 				entry: [
@@ -41,6 +36,7 @@ export default defineConfig(({ mode }) => {
 				],
 				formats: ["es"],
 			},
+			target: "esnext",
 			outDir: "lib",
 			copyPublicDir: false,
 		};

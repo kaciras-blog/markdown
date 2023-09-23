@@ -36,6 +36,7 @@ export default defineConfig({
 			],
 			formats: ["es"],
 		},
+		target: "esnext",
 		outDir: "lib",
 		copyPublicDir: false,
 	},
