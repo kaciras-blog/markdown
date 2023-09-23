@@ -1,16 +1,20 @@
 {
 	"name": "@kaciras-blog/markdown-vue",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"license": "MIT",
 	"author": "Kaciras <Kaciras@outlook.com>",
 	"repository": {
 		"url": "https://github.com/kaciras-blog/markdown",
 		"directory": "vue"
 	},
-	"main": "src/index.ts",
+	"exports": {
+		"./style.css": "./lib/style.css",
+		".": "./lib/index.js",
+		"./view": "./lib/only-view.js"
+	},
 	"type": "module",
 	"files": [
-		"src"
+		"lib"
 	],
 	"scripts": {
 		"preview": "vite preview",
@@ -21,14 +25,15 @@
 	"dependencies": {
 		"@kaciras-blog/markdown": "workspace:^",
 		"@kaciras/utilities": "^0.10.1",
+		"@tabler/icons-vue": "^2.34.0",
 		"@vueuse/core": "^10.3.0",
 		"monaco-editor": "^0.43.0",
-		"@tabler/icons-vue": "^2.34.0",
 		"vue": "^3.3.4"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^4.2.3",
 		"rollup-plugin-visualizer": "^5.9.2",
-		"vite": "^4.3.9"
+		"vite": "^4.3.9",
+		"vite-plugin-dts": "^3.5.4"
 	}
 }

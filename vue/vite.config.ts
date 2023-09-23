@@ -1,6 +1,7 @@
 import { env } from "process";
 import { defineConfig, mergeConfig, UserConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import dts from "vite-plugin-dts";
 import { visualizer } from "rollup-plugin-visualizer";
 import coreConfig from "../core/vite.config.ts";
 import packageJson from "./package.json" assert { type: "json" };
@@ -19,7 +20,10 @@ export default defineConfig(({ mode }) => {
 				generateScopedName: "[hash:base64:5]",
 			},
 		},
-		plugins: [vue()],
+		plugins: [vue(), dts({
+			staticImport: true,
+			tsconfigPath: "./tsconfig.build.json",
+		})],
 
 		// Deployed to https://kaciras-blog.github.io/markdown
 		base: env.CI ? "/markdown/" : undefined,
@@ -31,9 +35,11 @@ export default defineConfig(({ mode }) => {
 				external: isExternalForLibrary,
 			},
 			lib: {
-				entry: "src/index.ts",
+				entry: [
+					"src/index.ts",
+					"src/only-view.ts",
+				],
 				formats: ["es"],
-				fileName: "index",
 			},
 			outDir: "lib",
 			copyPublicDir: false,
