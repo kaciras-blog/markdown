@@ -91,3 +91,23 @@ it("should able to placed inside blockquote", () => {
 		"
 	`);
 });
+
+it("should restrict details position", () => {
+	const html = markdownIt.render(
+		"<details>\n" +
+		"Content\n" +
+		"<summary>\n" +
+		"Description\n" +
+		"</summary>\n" +
+		"</details>\n");
+
+	expect(html).toMatchInlineSnapshot(`
+		"<details>
+		<p>Content
+		&lt;summary&gt;
+		Description
+		&lt;/summary&gt;</p>
+		</details>
+		"
+	`);
+});

@@ -1,3 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`should add aspect ratio to style 1`] = `
+"<p><span class=\\"center-wrapper\\"><a style='--width:11px;--aspect:11/22' href=\\"/file.png?vw=11&vh=22\\" target=\\"_blank\\" rel=\\"noopener,nofollow\\"><img data-src=\\"/file.png?vw=11&vh=22\\" alt=\\"label\\" class=\\"md-img\\" crossorigin></a><span class=\\"md-alt\\">label</span></span></p>
+"
+`;
+
 exports[`should output minimized HTML 1`] = `"<p class=\\"center-wrapper\\"><video class=\\"md-video\\" controls crossorigin poster=\\"\\" data-src=\\"/file.mp4\\"></video></p>"`;
+
+exports[`should replace builtin image renderer 1`] = `
+"<p><span class=\\"center-wrapper\\"><a  href=\\"/file.png\\" target=\\"_blank\\" rel=\\"noopener,nofollow\\"><img data-src=\\"/file.png\\" alt=\\"label\\" class=\\"md-img\\" crossorigin></a><span class=\\"md-alt\\">label</span></span></p>
+"
+`;

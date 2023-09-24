@@ -19,7 +19,7 @@ function getSizeStyle(url: string) {
 	if (!(width && height)) {
 		return "";
 	}
-	return `style='--width:${width}px; --aspect:${width}/${height}'`;
+	return `style='--width:${width}px;--aspect:${width}/${height}'`;
 }
 
 /**
