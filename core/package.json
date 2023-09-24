@@ -24,7 +24,7 @@
 	},
 	"dependencies": {
 		"@kaciras/utilities": "^0.10.1",
-		"bootstrap-icons": "^1.11.0",
+		"bootstrap-icons": "^1.11.1",
 		"highlight.js": "^11.8.0",
 		"markdown-it": "^13.0.1",
 		"markdown-it-anchor": "^8.6.7",
@@ -34,12 +34,12 @@
 	"devDependencies": {
 		"@types/html-minifier-terser": "^7.0.0",
 		"@types/markdown-it": "^13.0.1",
-		"@vitest/coverage-v8": "^0.34.4",
+		"@vitest/coverage-v8": "^0.34.5",
 		"html-minifier-terser": "^7.2.0",
 		"magic-string": "^0.30.3",
 		"postcss-nested": "^6.0.1",
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^4.3.9",
-		"vitest": "^0.34.4"
+		"vitest": "^0.34.5"
 	}
 }
