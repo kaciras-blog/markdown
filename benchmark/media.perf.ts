@@ -1,8 +1,6 @@
 import { performance } from "perf_hooks";
 import { readFileSync } from "fs";
-import MarkdownIt from "markdown-it";
-import { Footnote, Media, TOC } from "../../WebServer/packages/markdown/lib/index";
-
+import { Footnote, MarkdownIt, Media, TOC } from "@kaciras-blog/markdown";
 
 function counterPlugin(markdownIt: MarkdownIt) {
 	const inner = markdownIt.renderer.render;

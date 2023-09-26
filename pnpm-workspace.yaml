@@ -1,3 +1,4 @@
 packages:
-  - 'core'
-  - 'vue'
+  - "core"
+  - "vue"
+  - "benchmark"
