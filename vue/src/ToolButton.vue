@@ -25,9 +25,13 @@ defineProps<{ active?: boolean }>();
 	border: none;
 	background: none;
 	cursor: pointer;
+}
 
-	&:is(:hover, :focus-visible, .active) {
-		color: #0059ff;
-	}
+.button:is(
+	:hover,
+	:focus-visible,
+	.active
+) {
+	color: #0059ff;
 }
 </style>

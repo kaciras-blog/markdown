@@ -216,12 +216,17 @@ onMounted(() => {
 .single {
 	grid-column: 1/3;
 	display: block;
+}
 
-	@media (min-width: 768px) {
+@media (min-width: 768px) {
+	.single {
 		margin-left: 10%;
 		margin-right: 10%;
 	}
-	@media (min-width: 1200px) {
+}
+
+@media (min-width: 1200px) {
+	.single {
 		margin-left: 16%;
 		margin-right: 16%;
 	}

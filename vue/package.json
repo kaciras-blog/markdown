@@ -8,19 +8,16 @@
 		"directory": "vue"
 	},
 	"exports": {
-		"./style.css": "./lib/style.css",
-		".": "./lib/index.js",
-		"./view": "./lib/only-view.js"
+		"./*": "./src/*"
 	},
 	"type": "module",
 	"files": [
-		"lib"
+		"src"
 	],
 	"scripts": {
 		"preview": "vite preview",
 		"dev": "vite",
-		"build": "vite build",
-		"build-lib": "vite build --mode lib"
+		"build": "vite build"
 	},
 	"dependencies": {
 		"@kaciras-blog/markdown": "workspace:^",
@@ -33,7 +30,6 @@
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^4.2.3",
 		"rollup-plugin-visualizer": "^5.9.2",
-		"vite": "^4.3.9",
-		"vite-plugin-dts": "^3.5.4"
+		"vite": "^4.3.9"
 	}
 }
