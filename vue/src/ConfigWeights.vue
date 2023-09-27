@@ -9,6 +9,8 @@
 		<IconFileSearch/>
 	</ToolButton>
 
+	<VerticalSeparator/>
+
 	<ToolButton title='同步滚动' :active='scrollSynced' @click='scrollSynced = !scrollSynced'>
 		<IconArrowsUpDown/>
 	</ToolButton>
@@ -24,6 +26,7 @@
 import { IconArrowsUpDown, IconColumns2, IconCompass, IconEdit, IconFileSearch, IconTextWrap } from "@tabler/icons-vue";
 import ToolButton from "./ToolButton.vue";
 import { useAddonContext } from "./addon-api.ts";
+import VerticalSeparator from "./VerticalSeparator.vue";
 
 const { viewMode, scrollSynced, options } = useAddonContext();
 

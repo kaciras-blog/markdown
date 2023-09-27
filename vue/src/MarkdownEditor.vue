@@ -182,8 +182,6 @@ onMounted(() => {
 }
 
 .toolbar {
-	--btn-radius: 0;
-
 	grid-column: 1/3;
 	display: flex;
 	background-color: whitesmoke;
