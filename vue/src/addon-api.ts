@@ -1,5 +1,5 @@
 import { inject, provide, Ref, ShallowRef } from "vue";
-import { editor, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
+import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 
 type IEditorOptions = editor.IEditorOptions;
 type ICommand = editor.ICommand;
@@ -16,11 +16,18 @@ export interface AddonContext {
 	// 修改选区请使用 `editor.setSelection()`
 	selection: ShallowRef<Selection>;
 
-	options: Ref<IEditorOptions>;
+	// 仅用于监听，`修改内容请用 editor.executeCommand()`
 	text: Ref<string>;
+	options: Ref<IEditorOptions>;
 	viewMode: Ref<ViewMode>;
 	scrollSynced: Ref<boolean>;
 
+	/**
+	 * 在当前光标位置插入一段文本，然后移动光标到插入文本的末尾。
+	 *
+	 * @param text 文本
+	 * @param isBlock 是否要确保文本处于单独的一行。
+	 */
 	insertText(text: string, isBlock: boolean): void;
 }
 
@@ -31,6 +38,7 @@ class InsertCommand implements ICommand {
 	readonly isBlock: boolean;
 
 	deltaLine = 0;
+	point!: Range;
 
 	constructor(text: string, selection: Selection, isBlock: boolean) {
 		this.text = text;
@@ -39,11 +47,11 @@ class InsertCommand implements ICommand {
 	}
 
 	computeCursorState(_: ITextModel, __: ICursorStateComputerData) {
-		const { selection, deltaLine } = this;
+		const { deltaLine, point } = this;
 		if (deltaLine === 0) {
-			return Selection.fromRange(selection.collapseToEnd(), 0);
+			return Selection.fromRange(point, 0);
 		}
-		const line = selection.startLineNumber + deltaLine;
+		const line = point.endLineNumber + deltaLine;
 		return new Selection(line, 0, line, 0);
 	}
 
@@ -56,16 +64,16 @@ class InsertCommand implements ICommand {
 
 	getEditOperations(model: ITextModel, builder: IEditOperationBuilder) {
 		const { selection, text, isBlock } = this;
-		const range = selection.getDirection() === 0
+		const point = this.point = selection.getDirection() === 0
 			? selection.collapseToEnd()
 			: selection.collapseToStart();
 
 		const inserts = ["", "", text, "", ""];
 		if (isBlock) {
-			const line = range.startLineNumber;
+			const line = point.startLineNumber;
 			const eol = model.getEOL();
 
-			if (range.startColumn !== 1) {
+			if (point.startColumn !== 1) {
 				inserts[0] = inserts[1] = eol;
 				this.deltaLine += 2;
 			} else if (this.notEmpty(model, line - 1)) {
@@ -73,7 +81,7 @@ class InsertCommand implements ICommand {
 				this.deltaLine += 1;
 			}
 
-			if (range.endColumn !== model.getLineLength(line) + 1) {
+			if (point.endColumn !== model.getLineLength(line) + 1) {
 				inserts[3] = inserts[4] = eol;
 				this.deltaLine += 2;
 			} else if (this.notEmpty(model, line + 1)) {
@@ -82,11 +90,11 @@ class InsertCommand implements ICommand {
 			}
 		}
 
-		builder.addEditOperation(range, inserts.join(""));
+		builder.addEditOperation(point, inserts.join(""));
 	}
 }
 
-export const kContext = Symbol();
+const kContext = Symbol();
 
 export function useAddonContext() {
 	return inject<AddonContext>(kContext)!;

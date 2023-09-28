@@ -47,6 +47,13 @@ import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
 import MarkdownView from "./MarkdownView.vue";
 import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
 
+/**
+ * TODO: monaco 默认光标不随拖拽而移动，dnd 插件没有公开 API，插入点会有问题。
+ *
+ * @param files 拖放到编辑器的文件列表
+ * @param ctx 编辑器上下文
+ * @return true 表示已经处理完成，无需再执行默认的行为。
+ */
 type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
 interface MarkdownEditorProps {
