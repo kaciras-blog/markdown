@@ -6,8 +6,11 @@
 	<div :ref='setup' class='markdown' v-html='html'/>
 </template>
 
+<style>
+@import "@kaciras-blog/markdown/style.css";
+</style>
+
 <script setup lang="ts">
-import "@kaciras-blog/markdown/style.css";
 import { activate, LazyLoadOptions } from "@kaciras-blog/markdown/activate";
 import { noop } from "@kaciras/utilities/browser";
 

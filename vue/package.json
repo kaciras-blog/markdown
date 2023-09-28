@@ -8,7 +8,7 @@
 		"directory": "vue"
 	},
 	"exports": {
-		"./editor.css": "./lib/style.css",
+		"./style.css": "./lib/style.css",
 		".": "./lib/entry-index.js",
 		"./box": "./lib/entry-box.js",
 		"./view": "./lib/entry-view.js"
