@@ -99,10 +99,11 @@ const mediaMap: DirectiveMap = {
 			</p>
 		`;
 	},
-	audio(src) {
+	audio(src, alt) {
 		return $HTML`
 			<p class='center-wrapper'>
 				<audio controls src="${src}" crossorigin/>
+				${alt ? `<span class='md-alt'>${alt}</span>` : ""}
 			</p>`;
 	},
 };

@@ -16,3 +16,7 @@ it("should replace builtin image renderer", () => {
 it("should add aspect ratio to style", () => {
 	expect(md.render("![label](/file.png?vw=11&vh=22)")).toMatchSnapshot();
 });
+
+it("should add label section to audio", () => {
+	expect(md.render("@audio[foo](bar.opus)")).toMatchSnapshot();
+});

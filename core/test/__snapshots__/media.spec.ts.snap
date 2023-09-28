@@ -5,6 +5,8 @@ exports[`should add aspect ratio to style 1`] = `
 "
 `;
 
+exports[`should add label section to audio 1`] = `"<p class=\\"center-wrapper\\"><audio controls src=\\"bar.opus\\" crossorigin></audio><span class=\\"md-alt\\">foo</span></p>"`;
+
 exports[`should output minimized HTML 1`] = `"<p class=\\"center-wrapper\\"><video class=\\"md-video\\" controls crossorigin poster=\\"\\" data-src=\\"/file.mp4\\"></video></p>"`;
 
 exports[`should replace builtin image renderer 1`] = `
