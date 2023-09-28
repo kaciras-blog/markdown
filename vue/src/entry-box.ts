@@ -1,1 +1,1 @@
-export { default as MarkdownBox } from "./MarkdownBox.vue";
+export { default } from "./MarkdownBox.vue";

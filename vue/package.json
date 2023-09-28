@@ -8,10 +8,10 @@
 		"directory": "vue"
 	},
 	"exports": {
-		"./editor": "./lib/entry-editor.js",
 		"./editor.css": "./lib/style.css",
+		".": "./lib/entry-index.js",
 		"./box": "./lib/entry-box.js",
-		"./convert": "./lib/entry-convert.js"
+		"./view": "./lib/entry-view.js"
 	},
 	"type": "module",
 	"files": [

@@ -44,9 +44,9 @@ export default defineConfig(({ mode }) => {
 		lib: {
 			formats: ["es"],
 			entry: [
-				"src/entry-convert.ts",
+				"src/entry-view.ts",
 				"src/entry-box.ts",
-				"src/entry-editor.ts",
+				"src/entry-index.ts",
 			],
 		},
 		target: "esnext",
