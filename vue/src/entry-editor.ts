@@ -1,6 +1,6 @@
 export { useAddonContext, ViewMode, type AddonContext } from "./addon-api.ts";
 
-export * from "./only-view.ts";
+export * from "./entry-convert.ts";
 
 export { default as MarkdownEditor } from "./MarkdownEditor.vue";
 export { default as ToolButton } from "./ToolButton.vue";

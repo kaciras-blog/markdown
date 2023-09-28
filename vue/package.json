@@ -1,6 +1,6 @@
 {
 	"name": "@kaciras-blog/markdown-vue",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"license": "MIT",
 	"author": "Kaciras <Kaciras@outlook.com>",
 	"repository": {
@@ -8,9 +8,10 @@
 		"directory": "vue"
 	},
 	"exports": {
-		"./style.css": "./lib/style.css",
-		".": "./lib/index.js",
-		"./view": "./lib/only-view.js"
+		"./editor": "./lib/entry-editor.js",
+		"./editor.css": "./lib/style.css",
+		"./box": "./lib/entry-box.js",
+		"./convert": "./lib/entry-convert.js"
 	},
 	"type": "module",
 	"files": [
