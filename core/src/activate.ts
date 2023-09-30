@@ -11,7 +11,7 @@ export type { LazyLoadOptions };
  * @param options 懒加载选项
  * @return 取消监听的函数，必须在被监视的元素移除后调用，以避免内存泄漏。
  */
-export function activate(el: HTMLElement, options: LazyLoadOptions = {}) {
+export default function (el: HTMLElement, options: LazyLoadOptions = {}) {
 	activateCopyButtons(el);
 	return observeLazyLoad(el, options);
 }

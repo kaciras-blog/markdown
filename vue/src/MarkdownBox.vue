@@ -11,7 +11,7 @@
 </style>
 
 <script setup lang="ts">
-import { activate, LazyLoadOptions } from "@kaciras-blog/markdown/activate";
+import activate, { LazyLoadOptions } from "@kaciras-blog/markdown/activate";
 import { noop } from "@kaciras/utilities/browser";
 
 interface MarkdownBoxProps {
