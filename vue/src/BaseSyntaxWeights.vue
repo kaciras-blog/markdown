@@ -17,15 +17,15 @@
 </template>
 
 <script setup lang="ts">
-import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
+import { Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 import { Emphasis, getEmphasis } from "@kaciras-blog/markdown";
 import { IconBlockquote, IconBold, IconCode, IconItalic, IconStrikethrough } from "@tabler/icons-vue";
 import ToolButton from "./ToolButton.vue";
-import { useAddonContext } from "./addon-api.ts";
+import { ICommand, IEditOperationBuilder, ITextModel, useAddonContext } from "./addon-api.ts";
 
 const context = useAddonContext();
 
-class EmphasisCommand implements editor.ICommand {
+class EmphasisCommand implements ICommand {
 
 	readonly range: Selection;
 	readonly emphasis: Emphasis;
@@ -39,7 +39,7 @@ class EmphasisCommand implements editor.ICommand {
 		this.remove = remove;
 	}
 
-	computeCursorState(_: editor.ITextModel, __: editor.ICursorStateComputerData) {
+	computeCursorState() {
 		const { range, addCount, remove } = this;
 		const delta = addCount - remove;
 		return new Selection(
@@ -50,7 +50,7 @@ class EmphasisCommand implements editor.ICommand {
 		);
 	}
 
-	getEditOperations(_: editor.ITextModel, builder: editor.IEditOperationBuilder) {
+	getEditOperations(_: ITextModel, builder: IEditOperationBuilder) {
 		const { range, emphasis, remove } = this;
 		const strings = [];
 
@@ -92,7 +92,7 @@ function toggleEmphasis(type: Emphasis) {
 	context.editor.executeCommand("md.emphasis", command);
 }
 
-class PrefixCommand implements editor.ICommand {
+class PrefixCommand implements ICommand {
 
 	readonly range: Selection;
 	readonly prefix: string;
@@ -102,7 +102,7 @@ class PrefixCommand implements editor.ICommand {
 		this.prefix = prefix;
 	}
 
-	computeCursorState(_: editor.ITextModel, __: editor.ICursorStateComputerData) {
+	computeCursorState() {
 		const { range, prefix } = this;
 		return new Selection(
 			range.startLineNumber,
@@ -112,7 +112,7 @@ class PrefixCommand implements editor.ICommand {
 		);
 	}
 
-	getEditOperations(_: editor.ITextModel, builder: editor.IEditOperationBuilder) {
+	getEditOperations(_: ITextModel, builder: IEditOperationBuilder) {
 		const { range, prefix } = this;
 		for (let i = range.startLineNumber; i <= range.endLineNumber; i++) {
 			builder.addEditOperation(new Range(i, 0, i, 0), prefix);

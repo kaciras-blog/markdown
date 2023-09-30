@@ -3,7 +3,7 @@ import AnchorRaw from "markdown-it-anchor";
 import FootnoteRaw from "markdown-it-footnote";
 
 /**
- * 给所有链接加上 rel="ugc,nofollow" 防止刷外链，推荐用于渲染用户的输入。
+ * 给所有链接加上 rel="ugc,nofollow" 防止刷外链，推荐用于渲染第三方输入。
  *
  * https://support.google.com/webmasters/answer/96569?hl=zh-Hans
  */

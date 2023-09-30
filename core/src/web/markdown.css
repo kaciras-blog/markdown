@@ -1,8 +1,8 @@
 @import "./media.css";
 @import "./highlight.css";
 
-$quote-padding: #bfbfbf; /* 引用块左边装饰颜色 */
-$quote-background: #f8f8f8; /* 引用块背景颜色 */
+$quote-padding: #bfbfbf;	/* 引用块左边装饰颜色 */
+$quote-background: #f8f8f8;	/* 引用块背景颜色 */
 
 $details-color: #fda;
 $details-padding-v: 8px;
@@ -17,15 +17,15 @@ $table-border-width: 1px;
 	word-wrap: break-word;
 	word-break: break-word;
 
-	/* 暂时不在全站用，因为在一些动画上会导致文字移动 */
+	/* 暂时不在全站用，因为在一些动画上会造成文字移动 */
 	letter-spacing: .5px;
 
-	/* 是否应该删除全局的 margin ？ */
+	/* 是否应该删除全局的 margin？ */
 	h1, h2, h3, h4, h5, h6 {
 		margin: revert;
 	}
 
-	/* 通常用不到 4 以上的层级，不过还是写了样式。 */
+	/* 通常用不到 4 以上的层级，不过还是写全了 */
 	h1 { font-size: 1.75em; }
 
 	h2 { font-size: 1.5em; }

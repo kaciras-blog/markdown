@@ -11,6 +11,11 @@
 	resize: none;
 }
 
+.md-video {
+	width: 640px;
+	height: 360px;
+}
+
 /* 中文斜体不好看，还是别乱加样式了 */
 .md-alt {
 	padding-top: .5em;
@@ -18,9 +23,4 @@
 	&::before { content: "「 "; }
 
 	&::after { content: " 」"; }
-}
-
-.md-video {
-	width: 640px;
-	height: 360px;
 }

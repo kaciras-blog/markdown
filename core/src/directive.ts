@@ -155,6 +155,13 @@ export function checkLink(md: MarkdownIt, link: string) {
  */
 export interface DirectiveMap {
 
+	/**
+	 * 自定义指令的渲染，属性名对应指令，返回 HTML。
+	 *
+	 * @param href 圆括号里的内容，已过滤危险链接。
+	 * @param label 方括号里的内容。
+	 * @param md MarkdownIt 对象。
+	 */
 	[type: string]: (href: string, label: string, md: MarkdownIt) => string;
 }
 

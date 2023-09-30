@@ -5,20 +5,27 @@ import Collapsible from "../src/collapsible.ts";
 const markdownIt = new MarkdownIt();
 markdownIt.use(Collapsible);
 
-it("should works without summary", () => {
-	const html = markdownIt.render(`
+function t(input: string, expected: string) {
+	expected = expected.slice(1); // 移除开头的空行。
+	return () => expect(markdownIt.render(input)).toBe(expected);
+}
+
+it("should works without summary", t(`
 <details>
 # Test
 
 Inside
 </details>
 After
-	`);
-	expect(html).toBe("<details>\n<h1>Test</h1>\n<p>Inside</p>\n</details>\n<p>After</p>\n");
-});
+`, `
+<details>
+<h1>Test</h1>
+<p>Inside</p>
+</details>
+<p>After</p>
+`));
 
-it("should render summary", () => {
-	const html = markdownIt.render(`
+it("should render summary", t(`
 <details>
 <summary>
 # Some \`code\` text
@@ -26,88 +33,86 @@ it("should render summary", () => {
 # Test
 
 Inside
-</details>`);
-	expect(html).toMatchInlineSnapshot(`
-		"<details>
-		<summary># Some <code>code</code> text</summary>
-		<h1>Test</h1>
-		<p>Inside</p>
-		</details>
-		"
-	`);
-});
+</details>
+`, `
+<details>
+<summary># Some <code>code</code> text</summary>
+<h1>Test</h1>
+<p>Inside</p>
+</details>
+`));
 
-it("should restrict summary that must at first", () => {
-	const html = markdownIt.render(`
+it("should restrict summary that must at first", t(`
 <details>
 
 <summary>
 # Header
 </summary>
 Content
-</details>`);
+</details>
+`, `
+<details>
+<summary># Header</summary>
+<p>Content</p>
+</details>
+`));
 
-	expect(html).toMatchInlineSnapshot(`
-		"<details>
-		<summary># Header</summary>
-		<p>Content</p>
-		</details>
-		"
-	`);
-});
+it("should skip broken text",  t(`
+<details>
+Content
+`,`
+<p>&lt;details&gt;
+Content</p>
+`));
 
-it("should skip broken text", () => {
-	const html = markdownIt.render("<details>\nContent");
-	expect(html).toBe("<p>&lt;details&gt;\nContent</p>\n");
-});
+it("should able to placed inside blockquote",  t(`
+<details>
+<details>
+Content
+</details>
+</details>
+`,`
+<details>
+<details>
+<p>Content</p>
+</details>
+</details>
+`));
 
-it("should support nesting", () => {
-	const html = markdownIt.render("<details>\n<details>\nContent\n</details>\n</details>");
-	expect(html).toBe("<details>\n<details>\n<p>Content</p>\n</details>\n</details>\n");
-});
+it("should able to placed inside blockquote",  t(`
+> Text Before
+> 
+> <details>
+> <summary>
+> Description
+> </summary>
+> Content
+> </details>
+> 
+> Text After
+`,`
+<blockquote>
+<p>Text Before</p>
+<details>
+<summary>Description</summary>
+<p>Content</p>
+</details>
+<p>Text After</p>
+</blockquote>
+`));
 
-it("should able to placed inside blockquote", () => {
-	const html = markdownIt.render(
-		"> Text Before\n" +
-		"> \n" +
-		"> <details>\n" +
-		"> <summary>\n" +
-		"> Description\n" +
-		"> </summary>\n" +
-		"> Content\n" +
-		"> </details>\n" +
-		"> \n" +
-		"> Text After\n");
-
-	expect(html).toMatchInlineSnapshot(`
-		"<blockquote>
-		<p>Text Before</p>
-		<details>
-		<summary>Description</summary>
-		<p>Content</p>
-		</details>
-		<p>Text After</p>
-		</blockquote>
-		"
-	`);
-});
-
-it("should restrict details position", () => {
-	const html = markdownIt.render(
-		"<details>\n" +
-		"Content\n" +
-		"<summary>\n" +
-		"Description\n" +
-		"</summary>\n" +
-		"</details>\n");
-
-	expect(html).toMatchInlineSnapshot(`
-		"<details>
-		<p>Content
-		&lt;summary&gt;
-		Description
-		&lt;/summary&gt;</p>
-		</details>
-		"
-	`);
-});
+it("should restrict details position",  t(`
+<details>
+Content
+<summary>
+Description
+</summary>
+</details>
+`,`
+<details>
+<p>Content
+&lt;summary&gt;
+Description
+&lt;/summary&gt;</p>
+</details>
+`));

@@ -1,11 +1,11 @@
 import { inject, provide, Ref, ShallowRef } from "vue";
 import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 
-type IEditorOptions = editor.IEditorOptions;
-type ICommand = editor.ICommand;
-type IEditOperationBuilder = editor.IEditOperationBuilder;
-type ITextModel = editor.ITextModel;
-type ICursorStateComputerData = editor.ICursorStateComputerData;
+// 这些类型的名字本身就不短，再加上命名空间就太长了，所以做一个别名去掉前缀。
+export type IEditorOptions = editor.IEditorOptions;
+export type ICommand = editor.ICommand;
+export type IEditOperationBuilder = editor.IEditOperationBuilder;
+export type ITextModel = editor.ITextModel;
 
 export enum ViewMode { Split, Edit, Preview}
 
@@ -46,7 +46,7 @@ class InsertCommand implements ICommand {
 		this.isBlock = isBlock;
 	}
 
-	computeCursorState(_: ITextModel, __: ICursorStateComputerData) {
+	computeCursorState() {
 		const { deltaLine, point } = this;
 		if (deltaLine === 0) {
 			return Selection.fromRange(point, 0);

@@ -10,6 +10,7 @@ type HighLighter = (code: string, language: string, diff: boolean) => string | u
 /**
  * 自定义代码块的插件，因为 MarkdownIt 自带的渲染函数要求最外层是 pre，限制了扩展性，
  * 所以本项目整个替换它而不是使用 highlight 选项。
+ * https://github.com/markdown-it/markdown-it/blob/13.0.2/lib/renderer.js#L58
  *
  * # 标签的选择
  * [HTML 标准文档](https://html.spec.whatwg.org/#the-code-element)中的第二个
@@ -75,7 +76,9 @@ function handleMouseLeave(event: Event) {
 }
 
 /**
- * 实现点击按钮复制代码。考虑到代码一行可能很长，以及手机端框选困难，这个功能还是必要的。
+ * 实现点击按钮复制代码。考虑到代码一行可能很长，以及手机端框选困难，这个功能还是要有的。
+ *
+ * @param root 由 fencePlugin 渲染出的元素。
  */
 export function activateCopyButtons(root: HTMLElement) {
 	for (const button of root.querySelectorAll(".copy")) {

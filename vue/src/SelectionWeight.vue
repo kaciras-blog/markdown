@@ -17,6 +17,7 @@ const context = useAddonContext();
 const start = shallowRef(0);
 const count = shallowRef(0);
 
+// monaco-editor 将内容按行存储，选区也是，故光标的绝对位置需要计算一下。
 // https://github.com/microsoft/vscode/blob/15094ed7fded9f2de45488c13b97a8fe64a596ed/src/vs/workbench/browser/parts/editor/editorStatus.ts#L745
 watch(context.selection, (selection) => {
 	const { startLineNumber, startColumn } = selection;
