@@ -20,3 +20,16 @@ it("should add aspect ratio to style", () => {
 it("should add label section to audio", () => {
 	expect(md.render("@audio[foo](bar.opus)")).toMatchSnapshot();
 });
+
+it("should escape label from audio", () => {
+	expect(md.render("@audio[<xss-tag/>]()")).not.toContain("<xss-tag");
+});
+
+it("should escape label from GIF", () => {
+	expect(md.render("@gif[<xss-tag/>]()")).not.toContain("<xss-tag");
+});
+
+it("should validate video poster link", () => {
+	const xss = "javascript:alert('XSS')";
+	expect(md.render(`@video[${xss}]()`)).not.toContain("javascript:");
+});

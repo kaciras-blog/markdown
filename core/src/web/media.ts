@@ -45,7 +45,7 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
 	const src = token.attrGet("src") ?? "";
 	const label = this.utils.escapeHtml(token.content);
 
-	// 【注意】MarkdownIt 遵守 CommonMark 规范对单引号不转义，所以 alt 必须用双引号。
+	// MarkdownIt 遵守 CommonMark 规范对单引号不转义，所以 alt 必须用双引号。
 	return $HTML`
 		<span class='center-wrapper'>
 			<a
@@ -68,7 +68,8 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
  */
 const mediaMap: DirectiveMap = {
 	// 大部分浏览器只允许无声视频自动播放，不过 GIF 视频本来就是无声的。
-	gif(src, alt) {
+	gif(src, alt, md) {
+		alt = md.utils.escapeHtml(alt);
 		return $HTML`
 			<p class='center-wrapper' ${getSizeStyle(src)}>
 				<video
@@ -99,7 +100,8 @@ const mediaMap: DirectiveMap = {
 			</p>
 		`;
 	},
-	audio(src, alt) {
+	audio(src, alt, md) {
+		alt = md.utils.escapeHtml(alt);
 		return $HTML`
 			<p class='center-wrapper'>
 				<audio controls src="${src}" crossorigin/>
