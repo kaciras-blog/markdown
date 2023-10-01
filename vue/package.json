@@ -26,7 +26,7 @@
 	"dependencies": {
 		"@kaciras-blog/markdown": "workspace:^",
 		"@kaciras/utilities": "^0.10.1",
-		"@tabler/icons-vue": "^2.35.0",
+		"@tabler/icons-vue": "^2.38.0",
 		"@vueuse/core": "^10.3.0",
 		"monaco-editor": "^0.43.0",
 		"vue": "^3.3.4"
@@ -35,6 +35,6 @@
 		"@vitejs/plugin-vue": "^4.2.3",
 		"rollup-plugin-visualizer": "^5.9.2",
 		"vite": "^4.3.9",
-		"vite-plugin-dts": "^3.5.4"
+		"vite-plugin-dts": "^3.6.0"
 	}
 }
