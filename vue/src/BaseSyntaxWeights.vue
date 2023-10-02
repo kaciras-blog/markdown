@@ -11,19 +11,16 @@
 	<ToolButton title='行内代码' @click='toggleEmphasis(Emphasis.Code)'>
 		<IconCode/>
 	</ToolButton>
+
 	<ToolButton title='引用块' @click='addPrefix("> ")'>
 		<IconBlockquote/>
 	</ToolButton>
 </template>
 
-<script setup lang="ts">
-import { Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
+<script lang="ts">
 import { Emphasis, getEmphasis } from "@kaciras-blog/markdown";
-import { IconBlockquote, IconBold, IconCode, IconItalic, IconStrikethrough } from "@tabler/icons-vue";
-import ToolButton from "./ToolButton.vue";
-import { ICommand, IEditOperationBuilder, ITextModel, useAddonContext } from "./addon-api.ts";
-
-const context = useAddonContext();
+import { Range, Selection } from "monaco-editor";
+import { ICommand, IEditOperationBuilder, ITextModel } from "./addon-api.ts";
 
 class EmphasisCommand implements ICommand {
 
@@ -80,18 +77,6 @@ class EmphasisCommand implements ICommand {
 	}
 }
 
-function toggleEmphasis(type: Emphasis) {
-	const range = context.selection.value;
-	const text = context.editor.getModel()!.getValueInRange(range);
-
-	const [emphasis, length] = getEmphasis(text);
-	const changed = emphasis ^ type;
-
-	const command = new EmphasisCommand(range, changed, length);
-	context.editor.focus();
-	context.editor.executeCommand("md.emphasis", command);
-}
-
 class PrefixCommand implements ICommand {
 
 	readonly range: Selection;
@@ -118,6 +103,26 @@ class PrefixCommand implements ICommand {
 			builder.addEditOperation(new Range(i, 0, i, 0), prefix);
 		}
 	}
+}
+</script>
+
+<script setup lang="ts">
+import { IconBlockquote, IconBold, IconCode, IconItalic, IconStrikethrough } from "@tabler/icons-vue";
+import ToolButton from "./ToolButton.vue";
+import { useAddonContext } from "./addon-api.ts";
+
+const context = useAddonContext();
+
+function toggleEmphasis(type: Emphasis) {
+	const range = context.selection.value;
+	const text = context.editor.getModel()!.getValueInRange(range);
+
+	const [emphasis, length] = getEmphasis(text);
+	const changed = emphasis ^ type;
+
+	const command = new EmphasisCommand(range, changed, length);
+	context.editor.focus();
+	context.editor.executeCommand("md.emphasis", command);
 }
 
 function addPrefix(prefix: string) {
