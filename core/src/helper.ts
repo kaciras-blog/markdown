@@ -22,12 +22,15 @@ export function getEmphasis(text: string): [Emphasis, number] {
 		return [Emphasis.None, 0]; // 长度不足 2 的肯定没有强调。
 	}
 
-	// 通过前一个字符和它重复的次数来判断强调的类型。
-	function check() {
+	// 通过前一个字符 prev 和它重复的次数 repeat 来判断强调的类型。
+	function check(): Emphasis {
+		if (repeat === 0) {
+			return Emphasis.None;
+		}
 		if (prev === 126 /* ~ */ && repeat === 2) {
 			return Emphasis.StrikeThrough;
 		}
-		if (prev === 96 /* ` */ && repeat > 0) {
+		if (prev === 96 /* ` */) {
 			return Emphasis.Code;
 		}
 		if (prev !== 42 /* * */ && prev !== 95 /* _ */) {

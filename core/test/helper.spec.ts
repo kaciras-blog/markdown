@@ -6,6 +6,7 @@ const cases: Array<[string, number, Emphasis]> = [
 	["t+exe+t", 0, Emphasis.None],
 	["", 0, Emphasis.None],
 	["*", 0, Emphasis.None],
+	["**AB", 0, Emphasis.None],
 
 	["~text~", 0, Emphasis.None],
 	["~~text~~", 2, Emphasis.StrikeThrough],
