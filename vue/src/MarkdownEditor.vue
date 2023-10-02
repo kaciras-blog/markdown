@@ -160,7 +160,12 @@ onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
 		value: content.value,
 		language: "markdown",
-		scrollbar: { useShadows: false },
+		scrollbar: {
+			useShadows: false,
+		},
+		unicodeHighlight: {
+			ambiguousCharacters: false,
+		},
 		...addonContext.options.value,
 	});
 
