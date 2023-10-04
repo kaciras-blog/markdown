@@ -11,30 +11,18 @@
 </template>
 
 <script lang='ts'>
-import { selectFile } from "@kaciras/utilities/browser";
 import { AddonContext } from "./addon-api.ts";
 
-function basename(name: string) {
-	const i = name.lastIndexOf(".");
-	return i === -1 ? name : name.slice(0, i);
-}
-
 async function addImage(ctx: AddonContext) {
-	const [file] = await selectFile("image/*");
-	const url = URL.createObjectURL(file);
-	ctx.insertText(`![${basename(file.name)}](${url})`, false);
+	ctx.insertText("![]()", false);
 }
 
 async function addVideo(ctx: AddonContext) {
-	const [file] = await selectFile("video/*");
-	const url = URL.createObjectURL(file);
-	ctx.insertText(`@video[](${url})`, true);
+	ctx.insertText("@video[]()", true);
 }
 
 async function addAudio(ctx: AddonContext) {
-	const [file] = await selectFile("image/*");
-	const url = URL.createObjectURL(file);
-	ctx.insertText(`@audio[${basename(file.name)}](${url})`, true);
+	ctx.insertText("@audio[]()", true);
 }
 </script>
 

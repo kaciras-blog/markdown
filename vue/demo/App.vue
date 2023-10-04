@@ -6,7 +6,7 @@
 	>
 		<template #toolbar-left>
 			<BaseSyntaxWeights></BaseSyntaxWeights>
-			<MediaWeights></MediaWeights>
+			<MediaWeights v-bind='memoryMediaStore'/>
 		</template>
 		<template #toolbar-right>
 			<ConfigWeights></ConfigWeights>
@@ -24,6 +24,7 @@ import {
 	ConfigWeights,
 	MarkdownEditor,
 	MediaWeights,
+	memoryMediaStore,
 	SelectionWeight,
 } from "../src/entry-index.ts";
 import document from "./KFM-zh.md?raw";
