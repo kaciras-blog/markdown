@@ -1,7 +1,7 @@
 <template>
 	<MarkdownEditor
 		v-model='content'
-		:trust='true'
+		renderer='trusted'
 		class='editor'
 	>
 		<template #toolbar-left>

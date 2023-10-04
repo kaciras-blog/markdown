@@ -3,11 +3,15 @@
 	<MarkdownBox :html='html' :lazy-loading='lazyLoading'/>
 </template>
 
-<script setup lang="ts">
-import { guestRenderer, trustedRenderer } from "@kaciras-blog/markdown/presets";
+<script setup lang='ts'>
+import { coreRenderer, guestRenderer, trustedRenderer } from "@kaciras-blog/markdown/presets";
 import { LazyLoadOptions } from "@kaciras-blog/markdown/activate";
 import { computed } from "vue";
 import MarkdownBox from "./MarkdownBox.vue";
+
+export type Renderer = "trusted" | "guest" | "core" | {
+	render(text: string, env: any): string;
+};
 
 interface MarkdownViewProps {
 
@@ -18,10 +22,12 @@ interface MarkdownViewProps {
 	docId?: string;
 
 	/**
-	 * 使用 trustedRenderer 渲染，默认使用的是 guestRenderer。
-	 * 两者的差别见它们的注释，无论哪一个都不存在 XSS 问题。
+	 * Markdown 渲染器，可以为 MarkdownIt 的实例。
+	 * 如果是字符串则使用 @kaciras-blog/markdown/presets 里对应的。
+	 *
+	 * @default "guest"
 	 */
-	trust?: boolean;
+	renderer?: Renderer;
 
 	/** 懒加载相关的选项，默认为空 */
 	lazyLoading?: LazyLoadOptions;
@@ -30,10 +36,23 @@ interface MarkdownViewProps {
 const props = defineProps<MarkdownViewProps>();
 
 const html = computed(() => {
-	const { value, trust, docId } = props;
-	const renderer = trust
-		? trustedRenderer
-		: guestRenderer;
-	return renderer.render(value, { docId });
+	const { value, renderer, docId } = props;
+	let resolved = guestRenderer;
+
+	switch (renderer) {
+		case undefined:
+		case "guest":
+			break;
+		case "trusted":
+			resolved = trustedRenderer;
+			break;
+		case "core":
+			resolved = coreRenderer;
+			break;
+		default:
+			resolved = renderer as any;
+	}
+
+	return resolved.render(value, { docId });
 });
 </script>

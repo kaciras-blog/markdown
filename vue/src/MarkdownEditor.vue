@@ -19,7 +19,7 @@
 		<MarkdownView
 			v-show='viewMode !== ViewMode.Edit'
 			ref='previewEl'
-			:trust='trust'
+			:renderer='renderer'
 			:value='debounced'
 			:class='{
 				[$style.preview]: true,
@@ -36,7 +36,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script setup lang='ts'>
 import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
@@ -44,7 +44,7 @@ import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
 import "monaco-editor/esm/vs/editor/contrib/dnd/browser/dnd.js";
 import "monaco-editor/esm/vs/base/browser/ui/codicons/codiconStyles.js";
 import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
-import MarkdownView from "./MarkdownView.vue";
+import MarkdownView, { Renderer } from "./MarkdownView.vue";
 import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
 
 /**
@@ -63,13 +63,17 @@ interface MarkdownEditorProps {
 	modelValue: string;
 
 	/**
-	 * 使用 trustedRenderer 渲染，默认使用的是 guestRenderer。
-	 * 两者的差别见它们的注释，无论哪一个都不存在 XSS 问题。
+	 * Markdown 渲染器，可以为 MarkdownIt 的实例。
+	 * 如果是字符串则使用 @kaciras-blog/markdown/presets 里对应的。
+	 *
+	 * @default "guest"
 	 */
-	trust?: boolean;
+	renderer?: Renderer;
 
 	/**
 	 * 渲染函数的防抖（毫秒）。
+	 *
+	 * @default 500
 	 */
 	debounce?: number;
 
