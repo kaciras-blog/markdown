@@ -8,7 +8,7 @@ $details-color: #fda;
 $details-padding-v: 8px;
 $details-padding-h: 14px;
 
-$table-border-color: #bbb;
+$table-border-color: #cacbcc;
 $table-border-width: 1px;
 
 .markdown {
@@ -111,11 +111,11 @@ $table-border-width: 1px;
 
 	table {
 		border-collapse: collapse;
-		margin: 0 auto 1rem auto;
+		margin: 0 auto 1em auto;
 	}
 
 	th, td {
-		padding: .5rem 1rem;
+		padding: 0.4em 0.8em;
 		border: $table-border-width solid $table-border-color;
 	}
 
@@ -128,7 +128,7 @@ $table-border-width: 1px;
 	}
 
 	tbody > tr:hover {
-		background-color: rgba(0, 0, 0, 0.04);
+		background-color: #f6f8fa;
 	}
 
 	summary {
