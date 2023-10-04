@@ -10,29 +10,16 @@
 	</ToolButton>
 </template>
 
-<script lang='ts'>
-import { AddonContext } from "./addon-api.ts";
-
-async function addImage(ctx: AddonContext) {
-	ctx.insertText("![]()", false);
-}
-
-async function addVideo(ctx: AddonContext) {
-	ctx.insertText("@video[]()", true);
-}
-
-async function addAudio(ctx: AddonContext) {
-	ctx.insertText("@audio[]()", true);
-}
-</script>
-
 <script setup lang="ts">
 import { IconMusic, IconPhoto, IconVideo } from "@tabler/icons-vue";
 import ToolButton from "./ToolButton.vue";
-import { useAddonContext } from "./addon-api.ts";
+import { AddonContext, useAddonContext } from "./addon-api.ts";
 
 type MediaHandler = (context: AddonContext) => void;
 
+/**
+ * 可以指定每个按钮的处理函数，默认仅插入语法片段。
+ */
 interface MediaWeightProps {
 	image?: MediaHandler;
 	video?: MediaHandler;
@@ -41,7 +28,10 @@ interface MediaWeightProps {
 
 const context = useAddonContext();
 
+// TODO: 类型提示无法推导箭头函数的参数，不知道是 IDE 还是 Vue 的问题。
 withDefaults(defineProps<MediaWeightProps>(), {
-	image: addImage, video: addVideo, audio: addAudio,
+	image: (ctx: AddonContext) => ctx.insertText("![]()", false),
+	video: (ctx: AddonContext) => ctx.insertText("@video[]()", true),
+	audio: (ctx: AddonContext) => ctx.insertText("@audio[]()", true),
 });
 </script>

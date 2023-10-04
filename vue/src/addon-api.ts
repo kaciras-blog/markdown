@@ -112,36 +112,39 @@ export function createAddonContext(ctx: AddonContext) {
 	};
 }
 
-function basename(name: string) {
+async function selectMedia(accept: string) {
+	const [file] = await selectFile(accept);
+	let { name } = file;
+
 	const i = name.lastIndexOf(".");
-	return i === -1 ? name : name.slice(0, i);
+	if (i !== -1) {
+		name = name.slice(0, i);
+	}
+	return { name, url: URL.createObjectURL(file) };
 }
 
 /**
- * MediaWeights 的一种实现，弹出文件选择器选择媒体，保存到内存中，可用于演示。
+ * MediaWeights 处理函数的一种实现，让用户选择本地文件，保存到内存中，可用于演示。
  *
  * @example
  * <template>
  *     <MediaWeights v-bind='memoryMediaStore'/>
  * </template>
  * <script>
- *     import { memoryMediaStore } from "@kaciras-blog/markdown-vue";
+ * import { memoryMediaStore } from "@kaciras-blog/markdown-vue";
  * </script>
  */
 export const memoryMediaStore = {
 	async image(ctx: AddonContext) {
-		const [file] = await selectFile("image/*");
-		const url = URL.createObjectURL(file);
-		ctx.insertText(`![${basename(file.name)}](${url})`, false);
+		const { name, url } = await selectMedia("image/*");
+		ctx.insertText(`![${name}](${url})`, false);
 	},
 	async video(ctx: AddonContext) {
-		const [file] = await selectFile("video/*");
-		const url = URL.createObjectURL(file);
+		const { url } = await selectMedia("video/*");
 		ctx.insertText(`@video[](${url})`, true);
 	},
 	async audio(ctx: AddonContext) {
-		const [file] = await selectFile("audio/*");
-		const url = URL.createObjectURL(file);
-		ctx.insertText(`@audio[${basename(file.name)}](${url})`, true);
+		const { name, url } = await selectMedia("audio/*");
+		ctx.insertText(`@audio[${name}](${url})`, true);
 	},
 };

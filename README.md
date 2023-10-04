@@ -72,7 +72,7 @@ pnpm i @kaciras-blog/markdown-vue
 
 为了支持 Tree-Shaking，该库有多个导入点：
 
-* `@kaciras-blog/markdown-vue` 主要入口，导出了所有的组件，包括体积很大的编辑器。
+* `@kaciras-blog/markdown-vue` 导出了所有的组件，包括体积很大的编辑器。注意编辑器不支持 SSR，必要时请做代码分割。
 * `@kaciras-blog/markdown-vue/style.css` 样式表，包含了 `@kaciras-blog/markdown` 的样式。
 * `@kaciras-blog/markdown-vue/box` 仅 MarkdownBox 组件，搭配预先渲染好的 HTML 可以避免引入体积较大的转换器。
 * `@kaciras-blog/markdown-vue/view` 仅 MarkdownView 组件，不需要编辑器的话请使用这个。

@@ -57,9 +57,25 @@ import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
 type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
 interface MarkdownEditorProps {
+	/**
+	 * 文本内容，目前还不支持从外部修改此属性。
+	 */
 	modelValue: string;
+
+	/**
+	 * 使用 trustedRenderer 渲染，默认使用的是 guestRenderer。
+	 * 两者的差别见它们的注释，无论哪一个都不存在 XSS 问题。
+	 */
 	trust?: boolean;
+
+	/**
+	 * 渲染函数的防抖（毫秒）。
+	 */
 	debounce?: number;
+
+	/**
+	 * 拖放处理器，如果没有则由 monaco-editor 处理。
+	 */
 	dropHandler?: DropHandler;
 }
 
