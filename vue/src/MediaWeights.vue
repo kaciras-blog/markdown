@@ -30,8 +30,8 @@ const context = useAddonContext();
 
 // TODO: 类型提示无法推导箭头函数的参数，不知道是 IDE 还是 Vue 的问题。
 withDefaults(defineProps<MediaWeightProps>(), {
-	image: (ctx: AddonContext) => ctx.insertText("![]()", false),
-	video: (ctx: AddonContext) => ctx.insertText("@video[]()", true),
-	audio: (ctx: AddonContext) => ctx.insertText("@audio[]()", true),
+	image: ctx => ctx.insertText("![]()", false, 4),
+	video: ctx => ctx.insertText("@video[]()", true, 9),
+	audio: ctx => ctx.insertText("@audio[]()", true, 9),
 });
 </script>

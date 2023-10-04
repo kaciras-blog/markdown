@@ -24,36 +24,43 @@ export interface AddonContext {
 	scrollSynced: Ref<boolean>;
 
 	/**
-	 * 在当前光标位置插入一段文本，然后移动光标到插入文本的末尾。
+	 * 在当前光标位置插入一段文本，如有必要则在前后添加空行，然后移动光标到指定的位置。
 	 *
 	 * @param text 文本
-	 * @param isBlock 是否要确保文本处于单独的一行。
+	 * @param block 是否确保文本处于单独的一行。
+	 * @param cursor 光标偏移，相对于 text 的起始位置，默认移动到整个片段的末尾。
 	 */
-	insertText(text: string, isBlock: boolean): void;
+	insertText(text: string, block: boolean, cursor?: number): void;
 }
 
 class InsertCommand implements ICommand {
 
 	readonly selection: Selection;
 	readonly text: string;
-	readonly isBlock: boolean;
+	readonly block: boolean;
+	readonly cursor?: number;
 
 	deltaLine = 0;
 	point!: Range;
 
-	constructor(text: string, selection: Selection, isBlock: boolean) {
+	constructor(text: string, selection: Selection, block: boolean, cursor?: number) {
 		this.text = text;
 		this.selection = selection;
-		this.isBlock = isBlock;
+		this.cursor = cursor;
+		this.block = block;
 	}
 
 	computeCursorState() {
-		const { deltaLine, point } = this;
-		if (deltaLine === 0) {
-			return Selection.fromRange(point, 0);
+		const { deltaLine, point, cursor, block, text } = this;
+		let line = point.endLineNumber + deltaLine;
+
+		if (block && !cursor) {
+			line += 2;
+			return new Selection(line, 0, line, 0);
 		}
-		const line = point.endLineNumber + deltaLine;
-		return new Selection(line, 0, line, 0);
+
+		const column = point.endColumn + (cursor ?? text.length);
+		return new Selection(line, column, line, column);
 	}
 
 	private notEmpty(model: ITextModel, n: number) {
@@ -64,30 +71,28 @@ class InsertCommand implements ICommand {
 	}
 
 	getEditOperations(model: ITextModel, builder: IEditOperationBuilder) {
-		const { selection, text, isBlock } = this;
+		const { selection, text, block } = this;
 		const point = this.point = selection.getDirection() === 0
 			? selection.collapseToEnd()
 			: selection.collapseToStart();
 
 		const inserts = ["", "", text, "", ""];
-		if (isBlock) {
+		if (block) {
 			const line = point.startLineNumber;
 			const eol = model.getEOL();
 
 			if (point.startColumn !== 1) {
 				inserts[0] = inserts[1] = eol;
-				this.deltaLine += 2;
+				this.deltaLine = 2;
 			} else if (this.notEmpty(model, line - 1)) {
 				inserts[0] = eol;
-				this.deltaLine += 1;
+				this.deltaLine = 1;
 			}
 
 			if (point.endColumn !== model.getLineLength(line) + 1) {
 				inserts[3] = inserts[4] = eol;
-				this.deltaLine += 2;
 			} else if (this.notEmpty(model, line + 1)) {
 				inserts[4] = eol;
-				this.deltaLine += 1;
 			}
 		}
 
@@ -104,9 +109,9 @@ export function useAddonContext() {
 export function createAddonContext(ctx: AddonContext) {
 	provide(kContext, ctx);
 
-	ctx.insertText = (text, isBlock) => {
+	ctx.insertText = (text, block, cursor) => {
 		const { editor, selection: { value: range } } = ctx;
-		const command = new InsertCommand(text, range, isBlock);
+		const command = new InsertCommand(text, range, block, cursor);
 		editor.focus();
 		editor.executeCommand("md.insert", command);
 	};
