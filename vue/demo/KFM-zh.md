@@ -34,7 +34,7 @@ KFM 不推荐在 Markdown 中使用 HTML，因为 Markdown 是轻量级的标记
 
 方括号内是视频的封面，如果留空则由浏览器自动选择。视频无法自动播放，只能由用户点击开始。
 
-@video[./poster.png](./video.mp4)
+@video[poster.png](video.mp4)
 
 ### 视频作为动态图
 
@@ -42,11 +42,11 @@ KFM 不推荐在 Markdown 中使用 HTML，因为 Markdown 是轻量级的标记
 
 GIF 和普通的图片一样，支持用 `vw` 和 `vh` URL 参数设置尺寸。
 
-@gif[GIF 视频](./gif-video.mp4?vw=420&vh=420)
+@gif[GIF 视频](gif-video.mp4?vw=420&vh=420)
 
 ### 音频
 
-@audio[](./audio.mp3)
+@audio[](audio.mp3)
 
 ## 折叠块
 
@@ -134,7 +134,7 @@ _单个下划线也表示斜体。_
 
 KFM 为图片添加了额外的参数 `vw` 和 `vh` 分别设置图片缩放的宽高，同时依靠它们预先分配位置避免布局抖动。
 
-![这是图片的标签](./image.png?vw=400&vh=400)
+![这是图片的标签](image.png?vw=400&vh=400)
 
 ## 脚注
 

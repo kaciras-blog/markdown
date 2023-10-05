@@ -1,4 +1,3 @@
-import { env } from "process";
 import { defineConfig, mergeConfig, UserConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
@@ -10,6 +9,7 @@ const deps = Object.keys(packageJson.dependencies);
 
 export default defineConfig(({ mode }) => {
 	const overrides = defineConfig({
+		base: "",
 		css: {
 			modules: {
 				generateScopedName: "[hash:base64:5]",
@@ -19,9 +19,6 @@ export default defineConfig(({ mode }) => {
 			staticImport: true,
 			tsconfigPath: "./tsconfig.lib.json",
 		})],
-
-		// Deployed to https://kaciras-blog.github.io/markdown
-		base: env.CI ? "/markdown/" : undefined,
 	});
 
 	/*
