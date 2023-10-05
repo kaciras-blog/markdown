@@ -24,11 +24,11 @@ import { ICommand, IEditOperationBuilder, ITextModel } from "./addon-api.ts";
 
 class EmphasisCommand implements ICommand {
 
-	readonly range: Selection;
-	readonly emphasis: Emphasis;
-	readonly remove: number;
+	private readonly range: Selection;
+	private readonly emphasis: Emphasis;
+	private readonly remove: number;
 
-	addCount = 0;
+	private addCount = 0;
 
 	constructor(range: Selection, emphasis: Emphasis, remove: number) {
 		this.range = range;
@@ -79,8 +79,8 @@ class EmphasisCommand implements ICommand {
 
 class PrefixCommand implements ICommand {
 
-	readonly range: Selection;
-	readonly prefix: string;
+	private readonly range: Selection;
+	private readonly prefix: string;
 
 	constructor(range: Selection, prefix: string) {
 		this.range = range;

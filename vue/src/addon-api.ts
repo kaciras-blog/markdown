@@ -35,13 +35,13 @@ export interface AddonContext {
 
 class InsertCommand implements ICommand {
 
-	readonly selection: Selection;
-	readonly text: string;
-	readonly block: boolean;
-	readonly cursor?: number;
+	private readonly selection: Selection;
+	private readonly text: string;
+	private readonly block: boolean;
+	private readonly cursor?: number;
 
-	deltaLine = 0;
-	point!: Range;
+	private deltaLine = 0;
+	private point!: Range;
 
 	constructor(text: string, selection: Selection, block: boolean, cursor?: number) {
 		this.text = text;

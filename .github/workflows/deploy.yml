@@ -46,7 +46,6 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v2
         with:
-          # Upload entire repository
           path: vue/dist
 
       - id: deployment
