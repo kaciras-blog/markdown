@@ -180,9 +180,12 @@ onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
 		value: content.value,
 		language: "markdown",
+		// 光标所在的句子（双击会选中的）不高亮。
+		occurrencesHighlight: false,
 		scrollbar: {
 			useShadows: false,
 		},
+		// Markdown 标记很少，就不高亮易混淆字符了。
 		unicodeHighlight: {
 			ambiguousCharacters: false,
 		},
@@ -228,6 +231,7 @@ onMounted(() => {
 
 	display: flex;
 	line-height: 22px;
+	font-size: 14px;
 	padding: 0 .5em;
 	color: white;
 	background-color: #0074e8;
