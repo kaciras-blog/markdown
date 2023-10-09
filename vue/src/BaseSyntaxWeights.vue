@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { Emphasis, getEmphasis } from "@kaciras-blog/markdown";
-import { Range, Selection } from "monaco-editor";
+import { Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 import { ICommand, IEditOperationBuilder, ITextModel } from "./addon-api.ts";
 
 class EmphasisCommand implements ICommand {
