@@ -7,6 +7,7 @@ export type IEditorOptions = editor.IEditorOptions;
 export type ICommand = editor.ICommand;
 export type IEditOperationBuilder = editor.IEditOperationBuilder;
 export type ITextModel = editor.ITextModel;
+export type ICursorStateComputerData = editor.ICursorStateComputerData;
 
 export enum ViewMode { Split, Edit, Preview}
 
@@ -24,7 +25,7 @@ export interface AddonContext {
 	scrollSynced: Ref<boolean>;
 
 	/**
-	 * 在当前光标位置插入一段文本，如有必要则在前后添加空行，然后移动光标到指定的位置。
+	 * 在光标位置插入一段文本，如有必要则在前后添加空行，然后移动光标。
 	 *
 	 * @param text 文本
 	 * @param block 是否确保文本处于单独的一行。
@@ -110,10 +111,13 @@ export function createAddonContext(ctx: AddonContext) {
 	provide(kContext, ctx);
 
 	ctx.insertText = (text, block, cursor) => {
-		const { editor, selection: { value: range } } = ctx;
-		const command = new InsertCommand(text, range, block, cursor);
+		const { editor } = ctx;
+		const commands = [];
+		for (const range of editor.getSelections()!) {
+			commands.push(new InsertCommand(text, range, block, cursor));
+		}
 		editor.focus();
-		editor.executeCommand("md.insert", command);
+		editor.executeCommands(null, commands);
 	};
 }
 

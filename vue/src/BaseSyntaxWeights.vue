@@ -20,31 +20,32 @@
 <script lang='ts'>
 import { Emphasis, getEmphasis } from "@kaciras-blog/markdown";
 import { Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
-import { ICommand, IEditOperationBuilder, ITextModel } from "./addon-api.ts";
+import { ICommand, ICursorStateComputerData, IEditOperationBuilder, ITextModel } from "./addon-api.ts";
 
 class EmphasisCommand implements ICommand {
 
 	private readonly range: Selection;
 	private readonly type: Emphasis;
 
-	private deltaBegin!: number;
-	private deltaEnd!: number;
-
 	constructor(range: Selection, type: Emphasis) {
 		this.type = type;
 		this.range = range;
 	}
 
-	computeCursorState() {
-		const { range, deltaBegin, deltaEnd } = this;
-		if (!deltaEnd) {
+	computeCursorState(_: any, helper: ICursorStateComputerData) {
+		const { range } = this;
+		const ops = helper.getInverseEditOperations();
+		if (ops.length === 0) {
 			return range;
+		}
+		if (ops.length === 1) {
+			return Selection.fromRange(ops[0].range, 0);
 		}
 		return new Selection(
 			range.startLineNumber,
-			range.startColumn,
+			ops[0].range.startColumn,
 			range.endLineNumber,
-			range.endColumn + deltaEnd + deltaBegin,
+			ops.at(-1)!.range.endColumn,
 		);
 	}
 
@@ -52,7 +53,7 @@ class EmphasisCommand implements ICommand {
 		const { range, type } = this;
 
 		for (const x of splitToLines(model, range)) {
-			const text = model.getValueInRange(x);
+			let text = model.getValueInRange(x);
 
 			if (text.length === 0) {
 				continue; // MD 语法简单，就不支持预先插入了，实现起来容易些。
@@ -76,18 +77,11 @@ class EmphasisCommand implements ICommand {
 			}
 
 			const prefix = strings.join("");
-			const s = x.getStartPosition();
-			const left = Range.fromPositions(s, s.delta(0, remove));
-			builder.addEditOperation(left, prefix);
+			const suffix = strings.reverse().join("");
+			text = text.slice(remove, text.length - remove);
+			text = `${prefix}${text}${suffix}`;
 
-			const e = x.getEndPosition();
-			const right = Range.fromPositions(e, e.delta(0, -remove));
-			builder.addEditOperation(right, strings.reverse().join(""));
-
-			this.deltaEnd = prefix.length - remove;
-			if (!this.deltaBegin) {
-				this.deltaBegin = this.deltaEnd;
-			}
+			builder.addTrackedEditOperation(x, text);
 		}
 	}
 }
@@ -142,14 +136,22 @@ import { useAddonContext } from "./addon-api.ts";
 const context = useAddonContext();
 
 function toggleEmphasis(type: Emphasis) {
-	const command = new EmphasisCommand(context.selection.value, type);
-	context.editor.focus();
-	context.editor.executeCommand(null, command);
+	const { editor } = context;
+	const commands = [];
+	for (const range of editor.getSelections()!) {
+		commands.push(new EmphasisCommand(range, type));
+	}
+	editor.focus();
+	editor.executeCommands(null, commands);
 }
 
 function addPrefix(prefix: string) {
-	const command = new PrefixCommand(context.selection.value, prefix);
-	context.editor.focus();
-	context.editor.executeCommand(null, command);
+	const { editor } = context;
+	const commands = [];
+	for (const range of editor.getSelections()!) {
+		commands.push(new PrefixCommand(range, prefix));
+	}
+	editor.focus();
+	editor.executeCommands(null, commands);
 }
 </script>
