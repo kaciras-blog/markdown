@@ -25,7 +25,7 @@ export interface AddonContext {
 	scrollSynced: Ref<boolean>;
 
 	/**
-	 * 在光标位置插入一段文本，如有必要则在前后添加空行，然后移动光标。
+	 * 在全部的光标位置都插入一段文本，如有必要则在前后添加空行，然后移动光标。
 	 *
 	 * @param text 文本
 	 * @param block 是否确保文本处于单独的一行。
@@ -112,10 +112,8 @@ export function createAddonContext(ctx: AddonContext) {
 
 	ctx.insertText = (text, block, cursor) => {
 		const { editor } = ctx;
-		const commands = [];
-		for (const range of editor.getSelections()!) {
-			commands.push(new InsertCommand(text, range, block, cursor));
-		}
+		const commands = editor.getSelections()!
+			.map(s => new InsertCommand(text, s, block, cursor));
 		editor.focus();
 		editor.executeCommands(null, commands);
 	};

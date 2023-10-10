@@ -22,6 +22,26 @@ import { Emphasis, getEmphasis } from "@kaciras-blog/markdown";
 import { Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 import { ICommand, ICursorStateComputerData, IEditOperationBuilder, ITextModel } from "./addon-api.ts";
 
+/**
+ * 将选区按行分割成多个，如果原选区只有一行则原样返回。
+ */
+function* splitToLines(range: Range) {
+	const { startLineNumber: s, endLineNumber: e } = range;
+	if (e === s) {
+		yield range;
+		return;
+	}
+	yield new Range(s, range.startColumn, s, Infinity);
+	for (let i = s + 1; i < e; i++) {
+		yield new Range(i, 1, i, Infinity);
+	}
+	yield new Range(e, 1, e, range.endColumn);
+}
+
+/*
+ * 因为强调的语法简单，就不支持纯插入了，这样可以跳过一些边界情况，实现起来更容易。
+ * 纯插入指的是没有选择任何内容时，在光标的两侧插入语法符号，用于未来的输入。
+ */
 class EmphasisCommand implements ICommand {
 
 	private readonly range: Selection;
@@ -35,11 +55,9 @@ class EmphasisCommand implements ICommand {
 	computeCursorState(_: any, helper: ICursorStateComputerData) {
 		const { range } = this;
 		const ops = helper.getInverseEditOperations();
+
 		if (ops.length === 0) {
 			return range;
-		}
-		if (ops.length === 1) {
-			return Selection.fromRange(ops[0].range, 0);
 		}
 		return new Selection(
 			range.startLineNumber,
@@ -50,39 +68,48 @@ class EmphasisCommand implements ICommand {
 	}
 
 	getEditOperations(model: ITextModel, builder: IEditOperationBuilder) {
-		const { range, type } = this;
-
-		for (const x of splitToLines(model, range)) {
-			let text = model.getValueInRange(x);
+		for (const x of splitToLines(this.range)) {
+			const text = model.getValueInRange(x);
 
 			if (text.length === 0) {
-				continue; // MD 语法简单，就不支持预先插入了，实现起来容易些。
+				continue;
 			}
-
-			const [emphasis, remove] = getEmphasis(text);
-			const changed = emphasis ^ type;
-			const strings = [];
-
-			if ((changed & Emphasis.Bold) !== 0) {
-				strings.push("**");
-			}
-			if ((changed & Emphasis.Italic) !== 0) {
-				strings.push("*");
-			}
-			if ((changed & Emphasis.StrikeThrough) !== 0) {
-				strings.push("~~");
-			}
-			if ((changed & Emphasis.Code) !== 0) {
-				strings.push("`");
-			}
-
-			const prefix = strings.join("");
-			const suffix = strings.reverse().join("");
-			text = text.slice(remove, text.length - remove);
-			text = `${prefix}${text}${suffix}`;
-
-			builder.addTrackedEditOperation(x, text);
+			const replacement = this.renovate(text);
+			builder.addTrackedEditOperation(x, replacement);
 		}
+	}
+
+	/**
+	 * 切换文本两端指定类型（this.type）的强调符号，返回新的文本。
+	 *
+	 * # 实现方式
+	 * 最初仅替换两端的符号部分，在同一行有多个选区时难以计算光标的位置。
+	 * 先在改为对文本的整体替换，这样能够使用 monaco-editor 内部的计算功能，
+	 * 通过 InverseEditOperations 直接获取新的选区。
+	 */
+	private renovate(text: string) {
+		const [emphasis, remove] = getEmphasis(text);
+		const changed = emphasis ^ this.type;
+		const strings = [];
+
+		if ((changed & Emphasis.Bold) !== 0) {
+			strings.push("**");
+		}
+		if ((changed & Emphasis.Italic) !== 0) {
+			strings.push("*");
+		}
+		if ((changed & Emphasis.StrikeThrough) !== 0) {
+			strings.push("~~");
+		}
+		if ((changed & Emphasis.Code) !== 0) {
+			strings.push("`");
+		}
+
+		const prefix = strings.join("");
+		const suffix = strings.reverse().join("");
+
+		text = text.slice(remove, text.length - remove);
+		return `${prefix}${text}${suffix}`;
 	}
 }
 
@@ -113,19 +140,6 @@ class PrefixCommand implements ICommand {
 		}
 	}
 }
-
-function* splitToLines(model: ITextModel, range: Range) {
-	const { startLineNumber: s, endLineNumber: e } = range;
-	if (e === s) {
-		yield range;
-		return;
-	}
-	yield new Range(s, range.startColumn, s, model.getLineLength(s) + 1);
-	for (let i = s + 1; i < e; i++) {
-		yield new Range(i, 1, i, model.getLineLength(i) + 1);
-	}
-	yield new Range(e, 1, e, range.endColumn);
-}
 </script>
 
 <script setup lang='ts'>
@@ -137,20 +151,16 @@ const context = useAddonContext();
 
 function toggleEmphasis(type: Emphasis) {
 	const { editor } = context;
-	const commands = [];
-	for (const range of editor.getSelections()!) {
-		commands.push(new EmphasisCommand(range, type));
-	}
+	const commands = editor.getSelections()!
+		.map(s => new EmphasisCommand(s, type));
 	editor.focus();
 	editor.executeCommands(null, commands);
 }
 
 function addPrefix(prefix: string) {
 	const { editor } = context;
-	const commands = [];
-	for (const range of editor.getSelections()!) {
-		commands.push(new PrefixCommand(range, prefix));
-	}
+	const commands = editor.getSelections()!
+		.map(s => new PrefixCommand(s, prefix));
 	editor.focus();
 	editor.executeCommands(null, commands);
 }
