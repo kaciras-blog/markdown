@@ -48,6 +48,11 @@ import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
 import MarkdownView, { Renderer } from "./MarkdownView.vue";
 import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
 
+const WORD_SEPARATORS =
+	'`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?'	// USUAL_WORD_SEPARATORS
+	+ "·！￥…*（）—【】：；‘’“”、《》，。？"	// 中文符号。
+	+ "「」｛｝＜＞・～＠＃＄％＾＆＊＝『』";	// 日韩符号，去除了跟中文重复的。
+
 /**
  * TODO: monaco 默认光标不随拖拽而移动，dnd 插件没有公开 API，插入点会有问题。
  *
@@ -188,6 +193,7 @@ onMounted(() => {
 		scrollbar: {
 			useShadows: false,
 		},
+		wordSeparators: WORD_SEPARATORS,
 		// Markdown 标记很少，就不高亮易混淆字符了。
 		unicodeHighlight: {
 			ambiguousCharacters: false,
