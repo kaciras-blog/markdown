@@ -180,6 +180,8 @@ onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
 		value: content.value,
 		language: "markdown",
+		// 太挤看得累，增大点，跟我的 VSCode 一致。
+		lineHeight: 22,
 		// 光标所在的句子（双击会选中的）不高亮。
 		occurrencesHighlight: false,
 		scrollbar: {
