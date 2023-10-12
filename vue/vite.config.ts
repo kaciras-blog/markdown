@@ -15,10 +15,13 @@ export default defineConfig(({ mode }) => {
 				generateScopedName: "[hash:base64:5]",
 			},
 		},
-		plugins: [vue(), dts({
-			staticImport: true,
-			tsconfigPath: "./tsconfig.lib.json",
-		})],
+		plugins: [
+			vue(),
+			mode === "lib" && dts({
+				staticImport: true,
+				tsconfigPath: "./tsconfig.lib.json",
+			}),
+		],
 	});
 
 	/*
