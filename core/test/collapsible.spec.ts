@@ -65,7 +65,7 @@ Content
 Content</p>
 `));
 
-it("should able to placed inside blockquote",  t(`
+it("should support nesting",  t(`
 <details>
 <details>
 Content
@@ -115,4 +115,14 @@ Description
 Description
 &lt;/summary&gt;</p>
 </details>
+`));
+
+it("should restrict summary can only in details",  t(`
+<summary>
+Description
+</summary>
+`,`
+<p>&lt;summary&gt;
+Description
+&lt;/summary&gt;</p>
 `));
