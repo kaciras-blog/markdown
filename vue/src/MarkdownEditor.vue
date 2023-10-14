@@ -148,9 +148,11 @@ function runScrollAction(callback: () => void) {
 function scrollEditorToPreview() {
 	lastScrollEditor = false;
 	runScrollAction(() => {
-		const { $el } = previewEl.value!;
-		const p = $el.scrollTop / ($el.scrollHeight - $el.offsetHeight);
 		const { offsetHeight } = editorEl.value!;
+		const { $el } = previewEl.value!;
+		const p = $el.scrollTop / ($el.scrollHeight - offsetHeight);
+
+		// Monaco-editor 在末尾有一屏的空白，所以要多减去一个 offsetHeight。
 		editor.setScrollTop(p * (editor.getScrollHeight() - offsetHeight * 2));
 	});
 }
@@ -158,10 +160,19 @@ function scrollEditorToPreview() {
 function scrollPreviewToEditor() {
 	lastScrollEditor = true;
 	runScrollAction(() => {
+		const scrollHeight = editor.getScrollHeight();
 		const { offsetHeight } = editorEl.value!;
 		const { $el } = previewEl.value!;
-		const p = editor.getScrollTop() / (editor.getScrollHeight() - offsetHeight * 2);
-		$el.scrollTop = p * ($el.scrollHeight - $el.offsetHeight);
+
+		/*
+		 * 没超过一屏就不滚动，因为结果可能长于 Markdown（反之好像不会），
+		 * 此时换行会让 HTML 视图滚到顶而不是保持在当前位置。
+		 */
+		if (scrollHeight < offsetHeight * 2) {
+			return;
+		}
+		const p = editor.getScrollTop() / (scrollHeight - offsetHeight * 2);
+		$el.scrollTop = p * ($el.scrollHeight - offsetHeight);
 	});
 }
 
