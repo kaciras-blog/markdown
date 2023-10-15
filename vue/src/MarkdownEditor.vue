@@ -36,6 +36,17 @@
 	</div>
 </template>
 
+<script lang='ts'>
+import * as md from "monaco-editor/esm/vs/basic-languages/markdown/markdown.js";
+
+const { tokenizer } = md.language;
+tokenizer.root.unshift([/^(\[\[TOC]])/, ["keyword.toc"]]);
+tokenizer.root.unshift([
+	/^(@\w+)(!?\[)((?:[^\]\\]|@escapes)*)(]\([^)]+\))/,
+	["type.directive", "string.link", "", "string.link"],
+]);
+</script>
+
 <script setup lang='ts'>
 import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } from "vue";
 import { refDebounced, useVModel } from "@vueuse/core";
