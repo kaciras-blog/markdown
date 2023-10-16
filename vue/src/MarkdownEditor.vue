@@ -164,7 +164,17 @@ function scrollEditorToPreview() {
 		const p = $el.scrollTop / ($el.scrollHeight - offsetHeight);
 
 		// Monaco-editor 在末尾有一屏的空白，所以要多减去一个 offsetHeight。
-		editor.setScrollTop(p * (editor.getScrollHeight() - offsetHeight * 2));
+		const max = editor.getScrollHeight() - offsetHeight * 2;
+
+		/*
+		 * 当右侧滚到底时，如果左侧位置超过了内容（即在空白区），就不滚动。
+		 * 这样做是为了避免删除最后一页的行时，编辑区滚动位置抖动的问题。
+		 */
+		if (p < 0.999) {
+			editor.setScrollTop(p * max);
+		} else if (editor.getScrollTop() < max) {
+			editor.setScrollTop(max);
+		}
 	});
 }
 
