@@ -1,6 +1,6 @@
 <!--
 	显示已经转换好的 Markdown HTML，并激活它。
-	该组件不引入转换器，配合后端生成好的页面可以减轻 JS 文件。
+	该组件不引入转换器，配合渲染好的页面可以减轻 JS 文件。
 -->
 <template>
 	<div :ref='setup' class='markdown' v-html='html'/>

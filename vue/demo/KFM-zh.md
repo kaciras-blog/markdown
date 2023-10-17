@@ -4,27 +4,43 @@
 
 [https://github.com/kaciras-blog/markdown](https://github.com/kaciras-blog/markdown)
 
-Markdown 是一种轻量级的标记语言，可用于将格式设置元素添加到纯文本文档中。Markdown 由John Gruber 于 2004 年创建，如今已成为世界上最受欢迎的标记语言之一，特别是程序员喜欢使用。
+Markdown 是一种轻量级的标记语言，可用于将格式设置元素添加到纯文本文档中。Markdown 由 John Gruber 于 2004 年创建，如今已成为世界上最受欢迎的标记语言之一，特别是程序员喜欢使用。
 
 KFM 是对 Markdown 语法的扩展，兼容标准的 Markdown，同时添加了一些新的功能。
 
 # KFM 的特点
-
-## 禁止 HTML
-
-KFM 不推荐在 Markdown 中使用 HTML，因为 Markdown 是轻量级的标记语言，轻量级指的是语法符号（如`![]()`,`#`）占内容的比例很低，而 HTML 则是重量级的。
-
-轻量级的语言即使不渲染也易读，而重量级语言没有该优势，在 Markdown 里混用 HTML 会降低可读性。
-
-另一个原因是 Markdown 并不一定会渲染为 HTML，虽然大多数情况是如此。一旦支持 HTML 就会限制其渲染成其他目标的能力。
-
-最后混入 HTML 还让解析将变得更复杂，比如批量替换图片的 URL，原本只需要搜索 `![...](...)`，而引入 HTML 后则需要专门的解析器。
 
 ## 大纲
 
 单独一行仅包含 `[[TOC]]` 表示在此处插入大纲，大纲是以列表形式展示的标题链接。
 
 [[TOC]]
+
+## 禁止 HTML
+
+KFM 不推荐在 Markdown 中使用 HTML。
+
+<details>
+<summary>
+为什么
+</summary>
+Markdown 是轻量级的标记语言，轻量级指的是语法符号（如`![]()`,`#`）占内容的比例很低，而 HTML 则是重量级的。 轻量级的语言即使不渲染也易读，而 HTML 没有该优势。
+
+另一个原因是 Markdown 并不一定会渲染为 HTML，虽然大多数情况是如此。一旦支持 HTML 就会限制其渲染成其他目标的能力。
+
+最后混用还会让解析将变得复杂，比如替换图片的 URL，原本只需要搜索 `![...](...)`，而引入 HTML 后则需要专门的解析器。
+</details>
+
+## 折叠块
+
+折叠块使用与 HTML 相似的语法，不过要求 `<summary>` 必须在第一行。在底层该功能是由单独的解析器实现的，而非开启了 HTML 功能。
+
+<details>
+<summary>
+点击折叠块的标题部分切换开关。
+</summary>
+里头是内容。
+</details>
 
 ## 更多的媒体类型
 
@@ -47,17 +63,6 @@ GIF 和普通的图片一样，支持用 `vw` 和 `vh` URL 参数设置尺寸。
 ### 音频
 
 @audio[](audio.mp3)
-
-## 折叠块
-
-折叠块使用与 HTML 相似的语法，不过要求 `<summary>` 必须在第一行。在底层该功能是由单独的解析器实现的，而非开启了 HTML 功能。
-
-<details>
-<summary>
-点击折叠块的标题部分切换开关。
-</summary>
-里头是内容。
-</details>
 
 # 标准 Markdown 语法
 

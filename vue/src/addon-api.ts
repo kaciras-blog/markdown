@@ -1,5 +1,5 @@
 import { inject, provide, Ref, ShallowRef } from "vue";
-import { editor, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
+import { editor, Position, Range, Selection } from "monaco-editor/esm/vs/editor/editor.api.js";
 import { selectFile } from "@kaciras/utilities/browser";
 
 // 这些类型的名字本身就不短，再加上命名空间就太长了，所以做一个别名去掉前缀。
@@ -36,31 +36,32 @@ export interface AddonContext {
 
 class InsertCommand implements ICommand {
 
-	private readonly selection: Selection;
+	private readonly point: Position;
 	private readonly text: string;
 	private readonly block: boolean;
 	private readonly cursor?: number;
 
 	private deltaLine = 0;
-	private point!: Range;
 
-	constructor(text: string, selection: Selection, block: boolean, cursor?: number) {
+	constructor(selection: Selection, text: string, block: boolean, cursor?: number) {
 		this.text = text;
-		this.selection = selection;
 		this.cursor = cursor;
 		this.block = block;
+		this.point = selection.getPosition();
 	}
 
 	computeCursorState() {
 		const { deltaLine, point, cursor, block, text } = this;
-		let line = point.endLineNumber + deltaLine;
+		let line = point.lineNumber + deltaLine;
 
+		// 块模式下末尾必然有两个换行，所以移到两行之后的开头。
 		if (block && !cursor) {
 			line += 2;
 			return new Selection(line, 0, line, 0);
 		}
 
-		const column = point.endColumn + (cursor ?? text.length);
+		// 非块模式末尾在同一行内，算下列即可。
+		const column = point.column + (cursor ?? text.length);
 		return new Selection(line, column, line, column);
 	}
 
@@ -72,17 +73,14 @@ class InsertCommand implements ICommand {
 	}
 
 	getEditOperations(model: ITextModel, builder: IEditOperationBuilder) {
-		const { selection, text, block } = this;
-		const point = this.point = selection.getDirection() === 0
-			? selection.collapseToEnd()
-			: selection.collapseToStart();
+		const { text, block } = this;
+		const { lineNumber: line, column } = this.point;
 
 		const inserts = ["", "", text, "", ""];
 		if (block) {
-			const line = point.startLineNumber;
 			const eol = model.getEOL();
 
-			if (point.startColumn !== 1) {
+			if (column !== 1) {
 				inserts[0] = inserts[1] = eol;
 				this.deltaLine = 2;
 			} else if (this.notEmpty(model, line - 1)) {
@@ -90,14 +88,15 @@ class InsertCommand implements ICommand {
 				this.deltaLine = 1;
 			}
 
-			if (point.endColumn !== model.getLineLength(line) + 1) {
+			if (column !== model.getLineLength(line) + 1) {
 				inserts[3] = inserts[4] = eol;
 			} else if (this.notEmpty(model, line + 1)) {
 				inserts[4] = eol;
 			}
 		}
 
-		builder.addEditOperation(point, inserts.join(""));
+		const range = new Range(line, column, line, column);
+		builder.addEditOperation(range, inserts.join(""));
 	}
 }
 
@@ -113,7 +112,7 @@ export function createAddonContext(ctx: AddonContext) {
 	ctx.insertText = (text, block, cursor) => {
 		const { editor } = ctx;
 		const commands = editor.getSelections()!
-			.map(s => new InsertCommand(text, s, block, cursor));
+			.map(s => new InsertCommand(s, text, block, cursor));
 		editor.focus();
 		editor.executeCommands(null, commands);
 	};

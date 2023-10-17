@@ -47,9 +47,9 @@ class EmphasisCommand implements ICommand {
 	private readonly range: Selection;
 	private readonly type: Emphasis;
 
-	constructor(range: Selection, type: Emphasis) {
+	constructor(selection: Selection, type: Emphasis) {
+		this.range = selection;
 		this.type = type;
-		this.range = range;
 	}
 
 	computeCursorState(_: any, helper: ICursorStateComputerData) {
@@ -84,8 +84,12 @@ class EmphasisCommand implements ICommand {
 	 *
 	 * # 实现方式
 	 * 最初仅替换两端的符号部分，在同一行有多个选区时难以计算光标的位置。
-	 * 先在改为对文本的整体替换，这样能够使用 monaco-editor 内部的计算功能，
+	 * 现在改为的整个替换，这样能够使用 monaco-editor 内部的计算功能，
 	 * 通过 InverseEditOperations 直接获取新的选区。
+	 *
+	 * @example
+	 * this.type = Emphasis.Code;
+	 * this.renovate("**Text**") // -> `Text`
 	 */
 	private renovate(text: string) {
 		const [emphasis, remove] = getEmphasis(text);
@@ -118,8 +122,8 @@ class PrefixCommand implements ICommand {
 	private readonly range: Selection;
 	private readonly prefix: string;
 
-	constructor(range: Selection, prefix: string) {
-		this.range = range;
+	constructor(selection: Selection, prefix: string) {
+		this.range = selection;
 		this.prefix = prefix;
 	}
 

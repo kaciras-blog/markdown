@@ -39,6 +39,7 @@
 <script lang='ts'>
 import * as md from "monaco-editor/esm/vs/basic-languages/markdown/markdown.js";
 
+// 给自定义的两个语法 TOC 和 Directive 添加解析支持。
 const { tokenizer } = md.language;
 tokenizer.root.unshift([/^(\[\[TOC]])/, ["keyword.toc"]]);
 tokenizer.root.unshift([
@@ -118,7 +119,6 @@ let editor: monaco.editor.IStandaloneCodeEditor = undefined!;
 
 const addonContext: AddonContext = <any>{
 	options: ref({
-		quickSuggestions: false,
 		wordWrap: "on",
 		minimap: { enabled: false },
 	}),
@@ -285,13 +285,12 @@ onMounted(() => {
 }
 
 .preview {
-	padding: .5rem .8rem 0 .8rem;
+	padding: 0 12px;
 	overflow-y: scroll;
 }
 
 .single {
 	grid-column: 1/3;
-	display: block;
 
 	@media (min-width: 768px) {
 		margin-left: 10%;
