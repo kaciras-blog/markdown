@@ -29,7 +29,9 @@
 .hljs-title,
 .hljs-number,
 .hljs-tag,
-.hljs-subst {
+.hljs-subst,
+.hljs-selector-pseudo,
+.hljs-selector-class {
 	color: var(--color);
 }
 
@@ -52,8 +54,7 @@
 }
 
 .hljs-code,
-.hljs-section,
-.hljs-selector-class {
+.hljs-section {
 	color: #a6e22e;
 }
 
@@ -66,31 +67,33 @@
 }
 
 .hljs-keyword,
+.hljs-type,
 .hljs-selector-tag,
-.hljs-name,
 .hljs-built_in,
-.hljs-builtin-name,
-.hljs-attr {
+.hljs-builtin-name {
 	color: #f558e8;
+}
+
+.hljs-name{
+	color: #E6AE6E;
 }
 
 .hljs-symbol,
 .hljs-attribute,
+.hljs-attr,
 .hljs-meta {
-	color: #67f0f0;
+	color: #67e9f0;
 }
 
+.hljs-variable,
 .hljs-params {
 	color: #fff394;
 }
 
 .hljs-string,
-.hljs-type,
 .hljs-selector-id,
 .hljs-selector-attr,
-.hljs-selector-pseudo,
 .hljs-addition,
-.hljs-variable,
 .hljs-template-variable {
 	color: #fa648c;
 }
