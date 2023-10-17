@@ -24,6 +24,7 @@ import shell from "highlight.js/lib/languages/shell";
 import sql from "highlight.js/lib/languages/sql";
 import yaml from "highlight.js/lib/languages/yaml";
 import typescript from "highlight.js/lib/languages/typescript";
+import vue from "./hljs-vue.ts";
 
 hljs.registerLanguage("c", c);
 hljs.registerLanguage("cpp", cpp);
@@ -48,6 +49,7 @@ hljs.registerLanguage("shell", shell);
 hljs.registerLanguage("sql", sql);
 hljs.registerLanguage("yaml", yaml);
 hljs.registerLanguage("typescript", typescript);
+hljs.registerLanguage("vue", vue);
 
 /*
  * # 差分的实现
