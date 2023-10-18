@@ -122,6 +122,8 @@ class PrefixCommand implements ICommand {
 	private readonly range: Selection;
 	private readonly prefix: string;
 
+	overlap = false;
+
 	constructor(selection: Selection, prefix: string) {
 		this.range = selection;
 		this.prefix = prefix;
@@ -138,8 +140,12 @@ class PrefixCommand implements ICommand {
 	}
 
 	getEditOperations(_: ITextModel, builder: IEditOperationBuilder) {
-		const { range, prefix } = this;
-		for (let i = range.startLineNumber; i <= range.endLineNumber; i++) {
+		const { range, prefix, overlap } = this;
+		let i = range.startLineNumber;
+		if (overlap) {
+			i += 1; // 第一行跟其它选区重了，跳过。
+		}
+		for (; i <= range.endLineNumber; i++) {
 			builder.addEditOperation(new Range(i, 0, i, 0), prefix);
 		}
 	}
@@ -163,8 +169,17 @@ function toggleEmphasis(type: Emphasis) {
 
 function addPrefix(prefix: string) {
 	const { editor } = context;
-	const commands = editor.getSelections()!
-		.map(s => new PrefixCommand(s, prefix));
+	const selections = editor.getSelections()!;
+
+	selections.sort(Range.compareRangesUsingStarts);
+	const commands = selections.map(s => new PrefixCommand(s, prefix));
+
+	for (let i = 1; i < selections.length; i++) {
+		const prev = selections[i - 1];
+		const curr = selections[i];
+		commands[i].overlap = curr.startLineNumber === prev.endLineNumber;
+	}
+
 	editor.focus();
 	editor.executeCommands(null, commands);
 }
