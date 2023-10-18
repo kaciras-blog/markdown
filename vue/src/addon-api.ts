@@ -41,21 +41,25 @@ class InsertCommand implements ICommand {
 	private readonly block: boolean;
 	private readonly cursor?: number;
 
-	constructor(selection: Selection, text: string, block: boolean, cursor?: number) {
+	prevInserted = false;
+
+	private eolAdded = 2;
+
+	constructor(point: Position, text: string, block: boolean, cursor?: number) {
+		this.point = point;
 		this.text = text;
 		this.cursor = cursor;
 		this.block = block;
-		this.point = selection.getPosition();
 	}
 
 	computeCursorState(_: any, helper: ICursorStateComputerData) {
-		const { cursor, block, text } = this;
+		const { cursor, block, text, eolAdded } = this;
 		const { range } = helper.getInverseEditOperations()[0];
 		let line = range.endLineNumber;
 
 		// 块模式下末尾必然有两个换行，所以移到两行之后的开头。
 		if (block && !cursor) {
-			line += 2;
+			line += eolAdded;
 			return new Selection(line, 0, line, 0);
 		}
 
@@ -72,7 +76,7 @@ class InsertCommand implements ICommand {
 	}
 
 	getEditOperations(model: ITextModel, builder: IEditOperationBuilder) {
-		const { text, block } = this;
+		const { text, block, prevInserted } = this;
 		const { lineNumber: line, column } = this.point;
 
 		const inserts = ["", "", text, "", ""];
@@ -81,14 +85,19 @@ class InsertCommand implements ICommand {
 
 			if (column !== 1) {
 				inserts[0] = inserts[1] = eol;
-			} else if (this.notEmpty(model, line - 1)) {
+			} else if (
+				this.notEmpty(model, line - 1)
+				|| prevInserted
+			) {
 				inserts[0] = eol;
 			}
 
 			if (column !== model.getLineLength(line) + 1) {
+				this.eolAdded = 0;
 				inserts[3] = inserts[4] = eol;
 			} else if (this.notEmpty(model, line + 1)) {
 				inserts[4] = eol;
+				this.eolAdded = 1;
 			}
 		}
 
@@ -108,8 +117,17 @@ export function createAddonContext(ctx: AddonContext) {
 
 	ctx.insertText = (text, block, cursor) => {
 		const { editor } = ctx;
-		const commands = editor.getSelections()!
-			.map(s => new InsertCommand(s, text, block, cursor));
+		const positions = editor.getSelections()!.map(s => s.getPosition());
+
+		positions.sort(Position.compare);
+		const commands = positions.map(s => new InsertCommand(s, text, block, cursor));
+
+		for (let i = 1; i < positions.length; i++) {
+			const prev = positions[i - 1].lineNumber;
+			const curr = positions[i].lineNumber;
+			commands[i].prevInserted = prev === curr - 1;
+		}
+
 		editor.focus();
 		editor.executeCommands(null, commands);
 	};
