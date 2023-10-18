@@ -41,8 +41,6 @@ class InsertCommand implements ICommand {
 	private readonly block: boolean;
 	private readonly cursor?: number;
 
-	private deltaLine = 0;
-
 	constructor(selection: Selection, text: string, block: boolean, cursor?: number) {
 		this.text = text;
 		this.cursor = cursor;
@@ -50,9 +48,10 @@ class InsertCommand implements ICommand {
 		this.point = selection.getPosition();
 	}
 
-	computeCursorState() {
-		const { deltaLine, point, cursor, block, text } = this;
-		let line = point.lineNumber + deltaLine;
+	computeCursorState(_: any, helper: ICursorStateComputerData) {
+		const { cursor, block, text } = this;
+		const { range } = helper.getInverseEditOperations()[0];
+		let line = range.endLineNumber;
 
 		// 块模式下末尾必然有两个换行，所以移到两行之后的开头。
 		if (block && !cursor) {
@@ -61,7 +60,7 @@ class InsertCommand implements ICommand {
 		}
 
 		// 非块模式末尾在同一行内，算下列即可。
-		const column = point.column + (cursor ?? text.length);
+		const column = range.endColumn + (cursor ?? text.length);
 		return new Selection(line, column, line, column);
 	}
 
@@ -82,10 +81,8 @@ class InsertCommand implements ICommand {
 
 			if (column !== 1) {
 				inserts[0] = inserts[1] = eol;
-				this.deltaLine = 2;
 			} else if (this.notEmpty(model, line - 1)) {
 				inserts[0] = eol;
-				this.deltaLine = 1;
 			}
 
 			if (column !== model.getLineLength(line) + 1) {
@@ -96,7 +93,7 @@ class InsertCommand implements ICommand {
 		}
 
 		const range = new Range(line, column, line, column);
-		builder.addEditOperation(range, inserts.join(""));
+		builder.addTrackedEditOperation(range, inserts.join(""));
 	}
 }
 
