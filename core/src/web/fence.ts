@@ -31,7 +31,7 @@ export default function fencePlugin(md: MarkdownIt, highlight: HighLighter) {
 		let language = "";
 
 		if (info) {
-			[language, attrs] = unescapeAll(info).trim().split(/\s+/g, 2);
+			[language, attrs] = unescapeAll(info).split(/\s+/g, 2);
 		}
 
 		const codeHTML = highlight(content, language, attrs)
