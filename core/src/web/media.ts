@@ -104,7 +104,7 @@ const mediaMap: DirectiveMap = {
 		alt = md.utils.escapeHtml(alt);
 		return $HTML`
 			<p class='center-wrapper'>
-				<audio controls src="${src}" crossorigin/>
+				<audio controls data-src="${src}" crossorigin/>
 				${alt ? `<span class='md-alt'>${alt}</span>` : ""}
 			</p>`;
 	},
