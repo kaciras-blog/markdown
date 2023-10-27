@@ -16,11 +16,11 @@ it("should work without language", () => {
 it("should output minimized HTML", () => {
 	const html = md.render("```html\nTest\n```");
 	expect(html).toMatchSnapshot();
-	expect(fn).toHaveBeenCalledWith("Test\n", "html", false);
+	expect(fn).toHaveBeenCalledWith("Test\n", "html", undefined);
 });
 
 it("should parse diff languages", () => {
-	const html = md.render("```diff-html\nTest\n```");
+	const html = md.render("```html diff\nTest\n```");
 	expect(html).toMatchSnapshot();
-	expect(fn).toHaveBeenCalledWith("Test\n", "html", true);
+	expect(fn).toHaveBeenCalledWith("Test\n", "html", "diff");
 });

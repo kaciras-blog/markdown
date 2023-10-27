@@ -61,11 +61,11 @@ hljs.registerLanguage("vue", vue);
  * https://github.com/highlightjs/highlight.js/issues/480
  */
 
-export default function (code: string, language: string, diff: boolean) {
+export default function (code: string, language: string, attrs?: string) {
 	if (!hljs.getLanguage(language)) {
 		return undefined;
 	}
-	if (!diff) {
+	if (attrs !== "diff") {
 		return hljs.highlight(code, { language }).value;
 	}
 
