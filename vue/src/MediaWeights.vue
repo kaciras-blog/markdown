@@ -28,6 +28,12 @@ interface MediaWeightProps {
 
 const context = useAddonContext();
 
+/**
+ * 避免使用 v-bind 来设置文件存储的实现时，对象上额外的属性导致一个警告。
+ * Vue 不会给以 Fragment 为根的组件自动关闭 inheritAttrs，所以要设一下。
+ */
+defineOptions({ inheritAttrs: false });
+
 // TODO: 类型提示无法推导箭头函数的参数，不知道是 IDE 还是 Vue 的问题。
 withDefaults(defineProps<MediaWeightProps>(), {
 	image: ctx => ctx.insertText("![]()", false, 4),
