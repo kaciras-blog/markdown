@@ -11,6 +11,14 @@
  */
 import { HLJSApi, Language } from "highlight.js";
 
+/**
+ * highlight.js 的 Vue SFC 插件，支持解析顶层的语言块（language blocks）。
+ *
+ * 块支持那些语言由构建工具决定，这里只包含了常用的几种。
+ * https://vuejs.org/api/sfc-spec.html#pre-processors
+ *
+ * highlight.js 的类型里有个 vuePlugin 属性，但却是 undefined。
+ */
 export default function hljsDefineVue(hljs: HLJSApi): Language {
 	return {
 		subLanguage: "xml",
