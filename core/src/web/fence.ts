@@ -3,9 +3,9 @@ import CopyIcon from "bootstrap-icons/icons/clipboard.svg?raw";
 import CopiedIcon from "bootstrap-icons/icons/clipboard-check.svg?raw";
 
 /**
- * 高亮代码的函数，返回带有高亮标签的 HTML，language 为空或不支持则返回 falsy 值。
+ * 高亮代码的函数，返回带有高亮标签的 HTML，language 为空或不支持也至少要转义。
  */
-type HighLighter = (code: string, language: string, attrs?: string) => string | undefined;
+type HighLighter = (code: string, language: string, attrs?: string) => string;
 
 /**
  * 自定义代码块的插件，因为 MarkdownIt 自带的渲染函数要求最外层是 pre，限制了扩展性，
@@ -22,8 +22,8 @@ type HighLighter = (code: string, language: string, attrs?: string) => string | 
  * 为了性能和可调试性，应当减少 DOM 中元素的层级，所以这里选择仅用一个标签。
  * 考虑到存在非代码，但又要格式化的文本，选择 pre 比 code 更通用，GitHub 也是如此。
  */
-export default function fencePlugin(md: MarkdownIt, highlight: HighLighter) {
-	const { unescapeAll, escapeHtml } = md.utils;
+export default function (md: MarkdownIt, highlight: HighLighter) {
+	const { unescapeAll } = md.utils;
 
 	md.renderer.rules.fence = (tokens, idx) => {
 		const { content, info } = tokens[idx];
@@ -34,8 +34,7 @@ export default function fencePlugin(md: MarkdownIt, highlight: HighLighter) {
 			[language, attrs] = unescapeAll(info).split(/\s+/g, 2);
 		}
 
-		const codeHTML = highlight(content, language, attrs)
-			|| escapeHtml(content);
+		const codeHTML = highlight(content, language, attrs);
 
 		// Copy 是个很常见的单词，谁都看得懂，就不做本地化了。
 		if (language) {

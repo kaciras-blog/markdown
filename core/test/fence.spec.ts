@@ -8,9 +8,8 @@ const md = new MarkdownIt();
 md.use(fencePlugin, fn);
 
 it("should work without language", () => {
-	fn.mockImplementationOnce(() => {});
-	const html = md.render("```\n<Test>\n```");
-	expect(html).toMatchSnapshot();
+	md.render("```\nTest\n```");
+	expect(fn).toHaveBeenCalledWith("Test\n", "", "");
 });
 
 it("should output minimized HTML", () => {

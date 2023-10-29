@@ -1,4 +1,5 @@
 import hljs from "highlight.js/lib/core";
+import utils from "markdown-it/lib/common/utils.js";
 
 // 只添加我常用的语言。
 import c from "highlight.js/lib/languages/c";
@@ -63,7 +64,7 @@ hljs.registerLanguage("vue", vue);
 
 export default function (code: string, language: string, attrs?: string) {
 	if (!hljs.getLanguage(language)) {
-		return undefined;
+		return utils.escapeHtml(code);
 	}
 	if (attrs !== "diff") {
 		return hljs.highlight(code, { language }).value;

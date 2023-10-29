@@ -9,6 +9,10 @@ it("should work without diff", () => {
 	expect(highlight("+A\n-B\nC", "ini")).toMatchSnapshot();
 });
 
-it("should return falsy value for unknown language", () => {
-	expect(highlight("+A\n-B\nC", "UNKNOWN")).toBeFalsy();
+it("should only escape HTML for unknown language", () => {
+	expect(highlight("<foo>", "UNKNOWN")).toBe("&lt;foo&gt;");
+});
+
+it("should only escape HTML without language", () => {
+	expect(highlight("<foo>", "")).toBe("&lt;foo&gt;");
 });
