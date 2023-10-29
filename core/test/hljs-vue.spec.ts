@@ -35,3 +35,8 @@ it("should recognize language of blocks", () => doTest("block-lang"));
 it("should work with multiple attrs in blocks", () => doTest("block-attrs"));
 
 it("should work with unknown languages", () => doTest("unknown-lang"));
+
+it("highlight.js does not have builtin support for SFC", () => {
+	expect(hljs.vuePlugin).toBeUndefined();
+	return expect(import("highlight.js/lib/languages/vue")).rejects.toThrow();
+});
