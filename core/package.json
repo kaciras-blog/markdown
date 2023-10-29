@@ -11,7 +11,6 @@
 	"exports": {
 		".": "./lib/index.js",
 		"./activate": "./lib/activate.js",
-		"./presets": "./lib/presets.js",
 		"./style.css": "./lib/style.css"
 	},
 	"type": "module",
@@ -23,7 +22,7 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"@kaciras/utilities": "^0.10.1",
+		"@kaciras/utilities": "^0.10.2",
 		"bootstrap-icons": "^1.11.1",
 		"highlight.js": "^11.9.0",
 		"markdown-it": "^13.0.2",
@@ -33,7 +32,7 @@
 	},
 	"devDependencies": {
 		"@types/html-minifier-terser": "^7.0.1",
-		"@types/markdown-it": "^13.0.4",
+		"@types/markdown-it": "^13.0.5",
 		"@vitest/coverage-v8": "^0.34.6",
 		"html-minifier-terser": "^7.2.0",
 		"magic-string": "^0.30.5",

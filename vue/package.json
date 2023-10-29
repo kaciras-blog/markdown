@@ -25,16 +25,16 @@
 	},
 	"dependencies": {
 		"@kaciras-blog/markdown": "workspace:^",
-		"@kaciras/utilities": "^0.10.1",
-		"@tabler/icons-vue": "^2.39.0",
+		"@kaciras/utilities": "^0.10.2",
+		"@tabler/icons-vue": "^2.40.0",
 		"@vueuse/core": "^10.5.0",
 		"monaco-editor": "^0.44.0",
-		"vue": "^3.3.6"
+		"vue": "^3.3.7"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^4.4.0",
 		"rollup-plugin-visualizer": "^5.9.2",
 		"vite": "^4.5.0",
-		"vite-plugin-dts": "^3.6.0"
+		"vite-plugin-dts": "^3.6.2"
 	}
 }
