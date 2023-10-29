@@ -4,8 +4,7 @@
 </template>
 
 <script setup lang='ts'>
-import { coreRenderer, guestRenderer, trustedRenderer } from "@kaciras-blog/markdown/presets";
-import { LazyLoadOptions } from "@kaciras-blog/markdown/activate";
+import { kfmPreset, LazyLoadOptions, MarkdownIt, PresetOptions } from "@kaciras-blog/markdown";
 import { computed } from "vue";
 import MarkdownBox from "./MarkdownBox.vue";
 
@@ -35,24 +34,29 @@ interface MarkdownViewProps {
 
 const props = defineProps<MarkdownViewProps>();
 
-const html = computed(() => {
-	const { value, renderer, docId } = props;
-	let resolved = guestRenderer;
+const renderer = computed(() => {
+	const { renderer } = props;
 
-	switch (renderer) {
-		case undefined:
-		case "guest":
-			break;
-		case "trusted":
-			resolved = trustedRenderer;
-			break;
-		case "core":
-			resolved = coreRenderer;
-			break;
-		default:
-			resolved = renderer as any;
+	if (typeof renderer === "function") {
+		return renderer;
 	}
 
-	return resolved.render(value, { docId });
+	const md = new MarkdownIt();
+	const options: PresetOptions = {};
+
+	switch (renderer) {
+		case "guest":
+			options.guest = true;
+			break;
+		case "core":
+			options.plain = true;
+			break;
+	}
+	return md.use(kfmPreset, options);
+});
+
+const html = computed(() => {
+	const { value, docId } = props;
+	return renderer.value.render(value, { docId });
 });
 </script>

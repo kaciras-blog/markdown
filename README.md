@@ -30,15 +30,11 @@ pnpm i @kaciras-blog/markdown
 * `@kaciras-blog/markdown` 主要入口，导出了所有的功能。
 * `@kaciras-blog/markdown/style.css` 样式表。
 * `@kaciras-blog/markdown/activate` 仅包含 `activate` 函数，搭配预先渲染好的 HTML 可以避免引入体积较大的转换器。
-* `@kaciras-blog/markdown/presets` 预先配置好了一些渲染器，对应一些常见情况：
-  * coreRenderer：渲染的结果只有必要的标签，用于给第三方阅读器使用（RSS,阅读模式……）。
-  * trustedRenderer：添加了所有的插件，适合于可信的输入（站长自己写的内容）。
-  * guestRenderer：相较于 trustedRenderer，移除了一些长文的插件，加入了 UGC 防止滥用链接，适用于用户评论。
 
 创建 MarkdownIt 实例并添加一些插件：
 
 ```typescript
-import { MarkdownIt, Media, Fence, highlight } from "@kaciras-blog/markdown/presets";
+import { MarkdownIt, Media, Fence, highlight } from "@kaciras-blog/markdown";
 
 const md = new MarkdownIt();
 md.use(Media)
@@ -51,10 +47,11 @@ console.log(md.render("![](img.png)\n\n```diff-html\n+foo\n-bar\n```"));
 
 ```typescript
 import "@kaciras-blog/markdown/style.css";
-import { trustedRenderer } from "@kaciras-blog/markdown/presets";
-import { activate } from "@kaciras-blog/markdown";
+import { MarkdownIt, kfmPreset, activate } from "@kaciras-blog/markdown";
 
-const html = trustedRenderer.render("@video[](file.mp4)");
+const md = new MarkdownIt();
+md.use(kfmPreset);
+const html = md.render("@video[](file.mp4)");
 
 document.body.innerHTML = html;
 

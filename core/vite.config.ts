@@ -31,7 +31,6 @@ export default defineConfig({
 		},
 		lib: {
 			entry: [
-				"src/presets.ts",
 				"src/index.ts",
 				"src/activate.ts",
 			],

@@ -1,3 +1,12 @@
+import MarkdownIt from "markdown-it";
+import TOC from "markdown-it-toc-done-right";
+import highlight from "./web/highlight.js";
+import Fence from "./web/fence.js";
+import Media from "./web/media.js";
+import { Anchor, Classify, Footnote, UGC } from "./miscellaneous.js";
+import Directive from "./directive.js";
+import Collapsible from "./collapsible.js";
+
 export enum Emphasis {
 	None = 0,
 	Italic = 1,
@@ -64,4 +73,45 @@ export function getEmphasis(text: string): [Emphasis, number] {
 	// 如果前面字符串的不是有效的强调，则要把长度回退到最后一个。
 	const w = check();
 	return [emphasis | w, w === Emphasis.None ? i - repeat : i];
+}
+
+export interface PresetOptions {
+
+	/**
+	 * 如果为 true 则仅添加语法类插件，渲染的结果只有必要的标签，
+	 * 用于给第三方阅读器使用（RSS,阅读模式……）。
+	 *
+	 * 反之则渲染出更丰富且有交互能力的 HTML，需要搭配样式表和激活。
+	 */
+	plain?: boolean;
+
+	/**
+	 * 如果为 true 则移除一些用于长文的插件，并加入 UGC 防刷外链，
+	 * 适用于用户评论等第三方输入。
+	 */
+	guest?: boolean;
+}
+
+/**
+ * 一次性添加其他所有 KFM 插件的插件，用于一些常见情况。
+ */
+export function kfmPreset(markdownIt: MarkdownIt, options: PresetOptions) {
+	if (options.plain) {
+		markdownIt.use(Directive);
+	} else {
+		if (!options.guest) {
+			markdownIt.use(Anchor);
+		}
+		markdownIt.use(Fence, highlight);
+		markdownIt.use(Media);
+		markdownIt.use(Classify);
+	}
+
+	if (options.guest) {
+		markdownIt.use(UGC);
+	} else {
+		markdownIt.use(TOC);
+	}
+
+	return markdownIt.use(Footnote).use(Collapsible);
 }
