@@ -4,8 +4,8 @@ import MarkdownIt from "markdown-it";
 import { identity } from "@kaciras/utilities/node";
 
 const fn = vi.fn(identity);
-const md = new MarkdownIt();
-md.use(fencePlugin, fn);
+const md = new MarkdownIt({ highlight: fn });
+md.use(fencePlugin);
 
 it("should work without language", () => {
 	md.render("```\nTest\n```");
@@ -15,7 +15,7 @@ it("should work without language", () => {
 it("should output minimized HTML", () => {
 	const html = md.render("```html\nTest\n```");
 	expect(html).toMatchSnapshot();
-	expect(fn).toHaveBeenCalledWith("Test\n", "html", undefined);
+	expect(fn).toHaveBeenCalledWith("Test\n", "html", "");
 });
 
 it("should parse diff languages", () => {

@@ -3,13 +3,7 @@ import CopyIcon from "bootstrap-icons/icons/clipboard.svg?raw";
 import CopiedIcon from "bootstrap-icons/icons/clipboard-check.svg?raw";
 
 /**
- * 高亮代码的函数，返回带有高亮标签的 HTML，language 为空或不支持也至少要转义。
- */
-type HighLighter = (code: string, language: string, attrs?: string) => string;
-
-/**
- * 自定义代码块的插件，因为 MarkdownIt 自带的渲染函数要求最外层是 pre，限制了扩展性，
- * 所以本项目整个替换它而不是使用 highlight 选项。
+ * 自定义代码块的插件，因为 MarkdownIt 默认最外层是 pre，限制了扩展性，所以本项目替换了它。
  * https://github.com/markdown-it/markdown-it/blob/13.0.2/lib/renderer.js#L58
  *
  * # 标签的选择
@@ -22,17 +16,13 @@ type HighLighter = (code: string, language: string, attrs?: string) => string;
  * 为了性能和可调试性，应当减少 DOM 中元素的层级，所以这里选择仅用一个标签。
  * 考虑到存在非代码，但又要格式化的文本，选择 pre 比 code 更通用，GitHub 也是如此。
  */
-export default function (md: MarkdownIt, highlight: HighLighter) {
-	const { unescapeAll } = md.utils;
+export default function (md: MarkdownIt) {
+	const { unescapeAll, escapeHtml } = md.utils;
+	const highlight = md.options.highlight ?? escapeHtml;
 
 	md.renderer.rules.fence = (tokens, idx) => {
 		const { content, info } = tokens[idx];
-		let attrs = "";
-		let language = "";
-
-		if (info) {
-			[language, attrs] = unescapeAll(info).split(/\s+/g, 2);
-		}
+		const [language, attrs = ""] = unescapeAll(info).split(/\s+/g, 2);
 
 		const codeHTML = highlight(content, language, attrs);
 

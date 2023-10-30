@@ -97,14 +97,15 @@ export interface PresetOptions {
 /**
  * 一次性添加其他所有 KFM 插件的插件，用于一些常见情况。
  */
-export function kfmPreset(markdownIt: MarkdownIt, options: PresetOptions) {
+export function kfmPreset(markdownIt: MarkdownIt, options: PresetOptions = {}) {
 	if (options.plain) {
 		markdownIt.use(Directive);
 	} else {
 		if (!options.guest) {
 			markdownIt.use(Anchor);
 		}
-		markdownIt.use(Fence, highlight);
+		markdownIt.options.highlight ??= highlight;
+		markdownIt.use(Fence);
 		markdownIt.use(Media);
 		markdownIt.use(Classify);
 	}
