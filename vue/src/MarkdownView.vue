@@ -3,13 +3,27 @@
 	<MarkdownBox :html='html' :lazy-loading='lazyLoading'/>
 </template>
 
+<script lang='ts'>
+import { kfmPreset, MarkdownIt } from "@kaciras-blog/markdown";
+
+// 把几个预设提前放这，免得跟随组件实例每次都创建。
+const rich = new MarkdownIt();
+rich.use(kfmPreset);
+
+const core = new MarkdownIt();
+core.use(kfmPreset, { plain: true });
+
+const guest = new MarkdownIt();
+guest.use(kfmPreset, { guest: true });
+</script>
+
 <script setup lang='ts'>
-import { kfmPreset, LazyLoadOptions, MarkdownIt, PresetOptions } from "@kaciras-blog/markdown";
+import { LazyLoadOptions } from "@kaciras-blog/markdown";
 import { computed } from "vue";
 import MarkdownBox from "./MarkdownBox.vue";
 
-export type Renderer = "trusted" | "guest" | "core" | {
-	render(text: string, env: any): string;
+export type Renderer = "rich" | "guest" | "core" | {
+	render(text: string, env: object): string;
 };
 
 interface MarkdownViewProps {
@@ -22,7 +36,7 @@ interface MarkdownViewProps {
 
 	/**
 	 * Markdown 渲染器，可以为 MarkdownIt 的实例。
-	 * 如果是字符串则使用 @kaciras-blog/markdown/presets 里对应的。
+	 * 如果是字符串则使用预设，详见源码里上面的 script 块。
 	 *
 	 * @default "guest"
 	 */
@@ -34,29 +48,24 @@ interface MarkdownViewProps {
 
 const props = defineProps<MarkdownViewProps>();
 
-const renderer = computed(() => {
-	const { renderer } = props;
-
-	if (typeof renderer === "function") {
-		return renderer;
-	}
-
-	const md = new MarkdownIt();
-	const options: PresetOptions = {};
+const html = computed(() => {
+	const { value, renderer, docId } = props;
+	let resolved = guest;
 
 	switch (renderer) {
+		case undefined:
 		case "guest":
-			options.guest = true;
+			break;
+		case "rich":
+			resolved = rich;
 			break;
 		case "core":
-			options.plain = true;
+			resolved = core;
 			break;
+		default:
+			resolved = renderer as any;
 	}
-	return md.use(kfmPreset, options);
-});
 
-const html = computed(() => {
-	const { value, docId } = props;
-	return renderer.value.render(value, { docId });
+	return resolved.render(value, { docId });
 });
 </script>
