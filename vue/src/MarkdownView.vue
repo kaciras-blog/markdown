@@ -26,7 +26,7 @@ export type Renderer = "rich" | "guest" | "core" | {
 	render(text: string, env: object): string;
 };
 
-interface MarkdownViewProps {
+export interface MarkdownViewProps {
 
 	/** 要渲染的 Markdown 文本，转换过程是同步的。*/
 	value: string;
