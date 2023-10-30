@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
 	 * - 另一处引用了 addon-api.ts，它被预构建为缓存。
 	 * - MarkdownEditor.vue 引用了 addon-api.ts，当然也解析到源文件。
 	 *
-	 * 结果就是存在了两个 addon-api.ts，这导致了一些无聊的问题，且仅在开发模式下发生。
+	 * 结果就是存在了两份 addon-api.ts，导致了一些无聊的问题，且仅在开发模式下发生。
 	 */
 	coreConfig.build = {
 		rollupOptions: {

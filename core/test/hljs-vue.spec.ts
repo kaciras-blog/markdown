@@ -21,20 +21,22 @@ highlighter.registerLanguage("vue", vue);
  *
  * @param fixture 测试数据文件的名字
  */
-function doTest(fixture: string) {
-	const html = readFileSync(`test/fixtures/${fixture}.html`, "utf8");
-	const [sfc, output] = html.split("--------");
-	const r = highlighter.highlight(sfc.trimEnd(), { language: "vue" });
-	expect(r.value).toBe(output.trim()); // git 可能在后面加空行，要 trim 一下。
+function useFixture(fixture: string) {
+	return () => {
+		const html = readFileSync(`test/fixtures/${fixture}.html`, "utf8");
+		const [sfc, expected] = html.split("--------");
+		const r = highlighter.highlight(sfc.trimEnd(), { language: "vue" });
+		expect(r.value).toBe(expected.trim()); // git 可能在后面加空行，要 trim 一下。
+	};
 }
 
-it("should parse blocks", () => doTest("simple"));
+it("should parse blocks", useFixture("simple"));
 
-it("should recognize language of blocks", () => doTest("block-lang"));
+it("should recognize language of blocks", useFixture("block-lang"));
 
-it("should work with multiple attrs in blocks", () => doTest("block-attrs"));
+it("should work with multiple attrs in blocks", useFixture("block-attrs"));
 
-it("should work with unknown languages", () => doTest("unknown-lang"));
+it("should work with unknown languages", useFixture("unknown-lang"));
 
 it("highlight.js does not have builtin support for SFC", () => {
 	expect(hljs.vuePlugin).toBeUndefined();

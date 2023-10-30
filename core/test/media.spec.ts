@@ -1,9 +1,9 @@
 import { expect, it } from "vitest";
 import MarkdownIt from "markdown-it";
-import clientMediaPlugin from "../src/web/media.ts";
+import Media from "../src/web/media.ts";
 
 const md = new MarkdownIt();
-md.use(clientMediaPlugin);
+md.use(Media);
 
 it("should output minimized HTML", () => {
 	expect(md.render("@video[](/file.mp4)")).toMatchSnapshot();
