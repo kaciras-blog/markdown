@@ -18,12 +18,13 @@ describe("tokenizer", () => {
 		token = null;
 	});
 
-	it("should parse type, label, and href", () => {
-		markdownIt.render("@gif[A gif video](/video/foo.mp4)");
+	it("should parse type, label, href, and attrs", () => {
+		markdownIt.render('@gif[A gif video](/video/foo.mp4){ "vw":32, "vh":16 }');
 
 		expect(token!.tag).toBe("gif");
 		expect(token!.content).toBe("A gif video");
 		expect(token!.attrGet("href")).toBe("/video/foo.mp4");
+		expect(token!.meta).toStrictEqual({ vw: 32, vh: 16 });
 	});
 
 	it("should allow empty label and href", () => {
@@ -31,20 +32,19 @@ describe("tokenizer", () => {
 
 		expect(token!.content).toBe("");
 		expect(token!.attrGet("href")).toBe("");
+		expect(token!.meta).toStrictEqual({});
 	});
 
-	const s = [
-		"@",
+	it.each([
 		"@gif(/video/foobar.mp4)",
 		"@gif[A gif video()",
 		"@gif[](/video/foobar",
-	];
-	for (const text of s) {
-		it("should ignore truncated text", () => {
-			markdownIt.render(text);
-			expect(token).toBeNull();
-		});
-	}
+		"@",
+		"@gif",
+	])("should ignore truncated text", (text) => {
+		markdownIt.render(text);
+		expect(token).toBeNull();
+	});
 
 	it("should restrict statement is filled with a whole line", () => {
 		expect(markdownIt.render("@gif[]() text after")).toMatchSnapshot();

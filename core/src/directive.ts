@@ -1,11 +1,11 @@
 /*
- * 自定义的 Markdown 语法，用于插入视频、音频等，
- * 该语句是一个块级元素，因为目前没有图文混排的需求。
+ * 指令语法，可用于插入视频、音频等，该语句是一个块级元素，因为目前没有混排的需求。
  *
- * 格式：@<type>[<label>](<href>)
- * - type: 类型
+ * 格式：@<type>[<label>](<href>){<attrs>}
+ * - type: 指令类型
  * - label: 替代内容或标签
  * - href: 源链接
+ * - attrs: 可选的附加属性，连带大括号构成 JSON 对象。
  *
  * Example:
  * @gif[A animated image](/data/gif-to-video.mp4?vw=300&vh=100)
@@ -15,26 +15,18 @@
  * https://talk.commonmark.org/t/embedded-audio-and-video/441
  * https://talk.commonmark.org/t/generic-directives-plugins-syntax/444
  *
- * TODO:附加属性的语法
- * 有一种提案是在后面用大括号：@type[...](...){ key="value" }
- * 目前只有宽高两个属性，且图片已经用加在 URL 参数上的形式了，就暂未支持它。
- *
  * 【为什么不用 GitLab Flavored Markdown】
  * 复用图片的语法，依靠扩展名来区分媒体类型有两个缺陷：
  * - 无法解决用视频来模拟GIF图片的需求
  * - URL 必须要有扩展名，但并不是所有系统都是这样（比如 Twitter）
  *
  * https://gitlab.com/help/user/markdown#videos
- *
- * 【为何不直接写HTML】
- * Markdown 本身是跟渲染结果无关的，不应该和 HTML 绑死，而且写HTML不利于修改。
- * 而且直接写 HTML 安全性太差，要转义也很麻烦，难以开放给用户。
  */
 import MarkdownIt from "markdown-it";
 import { unescapeMd } from "markdown-it/lib/common/utils.js";
 import StateBlock from "markdown-it/lib/rules_block/state_block.js";
 
-function parse(state: StateBlock, startLine: number, endLine: number, silent: boolean) {
+function parse(state: StateBlock, startLine: number, _: number, silent: boolean) {
 	const offset = state.tShift[startLine] + state.bMarks[startLine];
 
 	// JS 的傻逼正则不能设置结束位置，必须得截字符串。
@@ -48,9 +40,10 @@ function parse(state: StateBlock, startLine: number, endLine: number, silent: bo
 	}
 
 	if (!silent) {
-		const { type, label, href } = directive;
+		const { type, label, href, attrs } = directive;
 		const token = state.push("directive", type, 0);
 		token.attrs = [["href", href]];
+		token.meta = attrs;
 		token.content = label;
 		token.map = [startLine, state.line];
 	}
@@ -63,6 +56,7 @@ interface GenericDirective {
 	type: string;
 	label: string;
 	href: string;
+	attrs: Record<string, any>;
 }
 
 /**
@@ -79,21 +73,25 @@ interface GenericDirective {
 function tokenize(src: string) {
 	const match = /^@([a-z][a-z0-9\-_]*)/i.exec(src);
 	if (!match) {
-		throw new Error("Invalid type common");
+		throw new Error("Not a directive syntax.");
 	}
 
 	const [typePart, type] = match;
 	const labelEnd = readBracket(src, typePart.length, 0x5B, 0x5D);
 	const srcEnd = readBracket(src, labelEnd + 1, 0x28, 0x29);
 
-	if (srcEnd + 1 !== src.length) {
-		throw new Error("There are extra strings after the directive");
+	const label = unescapeMd(src.slice(typePart.length + 1, labelEnd));
+	const href = unescapeMd(src.slice(labelEnd + 2, srcEnd));
+
+	const attrStart = srcEnd + 1;
+	let attrs = {};
+	if (src.charCodeAt(attrStart) === 123 /* { */) {
+		attrs = JSON.parse(src.slice(attrStart));
+	} else if (attrStart !== src.length) {
+		throw new Error("Extra strings after the directive.");
 	}
 
-	const href = unescapeMd(src.slice(labelEnd + 2, srcEnd));
-	const label = unescapeMd(src.slice(typePart.length + 1, labelEnd));
-
-	return { type, label, href } as GenericDirective;
+	return { type, label, href, attrs } as GenericDirective;
 }
 
 /**
