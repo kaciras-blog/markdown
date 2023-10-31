@@ -10,16 +10,16 @@
 
 Markdown 到 HTML 的转换器，基于 [markdown-it](https://github.com/markdown-it/markdown-it)，并加入了一些插件：
 
-* Directive：解析 `@type[label](url)` 语法，默认将 `@video[]()`、`@audio[]()` 和 `@gif[]()` 渲染为对应的媒体元素。
-* Media：替代 Directive 插件和默认的图片渲染器，输出样式更好的 HTML，并支持懒加载。
-* Fence：替代默认的代码块渲染器，输出样式更好的 HTML。
-* TOC：[markdown-it-toc-done-right](https://github.com/nagaozen/markdown-it-toc-done-right)。
-* Footnote：[markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote)，调整了一些选项。
-* Anchor：[markdown-it-anchor](https://github.com/valeriangalliat/markdown-it-anchor)，调整了一些选项。
-* Classify：给行内代码加个 inline-code 类以便跟代码块区分。
-* UGC：给所有链接加上 rel="ugc,nofollow" 防止刷外链，推荐用于渲染用户的输入。
-* Collapsible：解析类似 HTML `<details>` 元素的语法，渲染出对应的元素，可在禁止直接写 HTML 的情况下使用。
-* highlight：基于 [highlight.js](https://github.com/highlightjs/highlight.js) 的语法高亮函数，添加了差分功能，并移除了一些不常用语言的支持。
+* directive：解析 `@type[label](url)` 语法，默认将 `@video[]()`、`@audio[]()` 和 `@gif[]()` 渲染为对应的媒体元素。
+* media：替代 directive 插件和默认的图片渲染器，输出样式更好的 HTML，并支持懒加载。
+* fence：替代默认的代码块渲染器，输出样式更好的 HTML。
+* toc：[markdown-it-toc-done-right](https://github.com/nagaozen/markdown-it-toc-done-right)。
+* footnote：[markdown-it-footnote](https://github.com/markdown-it/markdown-it-footnote)，调整了一些选项。
+* anchor：[markdown-it-anchor](https://github.com/valeriangalliat/markdown-it-anchor)，调整了一些选项。
+* classify：给行内代码加个 inline-code 类以便跟代码块区分。
+* ugc：给所有链接加上 rel="ugc,nofollow" 防止刷外链，推荐用于渲染用户的输入。
+* collapsible：解析类似 HTML `<details>` 元素的语法，渲染出对应的元素，可在禁止直接写 HTML 的情况下使用。
+* highlight：基于 [highlight.js](https://github.com/highlightjs/highlight.js) 的语法高亮函数，添加了差分功能，并移除了一些不常用的语言。
 
 ```
 pnpm i @kaciras-blog/markdown
@@ -34,11 +34,11 @@ pnpm i @kaciras-blog/markdown
 创建 MarkdownIt 实例并添加一些插件：
 
 ```typescript
-import { MarkdownIt, Media, Fence, highlight } from "@kaciras-blog/markdown";
+import { MarkdownIt, media, fence, highlight } from "@kaciras-blog/markdown";
 
-const md = new MarkdownIt();
-md.use(Media)
-md.use(Fence, highlight);
+const md = new MarkdownIt({ highlight });
+md.use(media)
+md.use(fence);
 
 console.log(md.render("![](img.png)\n\n```diff-html\n+foo\n-bar\n```"));
 ```

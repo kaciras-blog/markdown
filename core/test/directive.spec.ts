@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import MarkdownIt from "markdown-it/lib";
 import Token from "markdown-it/lib/token.js";
-import Directive from "../src/directive.ts";
+import directive from "../src/directive.ts";
 
 describe("tokenizer", () => {
 	let token: Token | null = null;
 	const markdownIt = new MarkdownIt();
-	markdownIt.use(Directive);
+	markdownIt.use(directive);
 
 	markdownIt.renderer.rules.directive = (t, i) => {
 		token = t[i];
@@ -61,7 +61,7 @@ describe("escaping", () => {
 	let token: Token;
 
 	const markdownIt = new MarkdownIt();
-	markdownIt.use(Directive);
+	markdownIt.use(directive);
 
 	markdownIt.renderer.rules.directive = (t, i) => {
 		token = t[i];
@@ -98,7 +98,7 @@ describe("escaping", () => {
 
 describe("default renderer", () => {
 	const markdownIt = new MarkdownIt();
-	markdownIt.use(Directive);
+	markdownIt.use(directive);
 
 	it("should cooperate with others", () => {
 		const markdown = `
@@ -143,7 +143,7 @@ text after
 it("should support render custom type", () => {
 	const markdownIt = new MarkdownIt();
 
-	markdownIt.use(Directive, {
+	markdownIt.use(directive, {
 		CUSTOM: (href, label) => `Custom [href=${href}, label=${label}]`,
 	});
 

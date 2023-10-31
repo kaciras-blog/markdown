@@ -1,19 +1,19 @@
 import MarkdownIt from "markdown-it";
-import TOC from "markdown-it-toc-done-right";
+import toc from "markdown-it-toc-done-right";
 import AnchorRaw from "markdown-it-anchor";
 import FootnoteRaw from "markdown-it-footnote";
-import Fence from "./web/fence.ts";
+import fence from "./web/fence.ts";
 import highlight from "./web/highlight.ts";
-import Media from "./web/media.ts";
-import Directive from "./directive.ts";
-import Collapsible from "./collapsible.ts";
+import media from "./web/media.ts";
+import directive from "./directive.ts";
+import collapsible from "./collapsible.ts";
 
 /**
  * 给所有链接加上 rel="ugc,nofollow" 防止刷外链，推荐用于渲染第三方输入。
  *
  * https://support.google.com/webmasters/answer/96569?hl=zh-Hans
  */
-export function UGC(markdownIt: MarkdownIt) {
+export function ugc(markdownIt: MarkdownIt) {
 	const { renderer } = markdownIt;
 	const raw = renderer.renderToken;
 
@@ -29,7 +29,7 @@ export function UGC(markdownIt: MarkdownIt) {
 /**
  * 给标题加上锚点，是对 markdown-it-anchor 的简单封装。
  */
-export function Anchor(markdownIt: MarkdownIt) {
+export function anchor(markdownIt: MarkdownIt) {
 	markdownIt.use<AnchorRaw.AnchorOptions>(AnchorRaw, {
 		permalink: AnchorRaw.permalink.linkInsideHeader({
 			placement: "after",
@@ -52,7 +52,7 @@ export function Anchor(markdownIt: MarkdownIt) {
  *
  * @see https://www.markdownguide.org/extended-syntax/#footnotes
  */
-export function Footnote(markdownIt: MarkdownIt) {
+export function footnote(markdownIt: MarkdownIt) {
 	markdownIt.use(FootnoteRaw);
 	const { rules } = markdownIt.renderer;
 
@@ -66,7 +66,7 @@ export function Footnote(markdownIt: MarkdownIt) {
 /**
  * 给行内代码加个 inline-code 类以便跟代码块区分。
  */
-export function Classify(markdownIt: MarkdownIt) {
+export function classify(markdownIt: MarkdownIt) {
 	const { rules } = markdownIt.renderer;
 	const raw = rules.code_inline!;
 
@@ -99,22 +99,22 @@ export interface PresetOptions {
  */
 export function kfmPreset(markdownIt: MarkdownIt, options: PresetOptions = {}) {
 	if (options.plain) {
-		markdownIt.use(Directive);
+		markdownIt.use(directive);
 	} else {
 		if (!options.guest) {
-			markdownIt.use(Anchor);
+			markdownIt.use(anchor);
 		}
 		markdownIt.options.highlight ??= highlight;
-		markdownIt.use(Fence);
-		markdownIt.use(Media);
-		markdownIt.use(Classify);
+		markdownIt.use(fence);
+		markdownIt.use(media);
+		markdownIt.use(classify);
 	}
 
 	if (options.guest) {
-		markdownIt.use(UGC);
+		markdownIt.use(ugc);
 	} else {
-		markdownIt.use(TOC);
+		markdownIt.use(toc);
 	}
 
-	return markdownIt.use(Footnote).use(Collapsible);
+	return markdownIt.use(footnote).use(collapsible);
 }

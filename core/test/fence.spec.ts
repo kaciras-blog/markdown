@@ -1,11 +1,11 @@
 import { expect, it, vi } from "vitest";
-import fencePlugin from "../src/web/fence.ts";
 import MarkdownIt from "markdown-it";
 import { identity } from "@kaciras/utilities/node";
+import fence from "../src/web/fence.ts";
 
 const fn = vi.fn(identity);
 const md = new MarkdownIt({ highlight: fn });
-md.use(fencePlugin);
+md.use(fence);
 
 it("should work without language", () => {
 	md.render("```\nTest\n```");

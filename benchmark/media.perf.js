@@ -1,6 +1,6 @@
 import { performance } from "perf_hooks";
 import { readFileSync } from "fs";
-import { Footnote, MarkdownIt, Media, TOC } from "@kaciras-blog/markdown";
+import { footnote, MarkdownIt, media, toc } from "@kaciras-blog/markdown";
 
 /*
  * JS 写的解析器（356.02ms）比正则（56.43ms）慢了7倍。
@@ -8,9 +8,9 @@ import { Footnote, MarkdownIt, Media, TOC } from "@kaciras-blog/markdown";
  */
 
 const markdownIt = new MarkdownIt();
-markdownIt.use(TOC);
-markdownIt.use(Media);
-markdownIt.use(Footnote);
+markdownIt.use(toc);
+markdownIt.use(media);
+markdownIt.use(footnote);
 
 function run(name, text) {
 

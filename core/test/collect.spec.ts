@@ -1,13 +1,13 @@
 import { expect, it, vi } from "vitest";
 import MarkdownIt from "markdown-it";
-import Directive from "../src/directive.ts";
-import Collect from "../src/collect.ts";
+import directive from "../src/directive.ts";
+import collect from "../src/collect.ts";
 
 it("should collect file links", () => {
 	const handler = vi.fn();
 	const markdownIt = new MarkdownIt();
-	markdownIt.use(Directive);
-	markdownIt.use(Collect, handler);
+	markdownIt.use(directive);
+	markdownIt.use(collect, handler);
 
 	const lines = [
 		"[](//example.com:123/some-file)",

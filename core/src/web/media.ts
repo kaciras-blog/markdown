@@ -1,6 +1,6 @@
 import type MarkdownIt from "markdown-it";
 import type Token from "markdown-it/lib/token.js";
-import { default as Directive, DirectiveMap } from "../directive.js";
+import { default as directive, DirectiveMap } from "../directive.js";
 
 /**
  * 从资源的链接参数（?vw=...&vh=...）里读取尺寸，生成防抖容器的 style 属性。
@@ -117,6 +117,6 @@ const mediaMap: DirectiveMap = {
  * 添加该插件会同时添加 Directive 插件。
  */
 export default function (markdownIt: MarkdownIt) {
-	markdownIt.use(Directive, mediaMap);
+	markdownIt.use(directive, mediaMap);
 	markdownIt.renderer.rules.image = renderImage.bind(markdownIt);
 }

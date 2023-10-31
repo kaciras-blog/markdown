@@ -1,9 +1,9 @@
 import MarkdownIt from "markdown-it/lib";
 import { expect, it } from "vitest";
-import Collapsible from "../src/collapsible.ts";
+import collapsible from "../src/collapsible.ts";
 
 const markdownIt = new MarkdownIt();
-markdownIt.use(Collapsible);
+markdownIt.use(collapsible);
 
 function t(input: string, expected: string) {
 	expected = expected.slice(1); // 移除开头的空行。
