@@ -13,8 +13,8 @@ import collapsible from "./collapsible.ts";
  *
  * https://support.google.com/webmasters/answer/96569?hl=zh-Hans
  */
-export function ugc(markdownIt: MarkdownIt) {
-	const { renderer } = markdownIt;
+export function ugc(md: MarkdownIt) {
+	const { renderer } = md;
 	const raw = renderer.renderToken;
 
 	renderer.renderToken = function (tokens, idx, options) {
@@ -29,8 +29,8 @@ export function ugc(markdownIt: MarkdownIt) {
 /**
  * 给标题加上锚点，是对 markdown-it-anchor 的简单封装。
  */
-export function anchor(markdownIt: MarkdownIt) {
-	markdownIt.use<AnchorRaw.AnchorOptions>(AnchorRaw, {
+export function anchor(md: MarkdownIt) {
+	md.use<AnchorRaw.AnchorOptions>(AnchorRaw, {
 		permalink: AnchorRaw.permalink.linkInsideHeader({
 			placement: "after",
 			class: "anchor-link",
@@ -52,9 +52,9 @@ export function anchor(markdownIt: MarkdownIt) {
  *
  * @see https://www.markdownguide.org/extended-syntax/#footnotes
  */
-export function footnote(markdownIt: MarkdownIt) {
-	markdownIt.use(FootnoteRaw);
-	const { rules } = markdownIt.renderer;
+export function footnote(md: MarkdownIt) {
+	md.use(FootnoteRaw);
+	const { rules } = md.renderer;
 
 	rules.footnote_block_open = () => (
 		"<h2 class='footnotes'></h2>" +
@@ -66,14 +66,14 @@ export function footnote(markdownIt: MarkdownIt) {
 /**
  * 给行内代码加个 inline-code 类以便跟代码块区分。
  */
-export function classify(markdownIt: MarkdownIt) {
-	const { rules } = markdownIt.renderer;
+export function classify(md: MarkdownIt) {
+	const { rules } = md.renderer;
 	const raw = rules.code_inline!;
 
-	rules.code_inline = (tokens, idx, options, env, self) => {
+	rules.code_inline = function (tokens, idx, ...rest) {
 		const token = tokens[idx];
 		token.attrPush(["class", "inline-code"]);
-		return raw(tokens, idx, options, env, self);
+		return raw.call(this, tokens, idx, ...rest);
 	};
 }
 
@@ -97,24 +97,24 @@ export interface PresetOptions {
 /**
  * 一次性添加其他所有 KFM 插件的插件，用于一些常见情况。
  */
-export function kfmPreset(markdownIt: MarkdownIt, options: PresetOptions = {}) {
+export function kfmPreset(md: MarkdownIt, options: PresetOptions = {}) {
 	if (options.plain) {
-		markdownIt.use(directive);
+		md.use(directive);
 	} else {
 		if (!options.guest) {
-			markdownIt.use(anchor);
+			md.use(anchor);
 		}
-		markdownIt.options.highlight ??= highlight;
-		markdownIt.use(fence);
-		markdownIt.use(media);
-		markdownIt.use(classify);
+		md.options.highlight ??= highlight;
+		md.use(fence);
+		md.use(media);
+		md.use(classify);
 	}
 
 	if (options.guest) {
-		markdownIt.use(ugc);
+		md.use(ugc);
 	} else {
-		markdownIt.use(toc);
+		md.use(toc);
 	}
 
-	return markdownIt.use(footnote).use(collapsible);
+	return md.use(footnote).use(collapsible);
 }

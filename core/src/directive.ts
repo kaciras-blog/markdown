@@ -189,8 +189,8 @@ export const defaultDirectiveMap: Readonly<DirectiveMap> = {
 	},
 };
 
-export default function (markdownIt: MarkdownIt, map = defaultDirectiveMap) {
-	markdownIt.renderer.rules.directive = (tokens, idx) => {
+export default function (md: MarkdownIt, map = defaultDirectiveMap) {
+	md.renderer.rules.directive = (tokens, idx) => {
 		const token = tokens[idx];
 		const { tag, content } = token;
 		const href = token.attrGet("href")!;
@@ -200,8 +200,8 @@ export default function (markdownIt: MarkdownIt, map = defaultDirectiveMap) {
 			return `[Unknown directive: ${tag}]`;
 		}
 
-		return renderFn(checkLink(markdownIt, href), content, markdownIt);
+		return renderFn(checkLink(md, href), content, md);
 	};
 
-	markdownIt.block.ruler.before("html_block", "directive", parse);
+	md.block.ruler.before("html_block", "directive", parse);
 }

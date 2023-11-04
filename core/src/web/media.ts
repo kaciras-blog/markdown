@@ -12,14 +12,13 @@ function getSizeStyle(url: string) {
 	const urlParams = new URLSearchParams(url.split("?")[1]);
 
 	// parseFloat(null) 返回 NaN 也是可以的
-	const width = parseFloat(urlParams.get("vw")!);
+	const vw = parseFloat(urlParams.get("vw")!);
+	const vh = parseFloat(urlParams.get("vh")!);
 
-	const height = parseFloat(urlParams.get("vh")!);
-
-	if (!(width && height)) {
+	if (!(vw && vh)) {
 		return "";
 	}
-	return `style='--width:${width}px;--aspect:${width}/${height}'`;
+	return `style='--width:${vw}px;--aspect:${vw}/${vh}'`;
 }
 
 /**
@@ -116,7 +115,7 @@ const mediaMap: DirectiveMap = {
  *
  * 添加该插件会同时添加 Directive 插件。
  */
-export default function (markdownIt: MarkdownIt) {
-	markdownIt.use(directive, mediaMap);
-	markdownIt.renderer.rules.image = renderImage.bind(markdownIt);
+export default function (md: MarkdownIt) {
+	md.use(directive, mediaMap);
+	md.renderer.rules.image = renderImage.bind(md);
 }

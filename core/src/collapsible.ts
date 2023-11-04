@@ -76,7 +76,7 @@ function parseSummary(state: StateBlock, startLine: number, endLine: number) {
 	return true;
 }
 
-export default function (markdownIt: MarkdownIt) {
-	markdownIt.block.ruler.before("fence", "collapsible", parse);
-	markdownIt.block.ruler.before("fence", "summary", parseSummary);
+export default function (md: MarkdownIt) {
+	md.block.ruler.before("fence", "collapsible", parse);
+	md.block.ruler.before("fence", "summary", parseSummary);
 }

@@ -4,10 +4,10 @@ import MarkdownIt from "markdown-it";
 /**
  * 检查文本中所有文件链接的插件，文件链接包括链接的 href，以及媒体的源。
  *
- * @param markdownIt 要安装到的 MarkdownIt 对象。
+ * @param md 要安装到的 MarkdownIt 对象。
  * @param handler 找到的链接将传递给这个函数。
  */
-export default function (markdownIt: MarkdownIt, handler: (url: string) => void) {
+export default function (md: MarkdownIt, handler: (url: string) => void) {
 
 	function check(tokens: Token[]) {
 		for (const token of tokens) {
@@ -26,5 +26,5 @@ export default function (markdownIt: MarkdownIt, handler: (url: string) => void)
 		}
 	}
 
-	markdownIt.core.ruler.push("collect-links", s => check(s.tokens));
+	md.core.ruler.push("collect-links", s => check(s.tokens));
 }
