@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import MarkdownIt from "markdown-it/lib";
+import MarkdownIt from "markdown-it";
 import Token from "markdown-it/lib/token.js";
 import directive from "../src/directive.ts";
 

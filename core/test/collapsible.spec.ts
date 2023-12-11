@@ -1,4 +1,4 @@
-import MarkdownIt from "markdown-it/lib";
+import MarkdownIt from "markdown-it";
 import { expect, it } from "vitest";
 import collapsible from "../src/collapsible.ts";
 

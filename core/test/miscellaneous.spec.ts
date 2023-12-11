@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import MarkdownIt from "markdown-it/lib";
+import MarkdownIt from "markdown-it";
 import { anchor, classify, footnote, ugc } from "../src/index.ts";
 
 it("should set the attribute", () => {

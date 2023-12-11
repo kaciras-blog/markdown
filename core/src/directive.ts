@@ -23,7 +23,7 @@
  * https://gitlab.com/help/user/markdown#videos
  */
 import MarkdownIt from "markdown-it";
-import { unescapeMd } from "markdown-it/lib/common/utils.js";
+import { unescapeMd } from "markdown-it/lib/common/utils.mjs";
 import StateBlock from "markdown-it/lib/rules_block/state_block.js";
 
 function parse(state: StateBlock, startLine: number, _: number, silent: boolean) {
