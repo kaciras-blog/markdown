@@ -229,7 +229,7 @@ onMounted(() => {
 		lineHeight: 22,
 		fontSize: 16,
 		// 光标所在的句子（双击会选中的）不高亮。
-		occurrencesHighlight: false,
+		occurrencesHighlight: "off",
 		scrollbar: {
 			useShadows: false,
 		},

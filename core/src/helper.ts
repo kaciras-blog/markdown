@@ -52,7 +52,7 @@ export function getEmphasis(text: string): [Emphasis, number] {
 		}
 		if (c !== prev) {
 			const w = check();
-			if (w === 0) {
+			if (w === Emphasis.None) {
 				break;
 			}
 			repeat = 0;
