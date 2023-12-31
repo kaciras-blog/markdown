@@ -234,10 +234,6 @@ onMounted(() => {
 			useShadows: false,
 		},
 		wordSeparators: WORD_SEPARATORS,
-		// Markdown 标记很少，就不高亮易混淆字符了。
-		unicodeHighlight: {
-			ambiguousCharacters: false,
-		},
 		...addonContext.options.value,
 	});
 
