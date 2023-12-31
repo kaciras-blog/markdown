@@ -228,8 +228,6 @@ onMounted(() => {
 		// 太挤看得累，增大点，跟我的 VSCode 一致。
 		lineHeight: 22,
 		fontSize: 16,
-		// 光标所在的句子（双击会选中的）不高亮。
-		occurrencesHighlight: "off",
 		scrollbar: {
 			useShadows: false,
 		},
