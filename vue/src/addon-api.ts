@@ -108,6 +108,9 @@ class InsertCommand implements ICommand {
 
 const kContext = Symbol();
 
+/**
+ * 获取用于跟 MarkdownEditor 交互的对象, 仅在 MarkdownEditor 的 Slot 内可用.
+ */
 export function useAddonContext() {
 	return inject<AddonContext>(kContext)!;
 }

@@ -9,7 +9,9 @@ export enum Emphasis {
 /**
  * 搜索一段文本所有的强调，强调是指两端具有对称字符的语法，如 **bold**, `code` 等等。
  *
- * @return [强调类型, 强调字符串的长度（一侧）] 二元组。
+ * @return [强调类型, 强调字符串的长度] 二元组。
+ * @example
+ * getEmphasis("`**text**`") // [Emphasis.Bold | Emphasis.Code, 3]
  */
 export function getEmphasis(text: string): [Emphasis, number] {
 	let emphasis = Emphasis.None;

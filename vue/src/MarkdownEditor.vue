@@ -9,10 +9,10 @@
 		<div
 			v-show='viewMode !== ViewMode.Preview'
 			ref='editorEl'
-			:class='{
-				[$style.editor]: true,
-				[$style.single]: viewMode === ViewMode.Edit,
-			}'
+			:class='[
+				$style.editor,
+				viewMode === ViewMode.Edit && $style.single,
+			]'
 			@dragover.prevent
 			@drop='handleDrop'
 		/>
@@ -21,10 +21,10 @@
 			ref='previewEl'
 			:renderer='renderer'
 			:value='debounced'
-			:class='{
-				[$style.preview]: true,
-				[$style.single]: viewMode === ViewMode.Preview,
-			}'
+			:class='[
+				$style.preview,
+				viewMode === ViewMode.Preview && $style.single,
+			]'
 			@scroll='scrollEditorToPreview'
 		/>
 
@@ -102,7 +102,7 @@ export interface MarkdownEditorProps {
 const WORD_SEPARATORS =
 	'`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?'	// USUAL_WORD_SEPARATORS
 	+ "·！￥…*（）—【】：；‘’“”、《》，。？"	// 中文符号。
-	+ "「」｛｝＜＞・～＠＃＄％＾＆＊＝『』";	// 日韩符号，去除了跟中文重复的。
+	+ "「」｛｝＜＞・～＠＃＄％＾＆＊＝『』";	// 日韩符号。
 
 const props = withDefaults(defineProps<MarkdownEditorProps>(), {
 	debounce: 500,
@@ -213,9 +213,7 @@ watch(scrollSynced, enabled => {
 	}
 });
 
-watch(addonContext.options,
-	value => editor.updateOptions(value),
-	{ deep: true });
+watch(addonContext.options, o => editor.updateOptions(o), { deep: true });
 
 onUnmounted(() => editor.dispose());
 
@@ -223,7 +221,7 @@ onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
 		value: content.value,
 		language: "markdown",
-		// 太挤看得累，增大点，跟我的 VSCode 一致。
+		// 要写方块字（CJK）的话最好调大点。
 		lineHeight: 22,
 		fontSize: 16,
 		scrollbar: {
