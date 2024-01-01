@@ -50,7 +50,7 @@ tokenizer.root.unshift([
 
 <script setup lang='ts'>
 import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } from "vue";
-import { refDebounced, useVModel } from "@vueuse/core";
+import { refDebounced } from "@vueuse/core";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
 import "monaco-editor/esm/vs/base/browser/ui/codicons/codiconStyles.js";
@@ -77,10 +77,6 @@ import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
 export type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
 export interface MarkdownEditorProps {
-	/**
-	 * 文本内容，目前还不支持从外部修改此属性。
-	 */
-	modelValue: string;
 
 	/**
 	 * Markdown 渲染器，可以为 MarkdownIt 的实例。
@@ -113,9 +109,11 @@ const props = withDefaults(defineProps<MarkdownEditorProps>(), {
 	dropHandler: () => false,
 });
 
-const emit = defineEmits(["update:modelValue"]);
+/**
+ * 文本内容，目前仅用于设置初值，任何后续修改都无法反映到编辑器上。
+ */
+const content = defineModel<string>({ required: true });
 
-const content = useVModel(props, "modelValue", emit);
 const debounced = refDebounced(content, props.debounce);
 const editorEl = shallowRef<HTMLElement>();
 const previewEl = shallowRef<ComponentPublicInstance>();
