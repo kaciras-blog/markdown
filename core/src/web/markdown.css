@@ -138,6 +138,7 @@ $table-border-width: 1px;
 
 		border-radius: 5px;
 		cursor: pointer;
+		color: #222;
 		background: $details-color;
 	}
 }
