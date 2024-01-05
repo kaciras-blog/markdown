@@ -32,7 +32,7 @@ import {
 	MediaWeights,
 	memoryMediaStore,
 	SelectionWeight,
-} from "../src/entry-index.ts";
+} from "../src/index.ts";
 import document from "./KFM-zh.md?raw";
 
 const content = shallowRef(document);
