@@ -7,6 +7,14 @@ import packageJson from "./package.json" assert { type: "json" };
 
 const deps = Object.keys(packageJson.dependencies);
 
+/**
+ * 通过 Rollup 的 manualChunk 手动配置下 Chunk 的名字，避免 vue 文件产生额外的 JS 文件。
+ * 22 年的问题到现在都不解决：https://github.com/vitejs/vite-plugin-vue/issues/19
+ */
+function preventReExports(id: string) {
+	return /(MarkdownView|MarkdownBox)\.vue/.exec(id)?.[1];
+}
+
 export default defineConfig(({ mode }) => {
 	const overrides = defineConfig({
 		base: "",
@@ -38,20 +46,21 @@ export default defineConfig(({ mode }) => {
 		rollupOptions: {
 			output: {
 				hoistTransitiveImports: false,
+				manualChunks: preventReExports,
 			},
 			external: new RegExp(`^(?:${deps.join("|")})`),
-		},
-		lib: {
-			formats: ["es"],
-			entry: [
-				"src/entry-view.ts",
-				"src/entry-box.ts",
-				"src/entry-index.ts",
-			],
 		},
 		target: "esnext",
 		outDir: "lib",
 		copyPublicDir: false,
+		lib: {
+			formats: ["es"],
+			entry: [
+				"src/index.ts",
+				"src/MarkdownView.vue",
+				"src/MarkdownBox.vue",
+			],
+		},
 	};
 
 	if (mode !== "lib") {

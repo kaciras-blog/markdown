@@ -9,9 +9,9 @@
 	},
 	"exports": {
 		"./style.css": "./lib/style.css",
-		".": "./lib/entry-index.js",
-		"./box": "./lib/entry-box.js",
-		"./view": "./lib/entry-view.js"
+		".": "./lib/index.js",
+		"./box": "./lib/MarkdownBox.js",
+		"./view": "./lib/MarkdownView.js"
 	},
 	"type": "module",
 	"files": [
