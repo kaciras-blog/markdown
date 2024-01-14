@@ -92,7 +92,7 @@ export function parseGenericDirective(line: string) {
 }
 
 /**
- * 解析左右分别是正反括号的内容，找到结束的位置，支持括号计数和斜杠转义。
+ * 解析左右分别是正反括号的内容，找到结束的位置，支持配对计数和斜杠转义。
  *
  * @param src 文本
  * @param i 起始位置

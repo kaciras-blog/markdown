@@ -39,6 +39,11 @@
 <script lang='ts'>
 import * as md from "monaco-editor/esm/vs/basic-languages/markdown/markdown.js";
 
+const WORD_SEPARATORS =
+	'`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?'	// USUAL_WORD_SEPARATORS
+	+ "·！￥…*（）—【】：；‘’“”、《》，。？"	// 中文符号。
+	+ "「」｛｝＜＞・～＠＃＄％＾＆＊＝『』";	// 日韩符号。
+
 // 给自定义的两个语法 TOC 和 Directive 添加解析支持。
 const { tokenizer } = md.language;
 tokenizer.root.unshift([/^(\[\[TOC]])/, ["keyword.toc"]]);
@@ -61,12 +66,6 @@ import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
 import MarkdownView, { Renderer } from "./MarkdownView.vue";
 import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
 
-/*
- * TODO: 如果不导出 props 的类型则构建时会报错:
- *       Default export of the module has or is using private name.
- *       而且导出的成员必须放在最前，这是什么奇怪的规则？
- */
-
 /**
  * TODO: monaco 默认光标不随拖拽而移动，dnd 插件没有公开 API，插入点会有问题。
  *
@@ -74,7 +73,7 @@ import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
  * @param ctx 编辑器上下文
  * @return true 表示已经处理完成，无需再执行默认的行为。
  */
-export type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
+type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 
 export interface MarkdownEditorProps {
 
@@ -98,11 +97,6 @@ export interface MarkdownEditorProps {
 	 */
 	dropHandler?: DropHandler;
 }
-
-const WORD_SEPARATORS =
-	'`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?'	// USUAL_WORD_SEPARATORS
-	+ "·！￥…*（）—【】：；‘’“”、《》，。？"	// 中文符号。
-	+ "「」｛｝＜＞・～＠＃＄％＾＆＊＝『』";	// 日韩符号。
 
 const props = withDefaults(defineProps<MarkdownEditorProps>(), {
 	debounce: 500,

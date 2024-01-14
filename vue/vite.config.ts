@@ -8,7 +8,7 @@ import packageJson from "./package.json" assert { type: "json" };
 const deps = Object.keys(packageJson.dependencies);
 
 /**
- * 通过 Rollup 的 manualChunk 手动配置下 Chunk 的名字，避免 vue 文件产生额外的 JS 文件。
+ * 通过 Rollup 的 manualChunk 手动配置下文件名，避免 Vue 产生额外的 JS 文件。
  * 22 年的问题到现在都不解决：https://github.com/vitejs/vite-plugin-vue/issues/19
  */
 function preventReExports(id: string) {

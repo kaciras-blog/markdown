@@ -29,11 +29,7 @@ function getSizeStyle(url: string) {
  * 似乎并不能代替 <img> + <span>。
  *
  * 【防止布局抖动】
- * 通过 URL 里携带的宽高信息，设置图片的大小和宽高比，防止加载后元素尺寸的变化。
- * 下面的 GIF 视频同理。
- *
- * 详细的原理见：
- * https://blog.kaciras.com/article/18/add-video-support-to-markdown
+ * 通过 URL 里携带的宽高信息，设置图片的宽高比，防止布局抖动，下面的 GIF 视频同理。
  *
  * 【加载指示器】
  * 图片本身就有在不完全加载的时的显示方式，比如从上往下显示或者渐进式图片。
