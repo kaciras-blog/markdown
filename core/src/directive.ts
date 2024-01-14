@@ -34,7 +34,7 @@ function parse(state: StateBlock, startLine: number, _: number, silent: boolean)
 
 	let directive: GenericDirective;
 	try {
-		directive = tokenize(src);
+		directive = parseGenericDirective(src);
 	} catch (e) {
 		return false;
 	}
@@ -52,7 +52,7 @@ function parse(state: StateBlock, startLine: number, _: number, silent: boolean)
 	return true;
 }
 
-interface GenericDirective {
+export interface GenericDirective {
 	type: string;
 	label: string;
 	href: string;
@@ -60,34 +60,31 @@ interface GenericDirective {
 }
 
 /**
- * 解析指令语法，从中提取出各个部分并处理转义。
+ * 解析指令语法，从中提取出各个部分并处理转义，详解见：
+ * https://blog.kaciras.com/article/18/add-video-support-to-markdown
  *
- * 【坑爹的兼容性】
- * 原本是用环视处理转义，不支持括号计数，直接一个正则就能搞定。
- * 但是傻逼 Safari 不支持环视，非要让劳资手写 Parser 艹。
- *
- * @param src 待解析的文本
+ * @param line 待解析的文本
  * @return 包含各个部分的对象
  * @throws 如果给定的文本不符合指令语法
  */
-function tokenize(src: string) {
-	const match = /^@([a-z][a-z0-9\-_]*)/i.exec(src);
+export function parseGenericDirective(line: string) {
+	const match = /^@([a-z][a-z0-9\-_]*)/i.exec(line);
 	if (!match) {
 		throw new Error("Not a directive syntax.");
 	}
 
-	const [typePart, type] = match;
-	const labelEnd = readBracket(src, typePart.length, 0x5B, 0x5D);
-	const srcEnd = readBracket(src, labelEnd + 1, 0x28, 0x29);
+	const [{ length }, type] = match;
+	const labelEnd = readBracket(line, length, 0x5B, 0x5D);
+	const hrefEnd = readBracket(line, labelEnd + 1, 0x28, 0x29);
 
-	const label = unescapeMd(src.slice(typePart.length + 1, labelEnd));
-	const href = unescapeMd(src.slice(labelEnd + 2, srcEnd));
+	const label = unescapeMd(line.slice(length + 1, labelEnd));
+	const href = unescapeMd(line.slice(labelEnd + 2, hrefEnd));
 
-	const attrStart = srcEnd + 1;
+	const attrStart = hrefEnd + 1;
 	let attrs = {};
-	if (src.charCodeAt(attrStart) === 123 /* { */) {
-		attrs = JSON.parse(src.slice(attrStart));
-	} else if (attrStart !== src.length) {
+	if (line.charCodeAt(attrStart) === 123 /* { */) {
+		attrs = JSON.parse(line.slice(attrStart));
+	} else if (attrStart !== line.length) {
 		throw new Error("Extra strings after the directive.");
 	}
 
@@ -112,10 +109,9 @@ function readBracket(src: string, i: number, open: number, close: number) {
 	}
 
 	let level = 1;
-
 	while (++i < src.length) {
 		switch (src.charCodeAt(i)) {
-			case 0x5C:
+			case 0x5C /* \ */:
 				++i;
 				break;
 			case open:
@@ -127,7 +123,6 @@ function readBracket(src: string, i: number, open: number, close: number) {
 		}
 		if (level === 0) return i;
 	}
-
 	throw new Error(`Bracket count does not match, level=${level}`);
 }
 
@@ -138,7 +133,7 @@ function readBracket(src: string, i: number, open: number, close: number) {
  * @param link 需要检查的链接
  * @return 安全的链接，可以直接写进HTML
  */
-export function checkLink(md: MarkdownIt, link: string) {
+function checkLink(md: MarkdownIt, link: string) {
 	link = md.normalizeLink(link);
 	return md.validateLink(link) ? link : "";
 }
@@ -199,7 +194,6 @@ export default function (md: MarkdownIt, map = defaultDirectiveMap) {
 		if (!renderFn) {
 			return `[Unknown directive: ${tag}]`;
 		}
-
 		return renderFn(checkLink(md, href), content, md);
 	};
 
