@@ -104,7 +104,7 @@ const props = withDefaults(defineProps<MarkdownEditorProps>(), {
 });
 
 /**
- * 文本内容，目前仅用于设置初值，任何后续修改都无法反映到编辑器上。
+ * 编辑的文本，从外部修改会导致编辑状态（光标、滚动条等等）重置。
  */
 const content = defineModel<string>({ required: true });
 
@@ -115,6 +115,9 @@ const viewMode = shallowRef(ViewMode.Split);
 const scrollSynced = shallowRef(true);
 
 let editor: monaco.editor.IStandaloneCodeEditor = undefined!;
+
+// 保存当前内容的副本，用于判断 content 是由外部还是这里修改的。
+let contentSnapshot = content.value;
 
 const addonContext: AddonContext = <any>{
 	options: ref({
@@ -129,8 +132,6 @@ const addonContext: AddonContext = <any>{
 };
 
 createAddonContext(addonContext);
-
-watch(viewMode, () => nextTick(() => editor.layout()));
 
 function handleDrop(event: DragEvent) {
 	const { files } = event.dataTransfer!;
@@ -206,8 +207,9 @@ watch(scrollSynced, enabled => {
 		scrollEditorToPreview();
 	}
 });
-
 watch(addonContext.options, o => editor.updateOptions(o), { deep: true });
+watch(viewMode, () => nextTick(() => editor.layout()));
+watch(content, value => value !== contentSnapshot && editor.setValue(value));
 
 onUnmounted(() => editor.dispose());
 
@@ -228,10 +230,7 @@ onMounted(() => {
 	addonContext.editor = editor;
 
 	editor.onDidChangeModelContent(() => {
-		content.value = editor.getValue({
-			lineEnding: "\n",
-			preserveBOM: false,
-		});
+		content.value = contentSnapshot = editor.getModel()!.getValue(1, false);
 	});
 
 	editor.onDidChangeCursorSelection(e => {
