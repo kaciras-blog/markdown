@@ -63,6 +63,7 @@ import "monaco-editor/esm/vs/editor/contrib/wordOperations/browser/wordOperation
 import "monaco-editor/esm/vs/editor/contrib/linesOperations/browser/linesOperations.js";
 import "monaco-editor/esm/vs/editor/contrib/dnd/browser/dnd.js";
 import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
+import "monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js";
 import MarkdownView, { Renderer } from "./MarkdownView.vue";
 import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
 
@@ -80,8 +81,6 @@ export interface MarkdownEditorProps {
 	/**
 	 * Markdown 渲染器，可以为 MarkdownIt 的实例。
 	 * 如果是字符串则使用 @kaciras-blog/markdown/presets 里对应的。
-	 *
-	 * @default "guest"
 	 */
 	renderer?: Renderer;
 
@@ -230,7 +229,7 @@ onMounted(() => {
 	addonContext.editor = editor;
 
 	editor.onDidChangeModelContent(() => {
-		content.value = contentSnapshot = editor.getModel()!.getValue(1, false);
+		content.value = contentSnapshot = editor.getModel()!.getValue(1);
 	});
 
 	editor.onDidChangeCursorSelection(e => {
