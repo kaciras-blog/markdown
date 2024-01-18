@@ -10,6 +10,13 @@
 			<MediaWeights v-bind='memoryMediaStore'/>
 		</template>
 		<template #toolbar-right>
+			<ToolButton
+				title='重置内容'
+				@click='content = document'
+			>
+				<IconX/>
+			</ToolButton>
+			<VerticalSeparator/>
 			<ConfigWeights></ConfigWeights>
 		</template>
 
@@ -24,7 +31,8 @@
 </template>
 
 <script setup lang='ts'>
-import { shallowRef } from "vue";
+import { useLocalStorage } from "@vueuse/core";
+import { IconX } from "@tabler/icons-vue";
 import {
 	BaseSyntaxWeights,
 	ConfigWeights,
@@ -32,10 +40,14 @@ import {
 	MediaWeights,
 	memoryMediaStore,
 	SelectionWeight,
+	ToolButton,
+	VerticalSeparator,
 } from "../src/index.ts";
 import document from "./KFM-zh.md?raw";
 
-const content = shallowRef(document);
+const content = useLocalStorage("Content", document, {
+	writeDefaults: false,
+});
 </script>
 
 <style>
