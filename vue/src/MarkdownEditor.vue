@@ -280,14 +280,13 @@ onMounted(() => {
 
 .single {
 	grid-column: 1/3;
+	justify-self: center;
 
 	@media (min-width: 768px) {
-		margin-left: 10%;
-		margin-right: 10%;
+		width: 80%;
 	}
 	@media (min-width: 1200px) {
-		margin-left: 16%;
-		margin-right: 16%;
+		width: 900px;
 	}
 }
 </style>
