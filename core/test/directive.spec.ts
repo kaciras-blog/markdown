@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import MarkdownIt from "markdown-it";
 import Token from "markdown-it/lib/token.js";
-import directive from "../src/directive.ts";
+import directive, { DirectiveMap } from "../src/directive.ts";
 
 describe("tokenizer", () => {
 	let token: Token | null = null;
@@ -143,7 +143,7 @@ text after
 it("should support render custom type", () => {
 	const markdownIt = new MarkdownIt();
 
-	markdownIt.use(directive, {
+	markdownIt.use<DirectiveMap>(directive, {
 		CUSTOM: (href, label) => `Custom [href=${href}, label=${label}]`,
 	});
 

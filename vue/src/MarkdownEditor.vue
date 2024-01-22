@@ -69,6 +69,7 @@ import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
 
 /**
  * TODO: monaco 默认光标不随拖拽而移动，dnd 插件没有公开 API，插入点会有问题。
+ * https://github.com/microsoft/monaco-editor/issues/3359
  *
  * @param files 拖放到编辑器的文件列表
  * @param ctx 编辑器上下文
@@ -113,7 +114,7 @@ const previewEl = shallowRef<ComponentPublicInstance>();
 const viewMode = shallowRef(ViewMode.Split);
 const scrollSynced = shallowRef(true);
 
-let editor: monaco.editor.IStandaloneCodeEditor = undefined!;
+let editor: monaco.editor.IStandaloneCodeEditor;
 
 // 保存当前内容的副本，用于判断 content 是由外部还是这里修改的。
 let contentSnapshot = content.value;
@@ -125,7 +126,6 @@ const addonContext: AddonContext = <any>{
 	}),
 	viewMode,
 	scrollSynced,
-	editor,
 	text: content,
 	selection: shallowRef(new monaco.Selection(0, 0, 0, 0)),
 };
