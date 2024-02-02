@@ -6,6 +6,11 @@
 	aspect-ratio: var(--aspect);
 }
 
+/* 包裹图片的 <a>，阻隔了 flex 所以得传透下 */
+.md-inspect {
+	max-width: 100%;
+}
+
 .md-img {
 	display: block;
 	resize: none;
@@ -16,7 +21,7 @@
 	height: 360px;
 }
 
-/* 中文斜体不好看，还是别乱加样式了 */
+/* 方块字不适合斜体，还是别乱加样式了 */
 .md-alt {
 	padding-top: .5em;
 

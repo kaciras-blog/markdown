@@ -42,9 +42,9 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
 
 	// MarkdownIt 遵守 CommonMark 规范对单引号不转义，所以 alt 必须用双引号。
 	return $HTML`
-		<span class='center-wrapper'>
+		<span class='md-center' ${getSizeStyle(src)}>
 			<a
-				${getSizeStyle(src)}
+				class='md-inspect'
 				href="${src}"
 				target='_blank'
 				rel='noopener,nofollow'
@@ -66,7 +66,7 @@ const mediaMap: DirectiveMap = {
 	gif(src, alt, md) {
 		alt = md.utils.escapeHtml(alt);
 		return $HTML`
-			<p class='center-wrapper' ${getSizeStyle(src)}>
+			<p class='md-center' ${getSizeStyle(src)}>
 				<video
 					class='gif'
 					crossorigin
@@ -84,7 +84,7 @@ const mediaMap: DirectiveMap = {
 			poster = "";
 		}
 		return $HTML`
-			<p class='center-wrapper'>
+			<p class='md-center'>
 				<video 
 					class='md-video'
 					controls
@@ -98,7 +98,7 @@ const mediaMap: DirectiveMap = {
 	audio(src, alt, md) {
 		alt = md.utils.escapeHtml(alt);
 		return $HTML`
-			<p class='center-wrapper'>
+			<p class='md-center'>
 				<audio controls data-src="${src}" crossorigin/>
 				${alt ? `<span class='md-alt'>${alt}</span>` : ""}
 			</p>`;
