@@ -15,10 +15,6 @@ export default defineConfig({
 	},
 	build: {
 		rollupOptions: {
-			// 导入提升对库没有意义，还会干扰使用方构建。
-			output: {
-				hoistTransitiveImports: false,
-			},
 			treeshake: {
 				moduleSideEffects: "no-external",
 			},

@@ -45,7 +45,6 @@ export default defineConfig(({ mode }) => {
 	coreConfig.build = {
 		rollupOptions: {
 			output: {
-				hoistTransitiveImports: false,
 				manualChunks: preventReExports,
 			},
 			external: new RegExp(`^(?:${deps.join("|")})`),
