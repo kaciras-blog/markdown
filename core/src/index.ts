@@ -4,11 +4,11 @@ export * from "./directive.js";
 export * from "./helper.js";
 export * from "./miscellaneous.js";
 export * from "./activate.js";
+export * from "./diagnostics.js";
 
 export { default as MarkdownIt } from "markdown-it";
 
 export { default as toc } from "markdown-it-toc-done-right";
-export { default as collect } from "./collect.js";
 export { default as directive } from "./directive.js";
 export { default as collapsible } from "./collapsible.js";
 
