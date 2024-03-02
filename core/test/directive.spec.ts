@@ -18,20 +18,20 @@ describe("tokenizer", () => {
 		markdownIt.render(text);
 	}
 
-	it("should parse type, label, href, and attrs", () => {
+	it("should parse type, label, src, and attrs", () => {
 		parse('@gif[A gif video](/video/foo.mp4){ "vw":32, "vh":16 }');
 
 		expect(token!.tag).toBe("gif");
 		expect(token!.content).toBe("A gif video");
-		expect(token!.attrGet("href")).toBe("/video/foo.mp4");
+		expect(token!.attrGet("src")).toBe("/video/foo.mp4");
 		expect(token!.meta).toStrictEqual({ vw: 32, vh: 16 });
 	});
 
-	it("should allow empty label and href", () => {
+	it("should allow empty label and src", () => {
 		parse("@gif[]()");
 
 		expect(token!.content).toBe("");
-		expect(token!.attrGet("href")).toBe("");
+		expect(token!.attrGet("src")).toBe("");
 		expect(token!.meta).toStrictEqual({});
 	});
 
@@ -71,28 +71,28 @@ describe("escaping", () => {
 	it("should support escape \\]", () => {
 		markdownIt.render("@gif[A \\[gif\\] video](/video/foobar.mp4)");
 		expect(token.content).toBe("A [gif] video");
-		expect(token.attrGet("href")).toBe("/video/foobar.mp4");
+		expect(token.attrGet("src")).toBe("/video/foobar.mp4");
 	});
 
 	it("should support escape \\)", () => {
 		markdownIt.render("@gif[](/video/foo\\)bar.mp4)");
-		expect(token.attrGet("href")).toBe("/video/foo)bar.mp4");
+		expect(token.attrGet("src")).toBe("/video/foo)bar.mp4");
 	});
 
 	it("should support bracket counting in label", () => {
 		markdownIt.render("@gif[A [gif] video](/video/foobar.mp4)");
 		expect(token.content).toBe("A [gif] video");
-		expect(token.attrGet("href")).toBe("/video/foobar.mp4");
+		expect(token.attrGet("src")).toBe("/video/foobar.mp4");
 	});
 
-	it("should support bracket counting in href", () => {
+	it("should support bracket counting in src", () => {
 		markdownIt.render("@gif[](/video/foo(bar).mp4)");
-		expect(token.attrGet("href")).toBe("/video/foo(bar).mp4");
+		expect(token.attrGet("src")).toBe("/video/foo(bar).mp4");
 	});
 
-	it("should support show \\", () => {
+	it("should escape attributes", () => {
 		markdownIt.render("@gif[](/video\\\\foobar.mp4)");
-		expect(token.attrGet("href")).toBe("/video\\foobar.mp4");
+		expect(token.attrGet("src")).toBe("/video%5Cfoobar.mp4");
 	});
 });
 
@@ -123,7 +123,7 @@ text after
 		expect(markdownIt.render("@video[/poster.png](/video/foo.mp4)")).toMatchSnapshot();
 	});
 
-	it("should not escape html for href", () => {
+	it("should not escape html for src", () => {
 		expect(markdownIt.render('@video[/f"o"o](/bar?a=b&c=d)')).toMatchSnapshot();
 	});
 
@@ -144,9 +144,9 @@ it("should support render custom type", () => {
 	const markdownIt = new MarkdownIt();
 
 	markdownIt.use<DirectiveMap>(directive, {
-		CUSTOM: (href, label) => `Custom [href=${href}, label=${label}]`,
+		CUSTOM: (token) => `Custom [src=${token.attrGet("src")}, label=${token.content}]`,
 	});
 
 	const result = markdownIt.render("@CUSTOM[bar](foo)");
-	expect(result).toBe("Custom [href=foo, label=bar]");
+	expect(result).toBe("Custom [src=foo, label=bar]");
 });

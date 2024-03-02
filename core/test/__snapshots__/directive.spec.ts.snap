@@ -14,7 +14,7 @@ exports[`default renderer > should cooperate with others 1`] = `
 "
 `;
 
-exports[`default renderer > should not escape html for href 1`] = `"<video src="/bar?a=b&c=d" poster="/f%22o%22o" controls></video>"`;
+exports[`default renderer > should not escape html for src 1`] = `"<video src="/bar?a=b&amp;c=d" poster="/f%22o%22o" controls></video>"`;
 
 exports[`default renderer > should render audio 1`] = `"<audio src="/audio/music.flac" controls></audio>"`;
 

@@ -25,6 +25,8 @@
 import MarkdownIt from "markdown-it";
 import { unescapeMd } from "markdown-it/lib/common/utils.mjs";
 import StateBlock from "markdown-it/lib/rules_block/state_block.js";
+import Token from "markdown-it/lib/token.js";
+import * as Renderer from "markdown-it/lib/renderer.js";
 
 function parse(state: StateBlock, startLine: number, _: number, silent: boolean) {
 	const offset = state.tShift[startLine] + state.bMarks[startLine];
@@ -42,10 +44,10 @@ function parse(state: StateBlock, startLine: number, _: number, silent: boolean)
 	if (!silent) {
 		const { type, label, href, attrs } = directive;
 		const token = state.push("directive", type, 0);
-		token.attrs = [["href", href]];
 		token.meta = attrs;
 		token.content = label;
 		token.map = [startLine, state.line];
+		token.attrs = [["src", checkLink(state.md, href)]];
 	}
 
 	state.line = startLine + 1;
@@ -111,7 +113,7 @@ function readBracket(src: string, i: number, open: number, close: number) {
 	let level = 1;
 	while (++i < src.length) {
 		switch (src.charCodeAt(i)) {
-			case 0x5C /* \ */:
+			case 0x5C: /* \ */
 				++i;
 				break;
 			case open:
@@ -155,7 +157,7 @@ export interface DirectiveMap {
 	 * @param label 方括号里的内容。
 	 * @param md MarkdownIt 对象。
 	 */
-	[type: string]: (href: string, label: string, md: MarkdownIt) => string;
+	[type: string]: (this: Renderer, token: Token, md: MarkdownIt, env: any) => string;
 }
 
 /**
@@ -163,39 +165,32 @@ export interface DirectiveMap {
  */
 export const defaultDirectiveMap: Readonly<DirectiveMap> = {
 
-	audio(src: string) {
-		return `<audio src="${src}" controls></audio>`;
+	audio(token: Token) {
+		return `<audio${this.renderAttrs(token)} controls></audio>`;
 	},
 
-	video(src: string, poster: string, md: MarkdownIt) {
-		let attrs = `src="${src}"`;
-
-		poster = md.normalizeLink(poster);
+	video(token: Token, md: MarkdownIt) {
+		const poster = md.normalizeLink(token.content);
 		if (poster && md.validateLink(poster)) {
-			attrs += ` poster="${poster}"`;
+			token.attrs!.push(["poster", poster]);
 		}
-
-		return `<video ${attrs} controls></video>`;
+		return `<video${this.renderAttrs(token)} controls></video>`;
 	},
 
 	// 仍然加上 controls 避免无法播放
-	gif(src: string) {
-		return `<video src="${src}" loop muted controls></video>`;
+	gif(token: Token) {
+		return `<video${this.renderAttrs(token)} loop muted controls></video>`;
 	},
 };
 
 export default function (md: MarkdownIt, map = defaultDirectiveMap) {
-	md.renderer.rules.directive = (tokens, idx) => {
+	md.renderer.rules.directive = (tokens, idx, _, env, self) => {
 		const token = tokens[idx];
-		const { tag, content } = token;
-		const href = token.attrGet("href")!;
-
-		const renderFn = map[tag];
+		const renderFn = map[token.tag];
 		if (!renderFn) {
-			return `[Unknown directive: ${tag}]`;
+			return `[Unknown directive: ${token.tag}]`;
 		}
-		return renderFn(checkLink(md, href), content, md);
+		return renderFn.call(self, token, md, env);
 	};
-
 	md.block.ruler.before("html_block", "directive", parse);
 }

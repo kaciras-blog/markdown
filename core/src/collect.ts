@@ -16,10 +16,10 @@ export default function (md: MarkdownIt, handler: (url: string) => void) {
 					check(token.children!);
 					break;
 				case "link_open":
-				case "directive":
 					handler(token.attrGet("href")!);
 					break;
 				case "image":
+				case "directive":
 					handler(token.attrGet("src")!);
 					break;
 			}

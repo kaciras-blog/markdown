@@ -1,6 +1,7 @@
 import type MarkdownIt from "markdown-it";
 import type Token from "markdown-it/lib/token.js";
 import { default as directive, DirectiveMap } from "../directive.js";
+import * as Renderer from "markdown-it/lib/renderer.js";
 
 /**
  * 从资源的链接参数（?vw=...&vh=...）里读取尺寸，生成防抖容器的 style 属性。
@@ -22,6 +23,20 @@ function getSizeStyle(url: string) {
 }
 
 /**
+ * 提取了属性部分的通用逻辑，首先是里移出了 src 避免顶层元素有多余的属性，
+ * 另外使用了 MarkdownIt 的 renderAttrs()。
+ *
+ * TODO: 这里修改了 Token，但应该不会有后续插件会去用它吧。
+ */
+function blockAttrs(renderer: Renderer, token: Token) {
+	const i = token.attrIndex("src");
+	const src = token.attrs![i][1];
+	token.attrs!.splice(i, 1);
+	token.attrJoin("class", "md-center");
+	return [src, renderer.renderAttrs(token).trimStart()];
+}
+
+/**
  * 自定义图片的渲染，相比默认的来说多了标签元素、懒加载、以及居中。
  *
  * 【不用 figure 元素】
@@ -35,15 +50,18 @@ function getSizeStyle(url: string) {
  * 图片本身就有在不完全加载的时的显示方式，比如从上往下显示或者渐进式图片。
  * 如果无法加载，下面的标签也能表明空白区域是图片，所以没有必要用菊花图。
  */
-function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
-	const token = tokens[idx];
-	const src = token.attrGet("src") ?? "";
+function renderImage(this: MarkdownIt, tokens: Token[], i: number, _: any, __: any, self: any) {
+	const token = tokens[i];
+	token.attrs!.splice(token.attrIndex("alt"), 1);
+
+	const [src, wrapperAttrs] = blockAttrs(self, token);
 	const label = this.utils.escapeHtml(token.content);
 
 	// MarkdownIt 遵守 CommonMark 规范对单引号不转义，所以 alt 必须用双引号。
 	return $HTML`
-		<span class='md-center' ${getSizeStyle(src)}>
+		<span ${wrapperAttrs}>
 			<a
+				${getSizeStyle(src)}
 				class='md-inspect'
 				href="${src}"
 				target='_blank'
@@ -63,28 +81,31 @@ function renderImage(this: MarkdownIt, tokens: Token[], idx: number) {
  */
 const mediaMap: DirectiveMap = {
 	// 大部分浏览器只允许无声视频自动播放，不过 GIF 视频本来就是无声的。
-	gif(src, alt, md) {
-		alt = md.utils.escapeHtml(alt);
+	gif(token, md) {
+		const alt = md.utils.escapeHtml(token.content);
+		const [src, wrapperAttrs] = blockAttrs(this, token);
 		return $HTML`
-			<p class='md-center' ${getSizeStyle(src)}>
+			<p ${wrapperAttrs}>
 				<video
+					${getSizeStyle(src)}
 					class='gif'
 					crossorigin
 					loop
 					muted
-					data-src="${src}"
+					data-src='${src}'
 				/>
 				${alt ? `<span class='md-alt'>${alt}</span>` : ""}
 			</p>
 		`;
 	},
-	video(src, poster, md) {
-		poster = md.normalizeLink(poster);
+	video(token, md) {
+		let poster = md.normalizeLink(token.content);
 		if (!md.validateLink(poster)) {
 			poster = "";
 		}
+		const [src, wrapperAttrs] = blockAttrs(this, token);
 		return $HTML`
-			<p class='md-center'>
+			<p ${wrapperAttrs}>
 				<video 
 					class='md-video'
 					controls
@@ -95,10 +116,11 @@ const mediaMap: DirectiveMap = {
 			</p>
 		`;
 	},
-	audio(src, alt, md) {
-		alt = md.utils.escapeHtml(alt);
+	audio(token, md) {
+		const alt = md.utils.escapeHtml(token.content);
+		const [src, wrapperAttrs] = blockAttrs(this, token);
 		return $HTML`
-			<p class='md-center'>
+			<p ${wrapperAttrs}>
 				<audio controls data-src="${src}" crossorigin/>
 				${alt ? `<span class='md-alt'>${alt}</span>` : ""}
 			</p>`;
