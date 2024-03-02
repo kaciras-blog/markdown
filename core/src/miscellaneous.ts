@@ -8,6 +8,17 @@ import media from "./web/media.ts";
 import directive from "./directive.ts";
 import collapsible from "./collapsible.ts";
 
+// https://github.com/microsoft/vscode/blob/1f94e5cd54ce0a7bc503a3f95a3742ddc5980151/extensions/markdown-language-features/src/markdownEngine.ts#L22
+export function sourceLine(md: MarkdownIt) {
+	md.core.ruler.push("source-line", (state) => {
+		for (const token of state.tokens) {
+			if (token.map && token.type !== "inline") {
+				token.attrSet("data-line", String(token.map[0]));
+			}
+		}
+	});
+}
+
 /**
  * 给所有链接加上 rel="ugc,nofollow" 防止刷外链，推荐用于渲染第三方输入。
  *

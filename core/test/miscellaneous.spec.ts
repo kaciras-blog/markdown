@@ -1,6 +1,22 @@
-import { expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import MarkdownIt from "markdown-it";
-import { anchor, classify, footnote, ugc } from "../src/index.ts";
+import { anchor, classify, footnote, sourceLine, ugc } from "../src/index.ts";
+
+describe("sourceLine", () => {
+	it("should works", () => {
+		const markdownIt = new MarkdownIt();
+		markdownIt.use(sourceLine);
+
+		const html = markdownIt.render(`\
+# Title
+
+> block 1
+>
+> block 2
+		`);
+		expect(html.trimEnd()).toMatchSnapshot();
+	});
+});
 
 it("should set the attribute", () => {
 	const markdownIt = new MarkdownIt();
