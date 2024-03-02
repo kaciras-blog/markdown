@@ -20,16 +20,19 @@ export default function (md: MarkdownIt) {
 	const { unescapeAll, escapeHtml } = md.utils;
 	const highlight = md.options.highlight ?? escapeHtml;
 
-	md.renderer.rules.fence = (tokens, idx) => {
-		const { content, info } = tokens[idx];
+	md.renderer.rules.fence = (tokens, idx, _, __, self) => {
+		const token = tokens[idx];
+		const { content, info } = token;
 		const [language, attrs = ""] = unescapeAll(info).split(/\s+/g, 2);
 
 		const codeHTML = highlight(content, language, attrs);
+		token.attrJoin("class", "hljs");
+		const wrapperAttrs = self.renderAttrs(token).trimStart();
 
 		// Copy 是个很常见的单词，谁都看得懂，就不做本地化了。
 		if (language) {
 			return $HTML`
-				<div class='hljs'>
+				<div ${wrapperAttrs}>
 					<div class='code-meta'>
 						${language}
 						<button class='copy'>
@@ -40,7 +43,7 @@ export default function (md: MarkdownIt) {
 				</div>
 			`;
 		} else {
-			return `<pre class='hljs'>${codeHTML}</pre>`;
+			return `<pre ${wrapperAttrs}>${codeHTML}</pre>`;
 		}
 	};
 }
