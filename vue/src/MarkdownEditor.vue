@@ -25,7 +25,6 @@
 				$style.preview,
 				viewMode === ViewMode.Preview && $style.single,
 			]'
-			@scroll='scrollEditorToPreview'
 		/>
 
 		<div :class='$style.status' role='toolbar'>
@@ -66,6 +65,7 @@ import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
 import "monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js";
 import MarkdownView, { Renderer } from "./MarkdownView.vue";
 import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
+import { setupScrollSync, syncScrollFromEditor } from "./sync-scroll.ts";
 
 /**
  * TODO: monaco 默认光标不随拖拽而移动，dnd 插件没有公开 API，插入点会有问题。
@@ -139,73 +139,59 @@ function handleDrop(event: DragEvent) {
 	}
 }
 
-let lastScrollEditor = false;
-let ignoreScroll = false;
 
-function runScrollAction(callback: () => void) {
-	if (!scrollSynced.value || ignoreScroll) {
-		return;
-	}
-	ignoreScroll = true;
+// function scrollEditorToPreview() {
+// 	lastScrollEditor = false;
+// 	runScrollAction(() => {
+// 		const { offsetHeight } = editorEl.value!;
+// 		const { $el } = previewEl.value!;
+// 		const p = $el.scrollTop / ($el.scrollHeight - offsetHeight);
+//
+// 		// Monaco-editor 在末尾有一屏的空白，所以要多减去一个 offsetHeight。
+// 		const max = editor.getScrollHeight() - offsetHeight * 2;
+//
+// 		/*
+// 		 * 当右侧滚到底时，如果左侧位置超过了内容（即在空白区），就不滚动。
+// 		 * 这样做是为了避免删除最后一页的行时，编辑区滚动位置抖动的问题。
+// 		 */
+// 		if (p < 0.999) {
+// 			editor.setScrollTop(p * max);
+// 		} else if (editor.getScrollTop() < max) {
+// 			editor.setScrollTop(max);
+// 		}
+// 	});
+// }
+//
+// function scrollPreviewToEditor() {
+// 	lastScrollEditor = true;
+// 	runScrollAction(() => {
+// 		const scrollHeight = editor.getScrollHeight();
+// 		const { offsetHeight } = editorEl.value!;
+// 		const { $el } = previewEl.value!;
+//
+// 		/*
+// 		 * 没超过一屏就不滚动，因为结果可能长于 Markdown（反之好像不会），
+// 		 * 此时换行会让 HTML 视图滚到顶而不是保持在当前位置。
+// 		 */
+// 		if (scrollHeight < offsetHeight * 2) {
+// 			return;
+// 		}
+// 		const p = editor.getScrollTop() / (scrollHeight - offsetHeight * 2);
+// 		$el.scrollTop = p * ($el.scrollHeight - offsetHeight);
+// 	});
+// }
 
-	// Must delay to the next frame if the user uses smooth scrolling.
-	requestAnimationFrame(() => {
-		callback();
-		requestAnimationFrame(() => ignoreScroll = false);
-	});
-}
+// watch(scrollSynced, enabled => {
+// 	if (!enabled) {
+// 		return;
+// 	}
+// 	if (lastScrollEditor) {
+// 		scrollPreviewToEditor();
+// 	} else {
+// 		scrollEditorToPreview();
+// 	}
+// });
 
-function scrollEditorToPreview() {
-	lastScrollEditor = false;
-	runScrollAction(() => {
-		const { offsetHeight } = editorEl.value!;
-		const { $el } = previewEl.value!;
-		const p = $el.scrollTop / ($el.scrollHeight - offsetHeight);
-
-		// Monaco-editor 在末尾有一屏的空白，所以要多减去一个 offsetHeight。
-		const max = editor.getScrollHeight() - offsetHeight * 2;
-
-		/*
-		 * 当右侧滚到底时，如果左侧位置超过了内容（即在空白区），就不滚动。
-		 * 这样做是为了避免删除最后一页的行时，编辑区滚动位置抖动的问题。
-		 */
-		if (p < 0.999) {
-			editor.setScrollTop(p * max);
-		} else if (editor.getScrollTop() < max) {
-			editor.setScrollTop(max);
-		}
-	});
-}
-
-function scrollPreviewToEditor() {
-	lastScrollEditor = true;
-	runScrollAction(() => {
-		const scrollHeight = editor.getScrollHeight();
-		const { offsetHeight } = editorEl.value!;
-		const { $el } = previewEl.value!;
-
-		/*
-		 * 没超过一屏就不滚动，因为结果可能长于 Markdown（反之好像不会），
-		 * 此时换行会让 HTML 视图滚到顶而不是保持在当前位置。
-		 */
-		if (scrollHeight < offsetHeight * 2) {
-			return;
-		}
-		const p = editor.getScrollTop() / (scrollHeight - offsetHeight * 2);
-		$el.scrollTop = p * ($el.scrollHeight - offsetHeight);
-	});
-}
-
-watch(scrollSynced, enabled => {
-	if (!enabled) {
-		return;
-	}
-	if (lastScrollEditor) {
-		scrollPreviewToEditor();
-	} else {
-		scrollEditorToPreview();
-	}
-});
 watch(addonContext.options, o => editor.updateOptions(o), { deep: true });
 watch(viewMode, () => nextTick(() => editor.layout()));
 watch(content, value => value !== contentSnapshot && editor.setValue(value));
@@ -236,7 +222,7 @@ onMounted(() => {
 		addonContext.selection.value = e.selection;
 	});
 
-	editor.onDidScrollChange(scrollPreviewToEditor);
+	setupScrollSync(editor, previewEl.value!.$el);
 });
 </script>
 

@@ -4,17 +4,20 @@
 </template>
 
 <script lang='ts'>
-import { kfmPreset, MarkdownIt } from "@kaciras-blog/markdown";
+import { kfmPreset, MarkdownIt, sourceLine } from "@kaciras-blog/markdown";
 
 // 把几个预设提前放这，免得跟随组件实例每次都创建。
 const rich = new MarkdownIt();
 rich.use(kfmPreset);
+rich.use(sourceLine);
 
 const core = new MarkdownIt();
 core.use(kfmPreset, { plain: true });
+core.use(sourceLine);
 
 const guest = new MarkdownIt();
 guest.use(kfmPreset, { guest: true });
+guest.use(sourceLine);
 </script>
 
 <script setup lang='ts'>
