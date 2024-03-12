@@ -1,12 +1,17 @@
 import MarkdownIt from "markdown-it";
 import Token from "markdown-it/lib/token.js";
 
-// https://github.com/microsoft/vscode/blob/1f94e5cd54ce0a7bc503a3f95a3742ddc5980151/extensions/markdown-language-features/src/markdownEngine.ts#L22
+/**
+ * 给块语法渲染的结果中添加原文行号信息，这样就能定位哪一行渲染出了哪个元素。
+ *
+ * @see https://github.com/microsoft/vscode/blob/1f94e5cd54ce0a7bc503a3f95a3742ddc5980151/extensions/markdown-language-features/src/markdownEngine.ts#L22
+ */
 export function sourceLine(md: MarkdownIt) {
-	md.core.ruler.push("source-line", (state) => {
+	md.core.ruler.push("source-line", state => {
 		for (const token of state.tokens) {
 			if (token.map && token.type !== "inline") {
-				token.attrSet("data-line", String(token.map[0]));
+				const [s, e] = token.map;
+				token.attrSet("data-line", `${s},${e}`);
 			}
 		}
 	});
