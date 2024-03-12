@@ -22,6 +22,50 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 
 	editor.onDidScrollChange(syncScrollFromEditor);
 
+	function get2() {
+		const offset = preview.offsetTop;
+		let previous;
+		for (const entry of getElementLines()) {
+			const rect = entry.el.getBoundingClientRect();
+			if (rect.top >= offset) {
+				return [previous, entry];
+			}
+			previous = entry;
+		}
+	}
+
+	preview.addEventListener("scroll", event => {
+		const offset = preview.offsetTop;
+		const elements = get2();
+		console.log(`Offset: ${offset}, elements:`, elements);
+		if (!elements) {
+			return;
+		}
+		const [previous, entry] = elements;
+		if (!previous) {
+			return editor.setScrollTop(0,1);
+		}
+		const r = previous.el.getBoundingClientRect();
+		if (offset <= r.top + r.height) {
+			const progress = (offset - r.top) / r.height;
+			sLine(previous.start + progress * (previous.end - previous.start));
+		} else if (entry) {
+			const n = entry.el.getBoundingClientRect();
+			const progress = (offset - r.bottom) / (n.top - r.bottom);
+			sLine(previous.end + progress * (entry.start - previous.end));
+		} else {
+			editor.setScrollTop(Infinity, 1);
+		}
+	});
+
+	function sLine(line: number) {
+		line++;
+		const i = Math.floor(line);
+		const s = editor.getTopForLineNumber(i);
+		const e = editor.getTopForLineNumber(i + 1);
+		runScrollAction(() => editor.setScrollTop(s + (line - i) * (e - s),1));
+	}
+
 	function runScrollAction(callback: () => void) {
 		if (ignoreScroll) {
 			return;
@@ -90,7 +134,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		}
 		const i = getSourceLineOfHeight(event);
 		const elements = getElementsForLine(Math.floor(i));
-		console.log(`Line: ${i}, elements:`, elements);
+		// console.log(`Line: ${i}, elements:`, elements);
 
 		// 所有元素都再当前行之前，通常是编辑器底部的空白区，直接滚到最底下。
 		if (!elements) {
