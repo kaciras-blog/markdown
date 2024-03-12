@@ -43,7 +43,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		}
 		const [previous, entry] = elements;
 		if (!previous) {
-			return editor.setScrollTop(0,1);
+			return runScrollAction(() => editor.setScrollTop(0, 1));
 		}
 		const r = previous.el.getBoundingClientRect();
 		if (offset <= r.top + r.height) {
@@ -54,7 +54,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 			const progress = (offset - r.bottom) / (n.top - r.bottom);
 			sLine(previous.end + progress * (entry.start - previous.end));
 		} else {
-			editor.setScrollTop(Infinity, 1);
+			runScrollAction(() => editor.setScrollTop(Infinity, 1));
 		}
 	});
 
@@ -79,7 +79,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		});
 	}
 
-	function setScrollTop(preview: HTMLElement, value: number) {
+	function scrollPreview(preview: HTMLElement, value: number) {
 		runScrollAction(() => preview.scrollTop = value - preview.offsetTop);
 	}
 
@@ -138,13 +138,13 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 
 		// 所有元素都再当前行之前，通常是编辑器底部的空白区，直接滚到最底下。
 		if (!elements) {
-			return setScrollTop(preview, preview.scrollHeight);
+			return scrollPreview(preview, preview.scrollHeight);
 		}
 		const [previous, next] = elements;
 
 		// 第一个元素都在当前行之后，直接滚到顶上。
 		if (!previous) {
-			return setScrollTop(preview, 0);
+			return scrollPreview(preview, 0);
 		}
 
 		// 特殊情况：元素可能在收起的折叠块内。
@@ -170,8 +170,9 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		const pLine = previous.end;
 		const bLine = next!.start;
 		const progress = (i - pLine) / (bLine - pLine);
-		const pEnd = previous!.el.clientHeight + previous!.el.offsetTop;
-		return setScrollTop(preview, pEnd + (next!.el.offsetTop - pEnd) * progress);
+		const pr = previous.el.getBoundingClientRect();
+		const nr = next!.el.getBoundingClientRect();
+		return scrollPreview(preview, pr.bottom + (nr.top - pr.bottom) * progress + preview.scrollTop);
 	}
 
 	function scrollPreviewToProgress(entry: LineCacheEntry) {
@@ -179,6 +180,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		const ss = editor.getTopForLineNumber(start + 1);
 		const se = editor.getTopForLineNumber(end + 1);
 		const progress = (editor.getScrollTop() - ss) / (se - ss);
-		return setScrollTop(preview, el.clientHeight * progress + el.offsetTop);
+		const { height, top } = el.getBoundingClientRect();
+		return scrollPreview(preview, height * progress + top + preview.scrollTop);
 	}
 }
