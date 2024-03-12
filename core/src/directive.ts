@@ -46,7 +46,7 @@ function parse(state: StateBlock, startLine: number, _: number, silent: boolean)
 		const token = state.push("directive", type, 0);
 		token.meta = attrs;
 		token.content = label;
-		token.map = [startLine, state.line];
+		token.map = [startLine, startLine + 1];
 		token.attrs = [["src", checkLink(state.md, href)]];
 	}
 
@@ -153,9 +153,10 @@ export interface DirectiveMap {
 	/**
 	 * 自定义指令的渲染，属性名对应指令，返回 HTML。
 	 *
-	 * @param href 圆括号里的内容，已过滤危险链接。
-	 * @param label 方括号里的内容。
+	 * @param this MarkdownIt 的渲染器。
+	 * @param token 要渲染的 Token。
 	 * @param md MarkdownIt 对象。
+	 * @param env 用户自定义的对象。
 	 */
 	[type: string]: (this: Renderer, token: Token, md: MarkdownIt, env: any) => string;
 }
