@@ -35,7 +35,7 @@ function parse(state: StateBlock, startLine: number, endLine: number) {
 	let token = state.push("collapsible_open", "details", 1);
 	token.block = true;
 	token.markup = "<details>";
-	token.map = [startLine, startLine + 1];
+	token.map = [startLine, line];
 
 	state.md.block.tokenize(state, startLine + 1, line - 1);
 
