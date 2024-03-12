@@ -1,5 +1,5 @@
-import { Ref } from "vue";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
+import type { Ref } from "vue";
+import type * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 
 type IScrollEvent = monaco.IScrollEvent;
 type Editor = monaco.editor.IStandaloneCodeEditor;
@@ -10,9 +10,15 @@ interface LineCacheEntry {
 	el: HTMLElement;
 }
 
+function parseSourceLine(el: Element) {
+	return el.getAttribute("data-line")!.split(",").map(Number);
+}
+
 export default function (editor: Editor, preview: HTMLElement, enabled: Ref<boolean>) {
 	let lastScrollEditor = false;
 	let ignoreScroll = false;
+	let cacheVersion: number;
+	let lineCache: LineCacheEntry[];
 
 	editor.onDidScrollChange(syncScrollFromEditor);
 
@@ -49,10 +55,6 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		return i - 1 + p;
 	}
 
-
-	let cacheVersion: number;
-	let lineCache: LineCacheEntry[];
-
 	function getElementLines() {
 		const version = editor.getModel()!.getVersionId();
 		if (version !== cacheVersion) {
@@ -65,9 +67,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 	function buildLineCache() {
 		lineCache = [];
 		for (const el of preview.querySelectorAll("*[data-line]")) {
-			const [start, end] = el.getAttribute("data-line")!
-				.split(",")
-				.map(Number);
+			const [start, end] = parseSourceLine(el);
 			lineCache.push({ start, end, el } as LineCacheEntry);
 		}
 	}
@@ -89,7 +89,6 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 			return;
 		}
 		const i = getSourceLineOfHeight(event);
-		const pInLine = i - Math.floor(i);
 		const elements = getElementsForLine(Math.floor(i));
 		console.log(`Line: ${i}, elements:`, elements);
 
@@ -104,16 +103,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 			return setScrollTop(preview, 0);
 		}
 
-		// 特殊情况-1：代码块内部由高亮库渲染，无法打标记，直接按比例滚动。
-		if (previous.el.classList.contains("hljs")) {
-			const ss = editor.getTopForLineNumber(previous.start + 1);
-			const se = editor.getTopForLineNumber(previous.end + 1);
-			const progress = (event.scrollTop - ss) / (se - ss);
-			const pEnd = previous!.el.clientHeight * progress + previous!.el.offsetTop;
-			return setScrollTop(preview, pEnd);
-		}
-
-		// 特殊情况-2：元素可能在收起的折叠块内。
+		// 特殊情况：元素可能在收起的折叠块内。
 		let parent = previous.el;
 		let topMostCollapsible;
 		while (parent !== preview) {
@@ -123,14 +113,8 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 			parent = parent!.parentElement!;
 		}
 		if (topMostCollapsible) {
-			const [start, end] = topMostCollapsible.getAttribute("data-line")!
-				.split(",")
-				.map(Number);
-			const ss = editor.getTopForLineNumber(start + 1);
-			const se = editor.getTopForLineNumber(end + 1);
-			const progress = (event.scrollTop - ss) / (se - ss);
-			const pEnd = topMostCollapsible.clientHeight * progress + topMostCollapsible.offsetTop;
-			return setScrollTop(preview, pEnd);
+			const [start, end] = parseSourceLine(topMostCollapsible);
+			return scrollPreviewToProgress({ start, end, el: topMostCollapsible });
 		}
 
 		// 当前行有对应的元素，直接滚到元素内即可。
@@ -139,7 +123,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		}
 
 		// 当前行在两个元素之间，那就滚动到中间的间隔区域。
-		const pLine = previous.start;
+		const pLine = previous.end;
 		const bLine = next!.start;
 		const progress = (i - pLine) / (bLine - pLine);
 		const pEnd = previous!.el.clientHeight + previous!.el.offsetTop;
