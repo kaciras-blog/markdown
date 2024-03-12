@@ -32,7 +32,7 @@ function runScrollAction(callback: () => void) {
 }
 
 function setScrollTop(preview: HTMLElement, value: number) {
-	runScrollAction(() => preview.scrollTop = value);
+	runScrollAction(() => preview.scrollTop = value - preview.offsetTop);
 }
 
 function getSourceLineOfHeight(event: IScrollEvent) {
@@ -98,7 +98,7 @@ function syncScrollFromEditor(event: IScrollEvent) {
 	const i = getSourceLineOfHeight(event);
 	const pInLine = i - Math.floor(i);
 	const elements = getElementsForLine(Math.floor(i));
-	// console.log(`Line: ${i}, elements:`, elements);
+	console.log(`Line: ${i}, elements:`, elements);
 
 	// 所有元素都再当前行之前，通常是编辑器底部的空白区，直接滚到最底下。
 	if (!elements) {
@@ -122,24 +122,27 @@ function syncScrollFromEditor(event: IScrollEvent) {
 
 	// 特殊情况-2：元素可能在收起的折叠块内。
 	let parent = previous.el;
+	let topMostCollapsible;
 	while (parent !== preview) {
 		if (parent.tagName === "DETAILS" && !(parent as any).open) {
-			const [start, end] = parent.getAttribute("data-line")!
-				.split(",")
-				.map(Number);
-			const ss = editor.getTopForLineNumber(start + 1);
-			const se = editor.getTopForLineNumber(end + 1);
-			const progress = (event.scrollTop - ss) / (se - ss);
-			const pEnd = parent!.clientHeight * progress + parent!.offsetTop;
-			return setScrollTop(preview, pEnd);
+			topMostCollapsible = parent;
 		}
 		parent = parent!.parentElement!;
 	}
+	if (topMostCollapsible) {
+		const [start, end] = topMostCollapsible.getAttribute("data-line")!
+			.split(",")
+			.map(Number);
+		const ss = editor.getTopForLineNumber(start + 1);
+		const se = editor.getTopForLineNumber(end + 1);
+		const progress = (event.scrollTop - ss) / (se - ss);
+		const pEnd = topMostCollapsible.clientHeight * progress + topMostCollapsible.offsetTop;
+		return setScrollTop(preview, pEnd);
+	}
 
 	// 当前行有对应的元素，直接滚到元素内即可。
-	if (elements.length === 1) {
-		const { el } = elements[0]!;
-		return setScrollTop(preview, el.offsetTop + el.clientHeight * pInLine - preview.offsetTop);
+	if (elements.length === 1 || i <= previous.end) {
+		return scrollPreviewToProgress(previous);
 	}
 
 	// 当前行在两个元素之间，那就滚动到中间的间隔区域。
@@ -147,5 +150,13 @@ function syncScrollFromEditor(event: IScrollEvent) {
 	const bLine = next!.start;
 	const progress = (i - pLine) / (bLine - pLine);
 	const pEnd = previous!.el.clientHeight + previous!.el.offsetTop;
-	return setScrollTop(preview, pEnd + (next!.el.offsetTop - pEnd) * progress - preview.offsetTop);
+	return setScrollTop(preview, pEnd + (next!.el.offsetTop - pEnd) * progress );
+}
+
+function scrollPreviewToProgress(entry: LineCacheEntry) {
+	const { el, start, end } = entry;
+	const ss = editor.getTopForLineNumber(start + 1);
+	const se = editor.getTopForLineNumber(end + 1);
+	const progress = (editor.getScrollTop() - ss) / (se - ss);
+	return setScrollTop(preview, el.clientHeight * progress + el.offsetTop);
 }
