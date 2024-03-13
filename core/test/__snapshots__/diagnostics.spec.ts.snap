@@ -1,9 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`sourceLine > should works 1`] = `
-"<h1 data-line="0">Title</h1>
-<blockquote data-line="2">
-<p data-line="2">block 1</p>
-<p data-line="4">block 2</p>
+"<h1 data-line="0,1">Title</h1>
+<blockquote data-line="2,5">
+<p data-line="2,3">block 1</p>
+<p data-line="4,5">block 2</p>
 </blockquote>"
 `;

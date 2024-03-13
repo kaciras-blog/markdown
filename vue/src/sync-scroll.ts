@@ -10,40 +10,79 @@ interface LineCacheEntry {
 	el: HTMLElement;
 }
 
-function parseSourceLine(el: Element) {
+function parseDataLine(el: Element) {
 	return el.getAttribute("data-line")!.split(",").map(Number);
 }
 
+/**
+ * 绑定同步滚动，精确到块元素和源文本对应的行。Markdown 渲染器需要添加 sourceLine 插件。
+ *
+ * @param editor Monaco Editor 实例。
+ * @param preview 预览区。
+ * @param enabled 用于切换同步的开关。
+ */
 export default function (editor: Editor, preview: HTMLElement, enabled: Ref<boolean>) {
 	let lastScrollEditor = false;
 	let ignoreScroll = false;
 	let cacheVersion: number;
 	let lineCache: LineCacheEntry[];
 
-	editor.onDidScrollChange(syncScrollFromEditor);
+	// 加锁避免循环触发滚动事件，同时延迟到下一帧解决浏览器的平滑滚动问题。
+	function runScrollAction(callback: () => void) {
+		if (ignoreScroll) {
+			return;
+		}
+		ignoreScroll = true;
+		requestAnimationFrame(() => {
+			callback();
+			requestAnimationFrame(() => ignoreScroll = false);
+		});
+	}
 
-	function get2() {
-		const offset = preview.offsetTop;
+	function scrollEditor(scrollTop: number) {
+		runScrollAction(() => editor.setScrollTop(scrollTop, 1));
+	}
+
+	function scrollPreview(value: number) {
+		runScrollAction(() => preview.scrollTop = value - preview.offsetTop);
+	}
+
+	function ensureLineCache() {
+		const version = editor.getModel()!.getVersionId();
+		if (version === cacheVersion) {
+			return;
+		}
+		cacheVersion = version;
+		lineCache = [];
+		for (const el of preview.querySelectorAll("*[data-line]")) {
+			const [start, end] = parseDataLine(el);
+			lineCache.push({ start, end, el } as LineCacheEntry);
+		}
+	}
+
+	function getElementsAtPosition(top: number) {
+		ensureLineCache();
 		let previous;
-		for (const entry of getElementLines()) {
+		for (const entry of lineCache) {
 			const rect = entry.el.getBoundingClientRect();
-			if (rect.top >= offset) {
+			if (rect.top >= top) {
 				return [previous, entry];
 			}
 			previous = entry;
 		}
 	}
 
-	preview.addEventListener("scroll", event => {
+	preview.addEventListener("scroll", () => {
 		const offset = preview.offsetTop;
-		const elements = get2();
+		const elements = getElementsAtPosition(offset);
+
 		console.log(`Offset: ${offset}, elements:`, elements);
 		if (!elements) {
 			return;
 		}
 		const [previous, entry] = elements;
 		if (!previous) {
-			return runScrollAction(() => editor.setScrollTop(0, 1));
+			return scrollEditor(0);
 		}
 		const r = previous.el.getBoundingClientRect();
 		if (offset <= r.top + r.height) {
@@ -54,7 +93,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 			const progress = (offset - r.bottom) / (n.top - r.bottom);
 			sLine(previous.end + progress * (entry.start - previous.end));
 		} else {
-			runScrollAction(() => editor.setScrollTop(Infinity, 1));
+			return scrollEditor(Infinity);
 		}
 	});
 
@@ -63,24 +102,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		const i = Math.floor(line);
 		const s = editor.getTopForLineNumber(i);
 		const e = editor.getTopForLineNumber(i + 1);
-		runScrollAction(() => editor.setScrollTop(s + (line - i) * (e - s),1));
-	}
-
-	function runScrollAction(callback: () => void) {
-		if (ignoreScroll) {
-			return;
-		}
-		ignoreScroll = true;
-
-		// Must delay to the next frame if the user uses smooth scrolling.
-		requestAnimationFrame(() => {
-			callback();
-			requestAnimationFrame(() => ignoreScroll = false);
-		});
-	}
-
-	function scrollPreview(preview: HTMLElement, value: number) {
-		runScrollAction(() => preview.scrollTop = value - preview.offsetTop);
+		return scrollEditor(s + (line - i) * (e - s));
 	}
 
 	function getSourceLineOfHeight(event: IScrollEvent) {
@@ -99,26 +121,11 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		return i - 1 + p;
 	}
 
-	function getElementLines() {
-		const version = editor.getModel()!.getVersionId();
-		if (version !== cacheVersion) {
-			buildLineCache();
-			cacheVersion = version;
-		}
-		return lineCache;
-	}
-
-	function buildLineCache() {
-		lineCache = [];
-		for (const el of preview.querySelectorAll("*[data-line]")) {
-			const [start, end] = parseSourceLine(el);
-			lineCache.push({ start, end, el } as LineCacheEntry);
-		}
-	}
 
 	function getElementsForLine(i: number) {
+		ensureLineCache();
 		let previous;
-		for (const entry of getElementLines()) {
+		for (const entry of lineCache) {
 			if (entry.start === i) {
 				return [entry];
 			} else if (entry.start > i) {
@@ -128,7 +135,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		}
 	}
 
-	function syncScrollFromEditor(event: IScrollEvent) {
+	editor.onDidScrollChange(event => {
 		if (!enabled.value || !event.scrollTopChanged) {
 			return;
 		}
@@ -138,13 +145,13 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 
 		// 所有元素都再当前行之前，通常是编辑器底部的空白区，直接滚到最底下。
 		if (!elements) {
-			return scrollPreview(preview, preview.scrollHeight);
+			return scrollPreview(preview.scrollHeight);
 		}
 		const [previous, next] = elements;
 
 		// 第一个元素都在当前行之后，直接滚到顶上。
 		if (!previous) {
-			return scrollPreview(preview, 0);
+			return scrollPreview(0);
 		}
 
 		// 特殊情况：元素可能在收起的折叠块内。
@@ -157,7 +164,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 			parent = parent!.parentElement!;
 		}
 		if (topMostCollapsible) {
-			const [start, end] = parseSourceLine(topMostCollapsible);
+			const [start, end] = parseDataLine(topMostCollapsible);
 			return scrollPreviewToProgress({ start, end, el: topMostCollapsible });
 		}
 
@@ -172,8 +179,8 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		const progress = (i - pLine) / (bLine - pLine);
 		const pr = previous.el.getBoundingClientRect();
 		const nr = next!.el.getBoundingClientRect();
-		return scrollPreview(preview, pr.bottom + (nr.top - pr.bottom) * progress + preview.scrollTop);
-	}
+		return scrollPreview(pr.bottom + (nr.top - pr.bottom) * progress + preview.scrollTop);
+	});
 
 	function scrollPreviewToProgress(entry: LineCacheEntry) {
 		const { el, start, end } = entry;
@@ -181,6 +188,6 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		const se = editor.getTopForLineNumber(end + 1);
 		const progress = (editor.getScrollTop() - ss) / (se - ss);
 		const { height, top } = el.getBoundingClientRect();
-		return scrollPreview(preview, height * progress + top + preview.scrollTop);
+		return scrollPreview(height * progress + top + preview.scrollTop);
 	}
 }
