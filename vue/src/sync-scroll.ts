@@ -1,7 +1,6 @@
-import type { Ref } from "vue";
-import type * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
+import { Ref, watch } from "vue";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 
-type IScrollEvent = monaco.IScrollEvent;
 type Editor = monaco.editor.IStandaloneCodeEditor;
 
 interface LineCacheEntry {
@@ -29,7 +28,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 
 	// 加锁避免循环触发滚动事件，同时延迟到下一帧解决浏览器的平滑滚动问题。
 	function runScrollAction(callback: () => void) {
-		if (ignoreScroll) {
+		if (ignoreScroll || !enabled.value) {
 			return;
 		}
 		ignoreScroll = true;
@@ -39,14 +38,26 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		});
 	}
 
-	function scrollEditor(scrollTop: number) {
-		runScrollAction(() => editor.setScrollTop(scrollTop, 1));
+	function scrollEditor(top: number) {
+		runScrollAction(() => editor.setScrollTop(top, 1));
 	}
 
-	function scrollPreview(value: number) {
-		runScrollAction(() => preview.scrollTop = value - preview.offsetTop);
+	function scrollPreview(top: number) {
+		runScrollAction(() => preview.scrollTop = top - preview.offsetTop);
 	}
 
+	watch(enabled, value => {
+		if (value) {
+			lastScrollEditor
+				? scrollPreviewByEditor(editor.getScrollTop())
+				: scrollEditorByPreview(preview.offsetTop);
+		}
+	});
+
+	/**
+	 * 扫描并缓存渲染结果及其对应的行号，在每次内容更改后都需要重新生成该缓存。
+	 * 因为滚动相比于编辑更频繁，常见情况是停下来看看前后文，所以缓存是有意义的。
+	 */
 	function ensureLineCache() {
 		const version = editor.getModel()!.getVersionId();
 		if (version === cacheVersion) {
@@ -72,11 +83,26 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		}
 	}
 
-	preview.addEventListener("scroll", () => {
-		const offset = preview.offsetTop;
-		const elements = getElementsAtPosition(offset);
+	function getElementsForLine(line: number) {
+		ensureLineCache();
+		let previous;
+		for (const entry of lineCache) {
+			if (entry.start === line) {
+				return [entry];
+			} else if (entry.start > line) {
+				return [previous, entry];
+			}
+			previous = entry;
+		}
+	}
 
-		console.log(`Offset: ${offset}, elements:`, elements);
+	preview.addEventListener("scroll", () => {
+		lastScrollEditor = false;
+		scrollEditorByPreview(preview.offsetTop);
+	});
+
+	function scrollEditorByPreview(offset: number) {
+		const elements = getElementsAtPosition(offset);
 		if (!elements) {
 			return;
 		}
@@ -95,7 +121,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		} else {
 			return scrollEditor(Infinity);
 		}
-	});
+	}
 
 	function sLine(line: number) {
 		line++;
@@ -105,43 +131,38 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		return scrollEditor(s + (line - i) * (e - s));
 	}
 
-	function getSourceLineOfHeight(event: IScrollEvent) {
-		const height = event.scrollTop;
+	function getSourceLineOfHeight(top: number) {
 		const model = editor.getModel()!;
 
 		let i = model.getLineCount();
 		let p = 0;
 		for (; i > 0; i--) {
 			const t = editor.getTopForLineNumber(i);
-			if (t <= height) {
-				p = (height - t) / (editor.getTopForLineNumber(i + 1) - t);
+			if (t <= top) {
+				p = (top - t) / (editor.getTopForLineNumber(i + 1) - t);
 				break;
 			}
 		}
 		return i - 1 + p;
 	}
 
-
-	function getElementsForLine(i: number) {
-		ensureLineCache();
-		let previous;
-		for (const entry of lineCache) {
-			if (entry.start === i) {
-				return [entry];
-			} else if (entry.start > i) {
-				return [previous, entry];
-			}
-			previous = entry;
-		}
-	}
-
+	/**
+	 * 这里计算高度差使用 getBoundingClientRect 而不是 offsetTop，因为表格内元素的
+	 * offsetParent 是表格本身，即使它没设置 position，这应该是遗留问题。
+	 *
+	 * https://drafts.csswg.org/cssom-view/#dom-htmlelement-offsetparent
+	 */
 	editor.onDidScrollChange(event => {
 		if (!enabled.value || !event.scrollTopChanged) {
 			return;
 		}
-		const i = getSourceLineOfHeight(event);
+		lastScrollEditor = true;
+		scrollPreviewByEditor(event.scrollTop);
+	});
+
+	function scrollPreviewByEditor(offset: number) {
+		const i = getSourceLineOfHeight(offset);
 		const elements = getElementsForLine(Math.floor(i));
-		// console.log(`Line: ${i}, elements:`, elements);
 
 		// 所有元素都再当前行之前，通常是编辑器底部的空白区，直接滚到最底下。
 		if (!elements) {
@@ -180,7 +201,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		const pr = previous.el.getBoundingClientRect();
 		const nr = next!.el.getBoundingClientRect();
 		return scrollPreview(pr.bottom + (nr.top - pr.bottom) * progress + preview.scrollTop);
-	});
+	}
 
 	function scrollPreviewToProgress(entry: LineCacheEntry) {
 		const { el, start, end } = entry;
