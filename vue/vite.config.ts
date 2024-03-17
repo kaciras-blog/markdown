@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => {
 		plugins: [
 			vue(),
 			mode === "lib" && dts({
+				cleanVueFileName: true,
 				staticImport: true,
 				tsconfigPath: "./tsconfig.lib.json",
 			}),
