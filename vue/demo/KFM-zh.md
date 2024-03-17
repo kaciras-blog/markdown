@@ -2,9 +2,9 @@
 
 该页面是 Kaciras Flavored Markdown (KFM) 的演示，所有插入的图片和视频等均保存在内存中。
 
-[https://github.com/kaciras-blog/markdown](https://github.com/kaciras-blog/markdown)
+**本项目开源：[https://github.com/kaciras-blog/markdown](https://github.com/kaciras-blog/markdown)，包含 [Markdown-It](https://github.com/markdown-it/markdown-it) 的插件和一个基于 [Monaco Editor](https://microsoft.github.io/monaco-editor/) 实现的在线编辑器。**
 
-Markdown 是一种轻量级的标记语言，可用于将格式设置元素添加到纯文本文档中。Markdown 由 John Gruber 于 2004 年创建，如今已成为世界上最受欢迎的标记语言之一，特别是程序员喜欢使用。
+Markdown 是一种轻量级的标记语言，由 John Gruber 于 2004 年创建，如今已成为世界上最受欢迎的标记语言之一，特别是程序员喜欢使用。
 
 KFM 是对 Markdown 语法的扩展，兼容标准的 Markdown，同时添加了一些新的功能。
 
@@ -24,7 +24,7 @@ KFM 不推荐在 Markdown 中使用 HTML。
 <summary>
 为什么
 </summary>
-Markdown 是轻量级的标记语言，轻量级指的是语法符号（如`![]()`,`#`）占的比例很低，而 HTML 则是重量级的。 轻量级的语言即使不渲染也易读，而 HTML 没有该优势。
+Markdown 是轻量级的标记语言，轻量级指的是语法符号（如`![]()`,`#`）占的比例很低，而 HTML 则是重量级的。Markdown 即使不渲染也易读，而 HTML 没有该优势。
 
 另一个原因是 Markdown 并不一定会渲染为 HTML，虽然大多数情况是如此。一旦支持 HTML 就会限制其渲染成其他目标的能力。
 
@@ -36,15 +36,26 @@ Markdown 是轻量级的标记语言，轻量级指的是语法符号（如`![](
 折叠块使用与 HTML 相似的语法，不过要求 `<summary>` 必须在第一行。在底层该功能是由单独的解析器实现的，而非开启了 HTML 功能。
 
 <details>
+最简单的折叠块，可以省略 Summary 但不推荐这么做，此时会使用默认的标题。
+</details>
+
+<details>
 <summary>
-点击折叠块的标题部分切换开关。
+在 <summary> 块内设置折叠块的标题。
 </summary>
 里头是内容。
+
+<details>
+<summary>
+嵌套也是可以的。
+</summary>
+里头是内容（第二层）。
+</details>
 </details>
 
 ## 更多的媒体类型
 
-标准的 Markdown 并不支持视频音频等媒体元素，KFM 中使用了自定义的语法来表示它们。
+标准的 Markdown 并不支持视频音频等媒体元素，KFM 中使用了自定义的语法来表示它们，基本的格式为`@<type>[<label>](<href>)`。
 
 ### 视频
 
@@ -88,16 +99,18 @@ KFM 推荐在中英文相邻的单词之间添加一个空格，这有利于让�
 </summary>
 由于中文（也包括日韩文）跟英文之视觉上的差异，导致它们在排版上区别很大。当中英文单词相邻时应当添加适当的空白，这样更易阅读。
 
-如何实现这一点有两种方案：在原文添加空格以及由排版引擎去做。
+如何实现这一点有两种方案：在原文添加空格，以及由排版引擎去做。
 
 **我支持在原文添加空格的做法**，原因有：
 
-1. 英文单词之间需要有空格，故它跟前后中文不是一个单词时必须加空格。
-2. 并非所有平台都对混排做了优化，目前浏览器并不支持该功能。
-3. 仅靠中英文相邻不能判定为两个单词，比如`QQ音乐`是一个单词，还有颜文字、URL 等只能算作一个词，自动加空格也不好实现。
+1. 一个英文单词周围必须要有间隔，故它跟前后中文不是一个单词时得加空格。
+2. 并非所有平台都对混排做了优化，目前浏览器就不支持这功能。
+3. 仅靠中英文相邻不能判定为两个单词，比如`QQ音乐`是一个单词，还有颜文字、URL 等只能算作一个词，自动加空格难以实现。
 </details>
 
-# 标准 Markdown 语法
+# 基本 Markdown 语法
+
+标准的 Markdown 语法见：[Commonmark Spec](https://spec.commonmark.org/current)，下文是简单的示例。
 
 ## 换行
 
@@ -116,6 +129,11 @@ KFM 推荐在中英文相邻的单词之间添加一个空格，这有利于让�
 ##### h5 Heading
 ###### h6 Heading
 
+还有一种在一行下面添加横线的形式，较少使用，也不推荐。
+
+Foo *bar*
+---
+
 ## 横线
 
 ___
@@ -123,6 +141,8 @@ ___
 ---
 
 ***
+
+横线似乎不常出现，因为已经有标题来分割段落了。
 
 ## 强调
 
@@ -227,4 +247,4 @@ export function activate(el: HTMLElement) {
 
 Markdown 使用很多字符表示特定的意思，要显示原义字符，请在字符的前面添加反斜杠 \ ,这样就可以转义字符了。
 
-\#### 使用反斜杠，这就是 4 个 # 号而不是 4 级标题。
+\#### 使用反斜杠，这就是 4 个 # 号而不是 4 级标题。\`不完整的强调`不会渲染。
