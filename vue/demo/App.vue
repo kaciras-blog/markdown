@@ -12,7 +12,7 @@
 		<template #toolbar-right>
 			<ToolButton
 				title='重置内容'
-				@click='content = document'
+				@click='resetContent'
 			>
 				<IconX/>
 			</ToolButton>
@@ -48,6 +48,9 @@ import document from "./KFM-zh.md?raw";
 const content = useLocalStorage("Content", document, {
 	writeDefaults: false,
 });
+
+// 不能写在模板里，因为类型检查不认 RemovableRef 增加的 setter 参数。
+const resetContent = () => content.value = null;
 </script>
 
 <style>
