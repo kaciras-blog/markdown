@@ -105,6 +105,17 @@ $table-border-width: 1px;
 		}
 	}
 
+	summary {
+		/* 在 details 里面，受填充影响，所以用负边距抵消 */
+		margin: -$details-padding-v -$details-padding-h;
+		padding: $details-padding-v $details-padding-h;
+
+		border-radius: 5px;
+		cursor: pointer;
+		color: #222;
+		background: $details-color;
+	}
+
 	a {
 		word-break: break-all;
 	}
@@ -123,23 +134,12 @@ $table-border-width: 1px;
 		vertical-align: bottom;
 	}
 
-	tbody + tbody {
-		border-top: calc(2 * $table-border-width) solid $table-border-color;
-	}
-
 	tbody > tr:hover {
 		background-color: #f6f8fa;
 	}
 
-	summary {
-		/* 在 details 里面，受填充影响，所以用负边距抵消 */
-		margin: -$details-padding-v -$details-padding-h;
-		padding: $details-padding-v $details-padding-h;
-
-		border-radius: 5px;
-		cursor: pointer;
-		color: #222;
-		background: $details-color;
+	tbody + tbody {
+		border-top: calc(2 * $table-border-width) solid $table-border-color;
 	}
 }
 
