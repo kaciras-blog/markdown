@@ -32,13 +32,13 @@
 	},
 	"devDependencies": {
 		"@types/html-minifier-terser": "^7.0.2",
-		"@types/markdown-it": "^14.0.0",
-		"@vitest/coverage-v8": "^1.4.0",
+		"@types/markdown-it": "^14.0.1",
+		"@vitest/coverage-v8": "^1.5.0",
 		"html-minifier-terser": "^7.2.0",
 		"magic-string": "^0.30.9",
 		"postcss-nested": "^6.0.1",
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^5.2.8",
-		"vitest": "^1.4.0"
+		"vitest": "^1.5.0"
 	}
 }
