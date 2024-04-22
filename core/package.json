@@ -35,10 +35,10 @@
 		"@types/markdown-it": "^14.0.1",
 		"@vitest/coverage-v8": "^1.5.0",
 		"html-minifier-terser": "^7.2.0",
-		"magic-string": "^0.30.9",
+		"magic-string": "^0.30.10",
 		"postcss-nested": "^6.0.1",
 		"postcss-simple-vars": "^7.0.1",
-		"vite": "^5.2.8",
+		"vite": "^5.2.10",
 		"vitest": "^1.5.0"
 	}
 }
