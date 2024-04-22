@@ -1,5 +1,5 @@
 import MarkdownIt from "markdown-it";
-import Token from "markdown-it/lib/token.js";
+import Token from "markdown-it/lib/token.mjs";
 
 /**
  * 给块语法渲染的结果中添加原文行号信息，这样就能定位哪一行渲染出了哪个元素。

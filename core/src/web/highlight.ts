@@ -58,6 +58,9 @@ hljs.registerLanguage("vue", vue);
  * 另外 Prism 对 TypeScript 的识别不佳，故仍然用 Highlight.js。
  * https://prismjs.com/plugins/diff-highlight
  *
+ * VitePress 的方案更是丑陋至极。
+ * https://vitepress.dev/guide/markdown#colored-diffs-in-code-blocks
+ *
  * 由于 Highlight.js 没有原生和插件支持，作者也没实现的想法，所以只能自己做了。
  * https://github.com/highlightjs/highlight.js/issues/480
  */
@@ -89,11 +92,12 @@ export default function (code: string, language: string, attrs?: string) {
 		lines[i] = lines[i].slice(1);
 	}
 
+	// 去除了差分符号后的代码给下层高亮库处理。
 	code = lines.join("\n");
 	code = hljs.highlight(code, { language }).value;
 	lines = code.split("\n");
 
-	// 底层的高亮完成后重新按行分割，并给记录的行加上标签。
+	// 高亮完重新按行分割，并给记录的行加上标签。
 	const htmlFragments = [];
 	for (let i = 0; i < lines.length; i++) {
 		if (changes.has(i - 1)) {

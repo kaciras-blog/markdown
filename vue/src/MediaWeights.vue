@@ -10,7 +10,7 @@
 	</ToolButton>
 </template>
 
-<script setup lang="ts">
+<script setup lang='ts'>
 import { IconMusic, IconPhoto, IconVideo } from "@tabler/icons-vue";
 import ToolButton from "./ToolButton.vue";
 import { AddonContext, useAddonContext } from "./addon-api.ts";
@@ -35,7 +35,7 @@ const context = useAddonContext();
 defineOptions({ inheritAttrs: false });
 
 // TODO: 类型提示无法推导箭头函数的参数，不知道是 IDE 还是 Vue 的问题。
-withDefaults(defineProps<MediaWeightProps>(), {
+withDefaults(defineProps<MediaWeightProps>(), <MediaWeightProps>{
 	image: ctx => ctx.insertText("![]()", false, 4),
 	video: ctx => ctx.insertText("@video[]()", true, 9),
 	audio: ctx => ctx.insertText("@audio[]()", true, 9),

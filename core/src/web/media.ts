@@ -1,7 +1,7 @@
-import type MarkdownIt from "markdown-it";
-import type Token from "markdown-it/lib/token.js";
+import MarkdownIt from "markdown-it";
+import Renderer from "markdown-it/lib/renderer.mjs";
+import Token from "markdown-it/lib/token.mjs";
 import { default as directive, DirectiveMap } from "../directive.js";
-import * as Renderer from "markdown-it/lib/renderer.js";
 
 /**
  * 从资源的链接参数（?vw=...&vh=...）里读取尺寸，生成防抖容器的 style 属性。

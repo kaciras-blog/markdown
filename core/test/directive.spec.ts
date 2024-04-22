@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import MarkdownIt from "markdown-it";
-import Token from "markdown-it/lib/token.js";
+import Token from "markdown-it/lib/token.mjs";
 import directive, { DirectiveMap } from "../src/directive.ts";
 
 describe("tokenizer", () => {

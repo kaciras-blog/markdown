@@ -22,11 +22,11 @@
  *
  * https://gitlab.com/help/user/markdown#videos
  */
+import StateBlock from "markdown-it/lib/rules_block/state_block.mjs";
+import Token from "markdown-it/lib/token.mjs";
+import Renderer from "markdown-it/lib/renderer.mjs";
 import MarkdownIt from "markdown-it";
 import { unescapeMd } from "markdown-it/lib/common/utils.mjs";
-import StateBlock from "markdown-it/lib/rules_block/state_block.js";
-import Token from "markdown-it/lib/token.js";
-import * as Renderer from "markdown-it/lib/renderer.js";
 
 function parse(state: StateBlock, startLine: number, _: number, silent: boolean) {
 	const offset = state.tShift[startLine] + state.bMarks[startLine];
