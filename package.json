@@ -5,8 +5,8 @@
 		"@kaciras/eslint-config-core": "^3.0.1",
 		"@kaciras/eslint-config-typescript": "^3.0.1",
 		"@kaciras/eslint-config-vue": "^3.0.1",
-		"@types/node": "^20.12.7",
-		"eslint": "^9.1.1",
+		"@types/node": "^20.12.8",
+		"eslint": "^9.2.0",
 		"typescript": "^5.4.5"
 	}
 }
