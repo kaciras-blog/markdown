@@ -3,6 +3,7 @@ node_modules
 dist
 coverage
 *.log
+.esbench-tmp
 /debug.[jt]s
 
 # Log files
