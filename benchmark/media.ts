@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import { defineSuite } from "esbench";
 import { MarkdownIt, media } from "../core/lib/index.js";
 
-const article = readFileSync("benchmark/markdown.txt", "utf8");
+const article = readFileSync("vue/demo/KFM-zh.md", "utf8");
 
 /*
  * JS 写的解析器（356.02ms）比正则（56.43ms）慢了7倍。
