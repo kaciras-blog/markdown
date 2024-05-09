@@ -17,17 +17,23 @@ defineProps<{ active?: boolean }>();
 	align-items: center;
 	justify-content: center;
 
-	/* SVG 可能被设为 1em 尺寸 */
-	font-size: 24px;
-
 	padding: 5px;
-	color: #555;
+	font-size: 1em;
 	border: none;
+
+	color: #555;
 	background: none;
 	cursor: pointer;
 
 	&:is(:hover, :focus-visible, .active) {
 		color: #0059ff;
+	}
+
+	/* TODO: tablar 丢失了图标的默认值 */
+	& > svg {
+		width: 1.5em;
+		height: 1.5em;
+		stroke-width: 2;
 	}
 }
 </style>
