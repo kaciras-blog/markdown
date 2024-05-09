@@ -2,7 +2,7 @@
 
 该页面是 Kaciras Flavored Markdown (KFM) 的演示，所有插入的图片和视频等均保存在内存中。
 
-**本项目开源：[https://github.com/kaciras-blog/markdown](https://github.com/kaciras-blog/markdown)，包含 [Markdown-It](https://github.com/markdown-it/markdown-it) 的插件和一个基于 [Monaco Editor](https://microsoft.github.io/monaco-editor/) 实现的在线编辑器。**
+**项目地址：[https://github.com/kaciras-blog/markdown](https://github.com/kaciras-blog/markdown)，包含 [Markdown-It](https://github.com/markdown-it/markdown-it) 的插件和一个基于 [Monaco Editor](https://microsoft.github.io/monaco-editor/) 实现的在线编辑器。**
 
 Markdown 是一种轻量级的标记语言，由 John Gruber 于 2004 年创建，如今已成为世界上最受欢迎的标记语言之一，特别是程序员喜欢使用。
 
@@ -18,11 +18,11 @@ KFM 是对 Markdown 语法的扩展，兼容标准的 Markdown，同时添加了
 
 ## 禁止 HTML
 
-KFM 不推荐在 Markdown 中使用 HTML。
+KFM 不推荐也不允许在 Markdown 中使用 HTML。
 
 <details>
 <summary>
-为什么
+为什么？
 </summary>
 Markdown 是轻量级的标记语言，轻量级指的是语法符号（如`![]()`,`#`）占的比例很低，而 HTML 则是重量级的。Markdown 即使不渲染也易读，而 HTML 没有该优势。
 
@@ -170,11 +170,16 @@ _单个下划线也表示斜体。_
 
 + 以 `+`、 `-` 或 `*` 开头的行是无序列表。
 + 用至少两个空格缩进来表示下级项：
+
     - 同一级的项必须具有相同的缩进。
+
         * 项目 1
         + 项目 2
         - 项目 3
-+ Very easy!
+
++ 列表项内可以有多行，同样是空格隔开。
+  
+  只要没有列表符号且与上一行保持相同的缩进（含列表符号），就算在同一项内！
 
 1. 以数字加点加空格（如 `1. `）开头的行是有序列表。
 2. Consectetur adipiscing elit
@@ -182,7 +187,7 @@ _单个下划线也表示斜体。_
 
 ## 链接
 
-创建链接时。首先再方括号中填写链接文本（例如[链接名称]），然后再紧跟方括号的括号（例如(https://www.baidu.com/)）中填写链接地址URL。
+创建链接时。首先再方括号中填写链接文本（例如`[链接名称]`），然后再紧跟方括号的括号（例如`(https://www.baidu.com/)`）中填写链接地址URL。
 
 [这个链接指向本项目的 GitHub 仓库](https://github.com/kaciras-blog/markdown)
 
