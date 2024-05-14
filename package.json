@@ -5,8 +5,8 @@
 		"@kaciras/eslint-config-core": "^3.0.1",
 		"@kaciras/eslint-config-typescript": "^3.0.1",
 		"@kaciras/eslint-config-vue": "^3.0.1",
-		"@types/node": "^20.12.8",
-		"esbench": "^0.1.0",
+		"@types/node": "^20.12.12",
+		"esbench": "^0.2.0",
 		"eslint": "^9.2.0",
 		"typescript": "^5.4.5"
 	}
