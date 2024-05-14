@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import nested from "postcss-nested";
 import vars from "postcss-simple-vars";
 import inlineHTML from "./html-string.ts";
-import packageJson from "./package.json" assert { type: "json" };
+import packageJson from "./package.json" with { type: "json" };
 
 const deps = Object.keys(packageJson.dependencies);
 

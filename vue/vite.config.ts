@@ -3,7 +3,7 @@ import vue from "@vitejs/plugin-vue";
 import dts from "vite-plugin-dts";
 import { visualizer } from "rollup-plugin-visualizer";
 import coreConfig from "../core/vite.config.ts";
-import packageJson from "./package.json" assert { type: "json" };
+import packageJson from "./package.json" with { type: "json" };
 
 const deps = Object.keys(packageJson.dependencies);
 
