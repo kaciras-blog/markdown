@@ -211,4 +211,18 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		const { height, top } = el.getBoundingClientRect();
 		return scrollPreview(height * progress + top + preview.scrollTop);
 	}
+
+	if (import.meta.env.MODE !== "lib") {
+		window.$debug = { scrollEditorByPreview, scrollPreviewByEditor };
+	}
+}
+
+declare global {
+
+	interface DebugManager {
+		scrollEditorByPreview(offset: number): void;
+		scrollPreviewByEditor(offset: number): void;
+	}
+
+	interface Window { $debug: DebugManager }
 }
