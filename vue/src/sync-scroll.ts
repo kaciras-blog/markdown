@@ -71,29 +71,53 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		}
 	}
 
-	function getElementsAtPosition(top: number) {
+	function getElementsAtPosition(position: number) {
 		ensureLineCache();
-		let previous;
-		for (const entry of lineCache) {
-			const rect = entry.el.getBoundingClientRect();
-			if (rect.top >= top) {
-				return [previous, entry];
+
+		const entries = lineCache.filter(i => i.el.offsetParent);
+		let [lo, hi] = [0, entries.length - 1];
+		while (lo <= hi) {
+			const mid = Math.floor((lo + hi) / 2);
+			const { top, bottom } = entries[mid].el.getBoundingClientRect();
+			if (position > bottom) {
+				lo = mid + 1;
+			} else if (position < top) {
+				hi = mid - 1;
+			} else {
+				return [entries[mid]]; // 在元素之内
 			}
-			previous = entry;
 		}
+		if (lo === 0) {
+			return [undefined, undefined]; // 在第一个之前
+		}
+		if (lo >= lineCache.length) {
+			return; // 超过最后的元素
+		}
+		return [entries[hi], entries[lo]]; // 在两个之间
 	}
 
 	function getElementsForLine(line: number) {
 		ensureLineCache();
-		let previous;
-		for (const entry of lineCache) {
-			if (entry.start === line) {
-				return [entry];
-			} else if (entry.start > line) {
-				return [previous, entry];
+
+		let [lo, hi] = [0, lineCache.length - 1];
+		while (lo <= hi) {
+			const mid = Math.floor((lo + hi) / 2);
+			const { start, end } = lineCache[mid];
+			if (line > end) {
+				lo = mid + 1;
+			} else if (line < start) {
+				hi = mid - 1;
+			} else {
+				return [lineCache[mid]]; // 在元素之内
 			}
-			previous = entry;
 		}
+		if (lo === 0) {
+			return [undefined, undefined]; // 在第一个之前
+		}
+		if (lo >= lineCache.length) {
+			return; // 超过最后的元素
+		}
+		return [lineCache[hi], lineCache[lo]]; // 在两个之间
 	}
 
 	preview.addEventListener("scroll", () => {
@@ -104,22 +128,20 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 	function scrollEditorByPreview(offset: number) {
 		const elements = getElementsAtPosition(offset);
 		if (!elements) {
-			return;
+			return scrollEditor(Infinity);
 		}
 		const [previous, entry] = elements;
 		if (!previous) {
 			return scrollEditor(0);
 		}
 		const r = previous.el.getBoundingClientRect();
-		if (offset <= r.top + r.height) {
+		if (elements.length === 1) {
 			const progress = (offset - r.top) / r.height;
 			sLine(previous.start + progress * (previous.end - previous.start));
-		} else if (entry) {
-			const n = entry.el.getBoundingClientRect();
-			const progress = (offset - r.bottom) / (n.top - r.bottom);
-			sLine(previous.end + progress * (entry.start - previous.end));
 		} else {
-			return scrollEditor(Infinity);
+			const n = entry!.el.getBoundingClientRect();
+			const progress = (offset - r.bottom) / (n.top - r.bottom);
+			sLine(previous.end + progress * (entry!.start - previous.end));
 		}
 	}
 
@@ -221,8 +243,10 @@ declare global {
 
 	interface DebugManager {
 		scrollEditorByPreview(offset: number): void;
+
 		scrollPreviewByEditor(offset: number): void;
 	}
 
+	// noinspection JSUnusedGlobalSymbols
 	interface Window { $debug: DebugManager }
 }
