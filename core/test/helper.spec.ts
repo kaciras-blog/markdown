@@ -4,6 +4,7 @@ import { Emphasis, getEmphasis } from "../src/index.ts";
 const cases: Array<[string, number, Emphasis]> = [
 	["text", 0, Emphasis.None],
 	["t+exe+t", 0, Emphasis.None],
+	["t**exe**t", 0, Emphasis.None],
 	["", 0, Emphasis.None],
 	["*", 0, Emphasis.None],
 	["**AB", 0, Emphasis.None],

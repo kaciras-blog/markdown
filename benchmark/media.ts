@@ -12,12 +12,6 @@ const article = readFileSync("vue/demo/KFM-zh.md", "utf8");
 const markdownIt = new MarkdownIt("zero");
 markdownIt.use(media);
 
-export default defineSuite({
-	params: {
-		text: ["@gif[A [gif] video](/video/foobar.mp4)", article],
-	},
-	setup(scene) {
-		const { text } = scene.params;
-		scene.bench("Render", () => markdownIt.render(text));
-	},
+export default defineSuite(scene => {
+	scene.bench("Render", () => markdownIt.render(article));
 });

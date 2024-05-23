@@ -4,6 +4,7 @@ dist
 coverage
 *.log
 .esbench-tmp
+/reports/
 /debug.[jt]s
 
 # Log files

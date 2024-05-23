@@ -174,6 +174,7 @@ function addPrefix(prefix: string) {
 	selections.sort(Range.compareRangesUsingStarts);
 	const commands = selections.map(s => new PrefixCommand(s, prefix));
 
+	// 检查两个选区是否都包含了同一行，有则给后一个添加 overlap 标记。
 	for (let i = 1; i < selections.length; i++) {
 		const prev = selections[i - 1];
 		const curr = selections[i];

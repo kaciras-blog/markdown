@@ -30,8 +30,9 @@ export type Renderer = "rich" | "guest" | "core" | {
 };
 
 export interface MarkdownViewProps {
-
-	/** 要渲染的 Markdown 文本，转换过程是同步的。*/
+	/**
+	 * 要渲染的 Markdown 文本，转换过程是同步的。
+	 */
 	value: string;
 
 	/** 设置个唯一 ID，由于区分锚点。*/
