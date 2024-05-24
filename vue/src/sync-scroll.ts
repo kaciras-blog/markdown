@@ -54,6 +54,12 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 		}
 	});
 
+	ensureLineCache();
+
+	const obs = new MutationObserver(ensureLineCache);
+	obs.observe(preview, { childList: true, subtree: true });
+	editor.onDidDispose(() => obs.disconnect());
+
 	/**
 	 * 扫描并缓存渲染结果及其对应的行号，在每次内容更改后都需要重新生成该缓存。
 	 * 因为滚动相比于编辑更频繁，常见情况是停下来看看前后文，所以缓存是有意义的。
@@ -72,8 +78,6 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 	}
 
 	function getElementsAtPosition(position: number) {
-		ensureLineCache();
-
 		const entries = lineCache.filter(i => i.el.offsetParent);
 		let [lo, hi] = [0, entries.length - 1];
 		while (lo <= hi) {
@@ -97,8 +101,6 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 	}
 
 	function getElementsForLine(line: number) {
-		ensureLineCache();
-
 		let [lo, hi] = [0, lineCache.length - 1];
 		while (lo <= hi) {
 			const mid = Math.floor((lo + hi) / 2);
