@@ -19,7 +19,7 @@
 		<MarkdownView
 			v-show='viewMode !== ViewMode.Edit'
 			ref='previewEl'
-			:renderer='renderer'
+			:renderer='editorRenderer'
 			:value='debounced'
 			:class='[
 				$style.preview,
@@ -37,6 +37,16 @@
 
 <script lang='ts'>
 import * as md from "monaco-editor/esm/vs/basic-languages/markdown/markdown.js";
+import { kfmPreset, MarkdownIt, sourceLine } from "@kaciras-blog/markdown";
+
+// TODO: 要为了通用性，解耦渲染器吗？
+const rich = new MarkdownIt();
+rich.use(kfmPreset);
+rich.use(sourceLine);
+
+const guest = new MarkdownIt();
+guest.use(kfmPreset, { guest: true });
+guest.use(sourceLine);
 
 const WORD_SEPARATORS =
 	'`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?'	// USUAL_WORD_SEPARATORS
@@ -53,7 +63,7 @@ tokenizer.root.unshift([
 </script>
 
 <script setup lang='ts'>
-import { ComponentPublicInstance, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } from "vue";
+import { ComponentPublicInstance, computed, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } from "vue";
 import { refDebounced } from "@vueuse/core";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
@@ -113,6 +123,16 @@ const editorEl = shallowRef<HTMLElement>();
 const previewEl = shallowRef<ComponentPublicInstance>();
 const viewMode = shallowRef(ViewMode.Split);
 const scrollSynced = shallowRef(true);
+
+const editorRenderer = computed(() => {
+	switch (props.renderer) {
+		case "rich":
+			return rich;
+		case "guest":
+			return guest;
+	}
+	return props.renderer;
+});
 
 let editor: monaco.editor.IStandaloneCodeEditor;
 
