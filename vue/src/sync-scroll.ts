@@ -184,7 +184,7 @@ export default function (editor: Editor, preview: HTMLElement, enabled: Ref<bool
 
 	function scrollPreviewByEditor(offset: number) {
 		const i = getSourceLineOfHeight(offset);
-		const elements = getElementsForLine(Math.floor(i));
+		const elements = getElementsForLine(i);
 
 		// 所有元素都再当前行之前，通常是编辑器底部的空白区，直接滚到最底下。
 		if (!elements) {
