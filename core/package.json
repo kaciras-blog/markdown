@@ -22,7 +22,7 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"@kaciras/utilities": "^0.13.0",
+		"@kaciras/utilities": "^0.13.1",
 		"bootstrap-icons": "^1.11.3",
 		"highlight.js": "^11.9.0",
 		"markdown-it": "^14.1.0",
@@ -38,7 +38,7 @@
 		"magic-string": "^0.30.10",
 		"postcss-nested": "^6.0.1",
 		"postcss-simple-vars": "^7.0.1",
-		"vite": "^5.2.11",
+		"vite": "^5.2.12",
 		"vitest": "^1.6.0"
 	}
 }
