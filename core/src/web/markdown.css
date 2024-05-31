@@ -56,10 +56,6 @@ $table-border-width: 1px;
 		content: "References";
 	}
 
-	.footnotes:lang(zh)::before {
-		content: "参考";
-	}
-
 	pre {
 		overflow-x: auto;
 		margin: 0;
@@ -118,6 +114,36 @@ $table-border-width: 1px;
 
 	a {
 		word-break: break-all;
+	}
+
+	.alert {
+		&::before {
+			font-weight: 600;
+		}
+		margin: 16px 0;
+		padding: 16px 16px 4px;
+		border-radius: 8px;
+	}
+
+	.tip {
+		&::before {
+			content: "TIP";
+		}
+		background: #e9eaff;
+	}
+
+	.warning {
+		&::before {
+			content: "WARNING";
+		}
+		background: #fcf4dc;
+	}
+
+	.caution {
+		&::before {
+			content: "CAUTION";
+		}
+		background: #fde4e8;
 	}
 
 	table {
@@ -224,4 +250,23 @@ $table-border-width: 1px;
 
 :is(h1, h2, h3, h4, h5, h6):hover > .anchor-link {
 	opacity: 1;
+}
+
+/* TODO: 在 CSS 里做翻译无法用于三方阅读器 */
+.markdown:lang(zh) {
+	.footnotes::before {
+		content: "参考";
+	}
+
+	.tip::before {
+		content: "提示";
+	}
+
+	.warning::before {
+		content: "警告";
+	}
+
+	.caution::before {
+		content: "危险";
+	}
 }

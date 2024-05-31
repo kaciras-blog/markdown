@@ -6,6 +6,7 @@ import fence from "./web/fence.ts";
 import highlight from "./web/highlight.ts";
 import media from "./web/media.ts";
 import directive from "./directive.ts";
+import div from "./div.js";
 import collapsible from "./collapsible.ts";
 
 /**
@@ -116,5 +117,5 @@ export function kfmPreset(md: MarkdownIt, options: PresetOptions = {}) {
 		md.use(toc);
 	}
 
-	return md.use(footnote).use(collapsible);
+	return md.use(div).use(footnote).use(collapsible);
 }

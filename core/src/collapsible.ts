@@ -1,11 +1,27 @@
 import MarkdownIt from "markdown-it";
 import StateBlock from "markdown-it/lib/rules_block/state_block.mjs";
 
-function isWholeLine(state: StateBlock, lineNum: number, text: string) {
+export function isWholeLine(state: StateBlock, lineNum: number, text: string) {
 	const { src, bMarks, tShift, eMarks } = state;
 	const i = bMarks[lineNum] + tShift[lineNum];
 	const k = eMarks[lineNum];
 	return i + text.length === k && src.startsWith(text, i);
+}
+
+export function parseChildren(
+	state: StateBlock,
+	start: number,
+	end: number,
+	parent: string,
+) {
+	const oldParent = state.parentType;
+	const oldLineMax = state.lineMax;
+
+	(state.parentType as string) = parent;
+	state.lineMax = end;
+	state.md.block.tokenize(state, start, end);
+	state.lineMax = oldLineMax;
+	state.parentType = oldParent;
 }
 
 function parse(state: StateBlock, startLine: number, endLine: number) {
@@ -27,24 +43,16 @@ function parse(state: StateBlock, startLine: number, endLine: number) {
 		return false; // Markdown 不完整，为了安全性不要输出半开标签，即使浏览器也能处理。
 	}
 
-	const oldParent = state.parentType;
-	const oldLineMax = state.lineMax;
-	(state.parentType as string) = "collapsible";
-	state.lineMax = line - 1;
-
 	let token = state.push("collapsible_open", "details", 1);
 	token.block = true;
 	token.markup = "<details>";
 	token.map = [startLine, line];
 
-	state.md.block.tokenize(state, startLine + 1, line - 1);
+	parseChildren(state, startLine + 1, line - 1, "collapsible");
 
 	token = state.push("collapsible_close", "details", -1);
 	token.block = true;
 	token.markup = "</details>";
-
-	state.parentType = oldParent;
-	state.lineMax = oldLineMax;
 
 	state.line = line;
 	return true;

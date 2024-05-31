@@ -10,6 +10,7 @@ export { default as MarkdownIt } from "markdown-it";
 
 export { default as toc } from "markdown-it-toc-done-right";
 export { default as directive } from "./directive.js";
+export { default as div } from "./div.js";
 export { default as collapsible } from "./collapsible.js";
 
 export { default as fence } from "./web/fence.js";
