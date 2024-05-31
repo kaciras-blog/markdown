@@ -32,7 +32,7 @@ export default defineConfig({
 		copyPublicDir: false,
 	},
 	test: {
-		clearMocks: true,
+		restoreMocks: true,
 		coverage: {
 			reporter: ["lcovonly"],
 			provider: "v8",

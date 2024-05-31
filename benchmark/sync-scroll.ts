@@ -8,7 +8,7 @@ async function waitForMounted() {
 			return;
 		}
 	}
-	throw new Error("咋 2 秒过了还没渲染好，是不是代码有问题啊？");
+	throw new Error("咋两秒过了还没渲染好，有问题啊。");
 }
 
 /*

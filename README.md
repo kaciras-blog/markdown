@@ -1,7 +1,5 @@
 # Kaciras Flavored Markdown
 
-[![Test](https://github.com/kaciras-blog/markdown/actions/workflows/test.yml/badge.svg)](https://github.com/kaciras-blog/markdown/actions/workflows/test.yml)
-
 一个扩展的 Markdown 转换器，以及基于 [monaco-editor](https://github.com/microsoft/monaco-editor) 的 Markdown 编辑器。在 [Kaciras Blog](https://blog.kaciras.com) 项目中使用。
 
 [演示页面](https://kaciras-blog.github.io/markdown)
@@ -19,6 +17,7 @@ Markdown 到 HTML 的转换器，基于 [markdown-it](https://github.com/markdow
 * classify：给行内代码加个 inline-code 类以便跟代码块区分。
 * ugc：给所有链接加上 rel="ugc,nofollow" 防止刷外链，推荐用于渲染用户的输入。
 * collapsible：解析类似 HTML `<details>` 元素的语法，渲染出对应的元素，可在禁止直接写 HTML 的情况下使用。
+* div：解析以 `::: name` 开头 `:::` 结束的的语法，渲染为带有 class 的 `<div>`。
 * highlight：基于 [highlight.js](https://github.com/highlightjs/highlight.js) 的语法高亮函数，添加了差分功能，并移除了一些不常用的语言。
 
 ```

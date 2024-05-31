@@ -93,6 +93,22 @@ body {
 }
 ```
 
+## 自定义容器
+
+::: tip
+自定义容器默认渲染为一个 <div>，并带有指定的 class。
+:::
+
+::: warning
+在设计上采用了 [Djot](https://github.com/jgm/djot) 的 Div 相同的语法。
+:::
+
+::: caution
+KFM 内置仅支持 tip、warning、caution 三种容器。
+
+使用其它的 class 也能渲染，但并没有样式。
+:::
+
 # 中英文之间的空白
 
 KFM 推荐在中英文相邻的单词之间添加一个空格，这有利于让不同平台间排版保持一致。

@@ -2,7 +2,9 @@ import MarkdownIt from "markdown-it";
 import Token from "markdown-it/lib/token.mjs";
 
 /**
- * 给块语法渲染的结果中添加原文行号信息，这样就能定位哪一行渲染出了哪个元素。
+ * 给块语法渲染的结果中添加原文行号信息，这样就能定位哪一行渲染出了哪个元素，可用于同步滚动。
+ *
+ * 上游的解析器需要设置 `token.map` 属性，下游的渲染器也得将 `token.attrs` 添加到元素上。
  *
  * @see https://github.com/microsoft/vscode/blob/1f94e5cd54ce0a7bc503a3f95a3742ddc5980151/extensions/markdown-language-features/src/markdownEngine.ts#L22
  */
