@@ -26,10 +26,10 @@
 	"dependencies": {
 		"@kaciras-blog/markdown": "workspace:^",
 		"@kaciras/utilities": "^1.0.0",
-		"@tabler/icons-vue": "^3.6.0",
+		"@tabler/icons-vue": "^3.7.0",
 		"@vueuse/core": "^10.11.0",
-		"monaco-editor": "^0.49.0",
-		"vue": "^3.4.29"
+		"monaco-editor": "^0.50.0",
+		"vue": "^3.4.30"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^5.0.5",
