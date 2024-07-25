@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`should add aspect ratio to style 1`] = `
-"<p><span class="md-center"><a style='--width:11px;--aspect:11/22' class="md-inspect" href="/file.png?vw=11&vh=22" target="_blank" rel="noopener,nofollow"><img data-src="/file.png?vw=11&vh=22" alt="label" class="md-img" crossorigin></a><span class="md-alt">label</span></span></p>
+"<p><span class="md-center"><a style='--width:11px;--aspect:11/22' class="md-inspect" href="/file.png?vw=11&vh=22" rel="noopener" target="_blank"><img data-src="/file.png?vw=11&vh=22" alt="label" class="md-img" crossorigin></a><span class="md-alt">label</span></span></p>
 "
 `;
 
@@ -10,6 +10,6 @@ exports[`should add label section to audio 1`] = `"<p class="md-center"><audio c
 exports[`should output minimized HTML 1`] = `"<p class="md-center"><video class="md-video" controls crossorigin poster="" data-src="/file.mp4"></video></p>"`;
 
 exports[`should replace builtin image renderer 1`] = `
-"<p><span class="md-center"><a  class="md-inspect" href="/file.png" target="_blank" rel="noopener,nofollow"><img data-src="/file.png" alt="label" class="md-img" crossorigin></a><span class="md-alt">label</span></span></p>
+"<p><span class="md-center"><a  class="md-inspect" href="/file.png" rel="noopener" target="_blank"><img data-src="/file.png" alt="label" class="md-img" crossorigin></a><span class="md-alt">label</span></span></p>
 "
 `;

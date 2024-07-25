@@ -64,8 +64,8 @@ function renderImage(this: MarkdownIt, tokens: Token[], i: number, _: any, __: a
 				${getSizeStyle(src)}
 				class='md-inspect'
 				href="${src}"
+				rel='noopener'
 				target='_blank'
-				rel='noopener,nofollow'
 			>
 				<img data-src="${src}" alt="${label}" class='md-img' crossorigin>
 			</a>
