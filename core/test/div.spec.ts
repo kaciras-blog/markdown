@@ -12,7 +12,7 @@ This is a warning.
 :::`);
 
 	expect(html).toBe(`\
-<div class="warning">
+<div class="alert warning">
 <p>This is a warning.</p>
 </div>
 `);
@@ -29,9 +29,9 @@ This is an info box.
 :::`);
 
 	expect(html).toBe(`\
-<div class="warning">
+<div class="alert warning">
 <p>This is a warning.</p>
-<div class="info">
+<div class="alert info">
 <p>This is an info box.</p>
 </div>
 </div>
