@@ -5,9 +5,9 @@
 		"@kaciras/eslint-config-core": "^3.1.0",
 		"@kaciras/eslint-config-typescript": "^3.1.0",
 		"@kaciras/eslint-config-vue": "^3.1.0",
-		"@types/node": "^20.14.12",
+		"@types/node": "^22.0.0",
 		"esbench": "^0.6.1",
-		"eslint": "^9.7.0",
+		"eslint": "^9.8.0",
 		"playwright": "^1.45.3",
 		"typescript": "^5.5.4"
 	}
