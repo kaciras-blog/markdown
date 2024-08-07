@@ -5,10 +5,10 @@
 		"@kaciras/eslint-config-core": "^3.1.0",
 		"@kaciras/eslint-config-typescript": "^3.1.0",
 		"@kaciras/eslint-config-vue": "^3.1.0",
-		"@types/node": "^22.0.0",
-		"esbench": "^0.6.1",
+		"@types/node": "^22.1.0",
+		"esbench": "^0.6.2",
 		"eslint": "^9.8.0",
-		"playwright": "^1.45.3",
+		"playwright": "^1.46.0",
 		"typescript": "^5.5.4"
 	}
 }
