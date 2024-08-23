@@ -5,6 +5,18 @@ import div from "../src/div.ts";
 const md = new MarkdownIt();
 md.use(div);
 
+it('should skip without class', () => {
+	const html = md.render(`\
+:::
+This is a warning.
+:::`);
+	expect(html).toBe(`\
+<p>:::
+This is a warning.
+:::</p>
+`);
+});
+
 it("should works", () => {
 	const html = md.render(`\
 ::: warning
