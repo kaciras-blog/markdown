@@ -35,6 +35,9 @@ export default function htmlStringPlugin(): Plugin {
 		},
 
 		async transform(code, id) {
+			if (!id.includes("/core/src/")) {
+				return; // 为什么会处理到自己？
+			}
 			if (id.includes("/node_modules/")) {
 				return; // 因为没类型，标签可能跟三方库的重复，所以仅处理自己的代码。
 			}
