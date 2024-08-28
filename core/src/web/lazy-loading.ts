@@ -3,7 +3,6 @@ import { identity, silencePromise } from "@kaciras/utilities/browser";
 export type LazyElement = HTMLMediaElement | HTMLImageElement;
 
 export type LazyLoadOptions = IntersectionObserverInit & {
-
 	/**
 	 * 触发懒加载时根据原始 URL 返回要加载的 URL，默认原样返回。
 	 *

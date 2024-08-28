@@ -53,6 +53,8 @@ hljs.registerLanguage("typescript", typescript);
 hljs.registerLanguage("vue", vue);
 
 /*
+ * 适配三方的高亮库，同时添加了对差分语法的支持，在讲解代码时挺有用的一功能。
+ *
  * # 差分的实现
  * Prism.js 虽有个插件，但它使用 Git 的补丁语法，跟我需要的不一样。
  * 另外 Prism 对 TypeScript 的识别不佳，故仍然用 Highlight.js。

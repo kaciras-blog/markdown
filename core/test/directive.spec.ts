@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import MarkdownIt from "markdown-it";
 import Token from "markdown-it/lib/token.mjs";
 import directive, { DirectiveMap } from "../src/directive.ts";
+import dedent from "dedent";
 
 describe("tokenizer", () => {
 	let token: Token | null = null;
@@ -101,13 +102,13 @@ describe("default renderer", () => {
 	markdownIt.use(directive);
 
 	it("should cooperate with others", () => {
-		const markdown = `
-text before
-
-@gif[A gif video](/video/foo.mp4)
-
-text after
-`;
+		const markdown = dedent`
+			text before
+			
+			@gif[A gif video](/video/foo.mp4)
+			
+			text after
+		`;
 		expect(markdownIt.render(markdown)).toMatchSnapshot();
 	});
 

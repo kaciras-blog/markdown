@@ -8,8 +8,8 @@ it("should set the attribute", () => {
 	const markdownIt = new MarkdownIt();
 	markdownIt.use(exports.ugc);
 
-	const html = markdownIt.render("[test](http://example.com)");
-	expect(html.trimEnd()).toBe('<p><a href="http://example.com" rel="ugc,nofollow">test</a></p>');
+	const html = markdownIt.render("[test](https://example.com)");
+	expect(html.trimEnd()).toBe('<p><a href="https://example.com" rel="ugc,nofollow">test</a></p>');
 });
 
 it("should add class to inlined code block", () => {
