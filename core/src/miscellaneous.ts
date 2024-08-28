@@ -36,7 +36,11 @@ export function anchor(md: MarkdownIt) {
 			placement: "after",
 			class: "anchor-link",
 		}),
-		slugify: title => title.trim().toLowerCase().replace(/\s+/g, "-"),
+		slugifyWithState(title, state) {
+			const { docId } = state.env; // env 默认为空对象。
+			title = title.trim().toLowerCase().replace(/\s+/g, "-");
+			return docId ? `${docId}-${title}` : title;
+		},
 	});
 }
 

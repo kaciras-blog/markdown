@@ -26,6 +26,13 @@ it("should add anchor to titles", () => {
 	expect(markdownIt.render("# foobar")).toMatchSnapshot();
 });
 
+it("should add docId to anchor link", () => {
+	const markdownIt = new MarkdownIt();
+	markdownIt.use(exports.anchor);
+
+	expect(markdownIt.render("# foobar", { docId: 8964 })).toMatchSnapshot();
+});
+
 it("should support footnote common", () => {
 	const markdownIt = new MarkdownIt();
 	markdownIt.use(exports.footnote);

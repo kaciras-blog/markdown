@@ -10,6 +10,11 @@ exports[`should add class to inlined code block 1`] = `
 "
 `;
 
+exports[`should add docId to anchor link 1`] = `
+"<h1 id="8964-foobar" tabindex="-1">foobar <a class="anchor-link" href="#8964-foobar">#</a></h1>
+"
+`;
+
 exports[`should support footnote common 1`] = `
 "<p>test<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
 <p>after</p>
