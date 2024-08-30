@@ -14,9 +14,6 @@ $table-border-width: 1px;
 .markdown {
 	line-height: 1.8;
 
-	word-wrap: break-word;
-	word-break: break-word;
-
 	/* 暂时不在全站用，因为在一些动画上会造成文字移动 */
 	letter-spacing: .5px;
 
@@ -146,14 +143,28 @@ $table-border-width: 1px;
 		background: #fde4e8;
 	}
 
+	/*
+	 * 表格的样式，除文章外好像没有其他地方用（网格布局替代了），主要参考：
+	 * https://piccalil.li/blog/styling-tables-the-modern-css-way
+	 */
 	table {
 		border-collapse: collapse;
 		margin: 0 auto 1em auto;
 	}
 
 	th, td {
-		padding: 0.4em 0.8em;
+		padding: 0.25em 0.75em;
 		border: $table-border-width solid $table-border-color;
+	}
+
+	thead {
+		border-block-end: calc(2 * $table-border-width) solid;
+		background: whitesmoke;
+	}
+
+	tfoot {
+		border-block: calc(2 * $table-border-width) solid;
+		background: whitesmoke;
 	}
 
 	thead th {
@@ -167,6 +178,11 @@ $table-border-width: 1px;
 	tbody + tbody {
 		border-top: calc(2 * $table-border-width) solid $table-border-color;
 	}
+}
+
+/* 直接在 table 上加滚动无效，必须包一层 */
+.table-view {
+	overflow: auto;
 }
 
 .code-meta {
@@ -229,8 +245,10 @@ $table-border-width: 1px;
 	color: #fa0085;
 	border-radius: 5px;
 
-	/* 如果在未达行尾就换行会跟多行代码块混淆，故改为 break-all */
+	/* 如果在未达行尾就换行会跟多行代码块混淆，故使用 break-all */
 	word-break: break-all;
+	word-wrap: break-word;
+
 	text-decoration: inherit;
 }
 

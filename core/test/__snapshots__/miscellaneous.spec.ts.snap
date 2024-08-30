@@ -22,3 +22,17 @@ exports[`should support footnote common 1`] = `
 </li>
 </ol>"
 `;
+
+exports[`should wrap table with a div 1`] = `
+"<div class="table-view"><table><thead>
+<tr>
+<th>head</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cell</td>
+</tr>
+</tbody>
+</table></div>"
+`;

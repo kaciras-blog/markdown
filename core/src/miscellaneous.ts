@@ -71,16 +71,22 @@ export function footnote(md: MarkdownIt) {
 }
 
 /**
- * 给行内代码加个 inline-code 类以便跟代码块区分。
+ * 一些小的、通用的调整，为了方便加样式，因为每个都没几行所以放一起了。
+ *
+ * - 行内代码加个 inline-code 类以便跟代码块区分。
+ * - 表格外层套上 div 这样就能加滚动条。
  */
-export function classify(md: MarkdownIt) {
+export function styling(md: MarkdownIt) {
 	const { rules } = md.renderer;
-	const raw = rules.code_inline!;
+	const inlineRaw = rules.code_inline!;
+
+	rules.table_open = () => '<div class="table-view"><table>';
+	rules.table_close = () => "</table></div>";
 
 	rules.code_inline = function (tokens, idx, ...rest) {
 		const token = tokens[idx];
 		token.attrPush(["class", "inline-code"]);
-		return raw.call(this, tokens, idx, ...rest);
+		return inlineRaw.call(this, tokens, idx, ...rest);
 	};
 }
 
@@ -114,7 +120,7 @@ export function kfmPreset(md: MarkdownIt, options: PresetOptions = {}) {
 		md.options.highlight ??= highlight;
 		md.use(fence);
 		md.use(media);
-		md.use(classify);
+		md.use(styling);
 	}
 
 	if (options.guest) {

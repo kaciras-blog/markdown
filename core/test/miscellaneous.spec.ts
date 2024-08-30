@@ -14,9 +14,16 @@ it("should set the attribute", () => {
 
 it("should add class to inlined code block", () => {
 	const markdownIt = new MarkdownIt();
-	markdownIt.use(exports.classify);
+	markdownIt.use(exports.styling);
 
 	expect(markdownIt.render("`foobar`")).toMatchSnapshot();
+});
+
+it("should wrap table with a div", () => {
+	const markdownIt = new MarkdownIt();
+	markdownIt.use(exports.styling);
+
+	expect(markdownIt.render("| head |\n|----|\n| cell |")).toMatchSnapshot();
 });
 
 it("should add anchor to titles", () => {
@@ -49,7 +56,7 @@ it.each([{
 		exports.fence,
 		exports.media,
 		exports.directive,
-		exports.classify,
+		exports.styling,
 		exports.toc,
 		exports.div,
 		exports.footnote,
@@ -72,7 +79,7 @@ it.each([{
 		exports.fence,
 		exports.media,
 		exports.directive,
-		exports.classify,
+		exports.styling,
 		exports.ugc,
 		exports.div,
 		exports.footnote,
