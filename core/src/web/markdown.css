@@ -149,7 +149,7 @@ $table-border-width: 1px;
 	 */
 	table {
 		border-collapse: collapse;
-		margin: 0 auto 1em auto;
+		margin: 0 auto;
 	}
 
 	th, td {
@@ -183,6 +183,7 @@ $table-border-width: 1px;
 /* 直接在 table 上加滚动无效，必须包一层 */
 .table-view {
 	overflow: auto;
+	margin: 1em 0;
 }
 
 .code-meta {
