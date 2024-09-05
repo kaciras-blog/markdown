@@ -20,7 +20,7 @@ interface MarkdownBoxProps {
 	lazyLoading?: LazyLoadOptions;
 }
 
-const props = defineProps<MarkdownBoxProps>();
+const { html, lazyLoading } = defineProps<MarkdownBoxProps>();
 
 /*
  * 无论是 :ref 还是自定义指令，它们在上层组件渲染时都会调用，即使 html 没有变化。
@@ -34,7 +34,6 @@ let prev: string;
 let disconnect = noop;
 
 function setup(el: HTMLElement | null) {
-	const { html, lazyLoading } = props;
 	if (!el) {
 		disconnect();
 		disconnect = noop;

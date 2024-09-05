@@ -38,6 +38,7 @@
 <script lang='ts'>
 import * as md from "monaco-editor/esm/vs/basic-languages/markdown/markdown.js";
 import { kfmPreset, MarkdownIt, sourceLine } from "@kaciras-blog/markdown";
+import { AddonContext } from "./addon-api.ts";
 
 // TODO: 要为了通用性，解耦渲染器吗？
 const rich = new MarkdownIt();
@@ -60,6 +61,18 @@ tokenizer.root.unshift([
 	/^(@\w+)(!?\[)((?:[^\]\\]|@escapes)*)(]\([^)]+\))/,
 	["type.directive", "string.link", "", "string.link"],
 ]);
+
+/**
+ * TODO: monaco 默认光标不随拖拽而移动，dnd 插件没有公开 API，插入点会有问题。
+ * https://github.com/microsoft/monaco-editor/issues/3359
+ *
+ * TODO: Vue 的垃圾解析器要求导出必须在块的开头，所以不能把该类型放到下面的块里。
+ *
+ * @param files 拖放到编辑器的文件列表
+ * @param ctx 编辑器上下文
+ * @return true 表示已经处理完成，无需再执行默认的行为。
+ */
+type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
 </script>
 
 <script setup lang='ts'>
@@ -75,20 +88,9 @@ import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
 import "monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js";
 import MarkdownView, { Renderer } from "./MarkdownView.vue";
 import setupScrollSync from "./sync-scroll.ts";
-import { AddonContext, createAddonContext, ViewMode } from "./addon-api.ts";
-
-/**
- * TODO: monaco 默认光标不随拖拽而移动，dnd 插件没有公开 API，插入点会有问题。
- * https://github.com/microsoft/monaco-editor/issues/3359
- *
- * @param files 拖放到编辑器的文件列表
- * @param ctx 编辑器上下文
- * @return true 表示已经处理完成，无需再执行默认的行为。
- */
-type DropHandler = (files: FileList, ctx: AddonContext) => boolean | void;
+import { createAddonContext, ViewMode } from "./addon-api.ts";
 
 export interface MarkdownEditorProps {
-
 	/**
 	 * Markdown 渲染器，可以为 MarkdownIt 的实例。
 	 * 如果是字符串则使用 @kaciras-blog/markdown/presets 里对应的。

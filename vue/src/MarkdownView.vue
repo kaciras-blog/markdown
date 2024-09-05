@@ -44,10 +44,9 @@ export interface MarkdownViewProps {
 	lazyLoading?: LazyLoadOptions;
 }
 
-const props = defineProps<MarkdownViewProps>();
+const { value, renderer, docId } = defineProps<MarkdownViewProps>();
 
 const html = computed(() => {
-	const { value, renderer, docId } = props;
 	let resolved = guest;
 
 	switch (renderer) {
