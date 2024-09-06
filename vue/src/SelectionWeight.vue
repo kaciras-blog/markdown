@@ -25,8 +25,9 @@ const x = shallowRef({ start: 0, count: 0, sl: 0, sc: 0, el: 0, ec: 0 });
 watch(context.selection, (selection) => {
 	const { startLineNumber, startColumn } = selection;
 	const model = context.editor.getModel()!;
-
 	const offset = Selection.createWithDirection(1, 1, startLineNumber, startColumn, 0);
+
+	// 用 ref 比 reactive 快，测试见 benchmark/reactive-assign.ts
 	x.value = {
 		sl: startLineNumber,
 		sc: startColumn,
