@@ -212,13 +212,13 @@ onMounted(() => {
 	flex: 1;
 }
 
+/* 状态栏不要加 padding，因为某些组件有底色 */
 .status {
 	grid-column: 1/3;
 
 	display: flex;
 	line-height: 22px;
 	font-size: 14px;
-	padding: 0 .5em;
 	color: white;
 	background-color: #0074e8;
 }
