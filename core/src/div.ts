@@ -2,6 +2,9 @@ import StateBlock from "markdown-it/lib/rules_block/state_block.mjs";
 import MarkdownIt from "markdown-it";
 import { isWholeLine, parseChildren } from "./collapsible.ts";
 
+// 但凡涉及展示用户输入，必须考虑 XSS，最好用白名单筛选一下。
+const whiteList = /^(tip|warning|caution|center)$/;
+
 function parse(state: StateBlock, startLine: number, endLine: number) {
 	const { src, bMarks, tShift, eMarks } = state;
 	const offset = tShift[startLine] + bMarks[startLine];
@@ -11,8 +14,8 @@ function parse(state: StateBlock, startLine: number, endLine: number) {
 	}
 
 	const clazz = state.src.slice(offset + 4, eMarks[startLine]);
-	if (!clazz) {
-		return false;
+	if (!whiteList.test(clazz)) {
+		return false; // 不允许省略类名。
 	}
 
 	let line = startLine + 1;
