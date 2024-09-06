@@ -36,15 +36,15 @@ it("should support nesting", t(`
 	::: warning
 	This is a warning.
 	
-	::: info
-	This is an info box.
+	::: tip
+	This is an tip box.
 	:::
 	:::
 `, `
 	<div class="alert warning">
 	<p>This is a warning.</p>
-	<div class="alert info">
-	<p>This is an info box.</p>
+	<div class="alert tip">
+	<p>This is an tip box.</p>
 	</div>
 	</div>
 `));

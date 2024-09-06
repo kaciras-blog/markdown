@@ -18,6 +18,11 @@ async function waitForMounted() {
  * | --: | ---: | --------: | -------: | --------: |
  * |   0 |  E2P |   6.32 us | 34.87 ns |    -3.64% |
  * |   1 |  P2E | 123.72 us |  1.08 us |   -37.07% |
+ *
+ * | No. | Name |      time |   time.SD | time.diff |
+ * | --: | ---: | --------: | --------: | --------: |
+ * |   0 |  E2P |  21.15 us | 588.78 ns |  +234.53% |
+ * |   1 |  P2E | 195.78 us |    831 ns |   +58.25% |
  */
 export default defineSuite(async scene => {
 	await waitForMounted();

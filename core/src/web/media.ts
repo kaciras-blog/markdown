@@ -32,7 +32,7 @@ function blockAttrs(renderer: Renderer, token: Token) {
 	const i = token.attrIndex("src");
 	const src = token.attrs![i][1];
 	token.attrs!.splice(i, 1);
-	token.attrJoin("class", "md-center");
+	token.attrJoin("class", "center");
 	return [src, renderer.renderAttrs(token).trimStart()];
 }
 

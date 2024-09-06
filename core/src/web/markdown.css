@@ -143,6 +143,12 @@ $table-border-width: 1px;
 		background: #fde4e8;
 	}
 
+	.center {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
 	/*
 	 * 表格的样式，除文章外好像没有其他地方用（网格布局替代了），主要参考：
 	 * https://piccalil.li/blog/styling-tables-the-modern-css-way
@@ -228,12 +234,6 @@ $table-border-width: 1px;
 	& ol {
 		margin: 0;
 	}
-}
-
-.md-center {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
 }
 
 .inline-code {
