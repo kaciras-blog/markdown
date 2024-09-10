@@ -1,5 +1,4 @@
 import hljs from "highlight.js/lib/core";
-import { escapeHtml } from "markdown-it/lib/common/utils.mjs";
 
 // 只添加我常用的语言。
 import c from "highlight.js/lib/languages/c";
@@ -19,6 +18,7 @@ import less from "highlight.js/lib/languages/less";
 import lua from "highlight.js/lib/languages/lua";
 import protobuf from "highlight.js/lib/languages/protobuf";
 import python from "highlight.js/lib/languages/python";
+import plaintext from "highlight.js/lib/languages/plaintext";
 import rust from "highlight.js/lib/languages/rust";
 import scss from "highlight.js/lib/languages/scss";
 import shell from "highlight.js/lib/languages/shell";
@@ -44,6 +44,7 @@ hljs.registerLanguage("less", less);
 hljs.registerLanguage("lua", lua);
 hljs.registerLanguage("protobuf", protobuf);
 hljs.registerLanguage("python", python);
+hljs.registerLanguage("plaintext", plaintext);
 hljs.registerLanguage("rust", rust);
 hljs.registerLanguage("scss", scss);
 hljs.registerLanguage("shell", shell);
@@ -69,7 +70,7 @@ hljs.registerLanguage("vue", vue);
 
 export default function (code: string, language: string, attrs?: string) {
 	if (!hljs.getLanguage(language)) {
-		return escapeHtml(code);
+		language = "text";
 	}
 	if (attrs !== "diff") {
 		return hljs.highlight(code, { language }).value;

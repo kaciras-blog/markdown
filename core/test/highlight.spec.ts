@@ -16,3 +16,7 @@ it("should only escape HTML for unknown language", () => {
 it("should only escape HTML without language", () => {
 	expect(highlight("<foo>", "")).toBe("&lt;foo&gt;");
 });
+
+it("should support diff for unknown language", () => {
+	expect(highlight("+A\n-B\nC", "UNKNOWN", "diff")).toMatchSnapshot();
+});
