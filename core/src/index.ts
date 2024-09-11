@@ -1,3 +1,4 @@
+// 库模式下会进行处理，但不会出现在生成的 JS 文件中，需要用户手动导入。
 import "./web/markdown.css";
 
 export * from "./directive.js";

@@ -23,11 +23,11 @@ export default defineSuite(scene => {
 		};
 	});
 	scene.bench("reactive", () => {
-		object.a= 1;
-		object.b= 2;
-		object.c= 3;
-		object.d= 4;
-		object.e= 5;
-		object.f= 6;
+		object.a = 1;
+		object.b = 2;
+		object.c = 3;
+		object.d = 4;
+		object.e = 5;
+		object.f = 6;
 	});
 });

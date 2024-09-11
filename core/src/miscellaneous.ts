@@ -91,7 +91,6 @@ export function styling(md: MarkdownIt) {
 }
 
 export interface PresetOptions {
-
 	/**
 	 * 如果为 true 则仅添加语法类插件，渲染的结果只有必要的标签，
 	 * 用于给第三方阅读器使用（RSS,阅读模式……）。

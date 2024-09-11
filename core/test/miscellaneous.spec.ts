@@ -62,7 +62,7 @@ it.each([{
 		exports.footnote,
 		exports.collapsible,
 	],
-},{
+}, {
 	options: { plain: true },
 	plugins: [
 		exports.kfmPreset,
@@ -87,7 +87,7 @@ it.each([{
 	],
 }])("should apply plugins for preset $options", input => {
 	const markdownIt = new MarkdownIt();
-	const spy  = vi.spyOn(markdownIt, "use");
+	const spy = vi.spyOn(markdownIt, "use");
 
 	markdownIt.use(exports.kfmPreset, input.options);
 

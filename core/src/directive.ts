@@ -37,7 +37,7 @@ function parse(state: StateBlock, startLine: number, _: number, silent: boolean)
 	let directive: GenericDirective;
 	try {
 		directive = parseGenericDirective(src);
-	} catch (e) {
+	} catch {
 		return false;
 	}
 
@@ -149,7 +149,6 @@ function checkLink(md: MarkdownIt, link: string) {
  * 解析器只做提取，故只有在渲染函数中才能确定字段是不是链接。
  */
 export interface DirectiveMap {
-
 	/**
 	 * 自定义指令的渲染，属性名对应指令，返回 HTML。
 	 *

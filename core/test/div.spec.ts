@@ -37,14 +37,14 @@ it("should support nesting", t(`
 	This is a warning.
 	
 	::: tip
-	This is an tip box.
+	This is a tip box.
 	:::
 	:::
 `, `
 	<div class="alert warning">
 	<p>This is a warning.</p>
 	<div class="alert tip">
-	<p>This is an tip box.</p>
+	<p>This is a tip box.</p>
 	</div>
 	</div>
 `));

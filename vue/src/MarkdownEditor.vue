@@ -66,7 +66,7 @@ tokenizer.root.unshift([
  * TODO: monaco 默认光标不随拖拽而移动，dnd 插件没有公开 API，插入点会有问题。
  * https://github.com/microsoft/monaco-editor/issues/3359
  *
- * TODO: Vue 的垃圾解析器要求导出必须在块的开头，所以不能把该类型放到下面的块里。
+ * Vue 的垃圾解析器要求导出必须在块的开头，所以不能把该类型放到下面的块里。
  *
  * @param files 拖放到编辑器的文件列表
  * @param ctx 编辑器上下文

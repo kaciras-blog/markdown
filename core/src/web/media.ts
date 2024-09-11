@@ -57,7 +57,10 @@ function renderImage(this: MarkdownIt, tokens: Token[], i: number, _: any, __: a
 	const [src, wrapperAttrs] = blockAttrs(self, token);
 	const label = this.utils.escapeHtml(token.content);
 
-	// MarkdownIt 遵守 CommonMark 规范对单引号不转义，所以 alt 必须用双引号。
+	/*
+	 * MarkdownIt 遵守 CommonMark 规范对单引号不转义，所以 alt 必须用双引号。
+	 * ahrefs 的检测工具太垃圾，会报个警告说内链不要 nofollow，但这是图片无所谓。
+	 */
 	return $HTML`
 		<span ${wrapperAttrs}>
 			<a

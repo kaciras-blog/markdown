@@ -54,7 +54,7 @@ function parse(state: StateBlock, startLine: number, endLine: number) {
  * 自定义容器块的支持，语法与 Djot 保持一致而不是采用 GitHub 的引用块写法。
  *
  * # 为什么不用 markdown-it-container
- * 它的判定太严了，只有加入白名单的才解析，而 Div 语法在 Djot 里是不限制 class 的。
+ * 它一个插件示例只能用于一种 class，感觉不太舒服。
  *
  * @see https://github.com/markdown-it/markdown-it-container
  */

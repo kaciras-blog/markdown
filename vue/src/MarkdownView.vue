@@ -19,7 +19,7 @@ import { LazyLoadOptions } from "@kaciras-blog/markdown";
 import { computed } from "vue";
 import MarkdownBox from "./MarkdownBox.vue";
 
-export type Renderer = "rich" | "guest"  | {
+export type Renderer = "rich" | "guest" | {
 	render(text: string, env: object): string;
 };
 
