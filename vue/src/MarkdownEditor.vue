@@ -223,25 +223,18 @@ onMounted(() => {
 	background-color: #0074e8;
 }
 
+.single {
+	grid-column: 1/3;
+}
+
 /* Ensure editor width controlled by grid */
 .editor {
 	overflow-x: hidden;
 }
 
+/* 900px 宽是我博客的设定，做成变量更好？ */
 .preview {
-	padding: 0 12px;
+	padding: 0 max(12px, calc(50% - 450px));
 	overflow-y: scroll;
-}
-
-.single {
-	grid-column: 1/3;
-	justify-self: center;
-
-	@media (min-width: 768px) {
-		width: 80%;
-	}
-	@media (min-width: 1200px) {
-		width: 900px;
-	}
 }
 </style>
