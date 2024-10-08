@@ -2,6 +2,44 @@ import type MarkdownIt from "markdown-it";
 import CopyIcon from "bootstrap-icons/icons/clipboard.svg?raw";
 import CopiedIcon from "bootstrap-icons/icons/clipboard-check.svg?raw";
 
+function extractDiff(code: string) {
+	// 遍历每一行，记录以差分符号（+/-）开头的行号。
+	const lines = code.trim().split("\n");
+	const changes = new Map<number, boolean>();
+
+	for (let i = 0; i < lines.length; i++) {
+		switch (lines[i].charCodeAt(0)) {
+			case 43: /* + */
+				changes.set(i, true);
+				break;
+			case 45: /* - */
+				changes.set(i, false);
+				break;
+			default:
+				continue;
+		}
+		// 去掉差分符号使 highlight.js 能够处理。
+		lines[i] = lines[i].slice(1);
+	}
+
+	let background = "<div class='overlay'>";
+	for (let i = 0; i < lines.length; i++) {
+		switch (changes.get(i)) {
+			case true:
+				background += `<div class='hljs-insert' style='grid-row: ${i + 1}'></div>`;
+				break;
+			case false:
+				background += `<div class='hljs-delete' style='grid-row: ${i + 1}'></div>`;
+				break;
+		}
+	}
+	background += "</div>";
+
+	// 去除了差分符号后的代码给下层高亮库处理。
+	const content = changes.size ? lines.join("\n") : code;
+	return { content, background };
+}
+
 /**
  * 自定义代码块的插件，因为 MarkdownIt 默认最外层是 pre，限制了扩展性，所以本项目替换了它。
  * https://github.com/markdown-it/markdown-it/blob/13.0.2/lib/renderer.js#L58
@@ -22,9 +60,15 @@ export default function (md: MarkdownIt) {
 
 	md.renderer.rules.fence = (tokens, idx, _, __, self) => {
 		const token = tokens[idx];
-		const { content, info } = token;
-		const [language, attrs = ""] = unescapeAll(info).split(/\s+/g, 2);
+		let { content } = token;
+		let background = "";
+		const [language, attrs = ""] = unescapeAll(token.info).split(/\s+/g, 2);
 
+		if (attrs === "diff") {
+			const t = extractDiff(content);
+			content = t.content;
+			background = t.background;
+		}
 		const codeHTML = highlight(content, language, attrs);
 		token.attrJoin("class", "hljs");
 		const wrapperAttrs = self.renderAttrs(token).trimStart();
@@ -39,6 +83,7 @@ export default function (md: MarkdownIt) {
 							${CopyIcon}Copy
 						</button>
 					</div>
+					${background}
 					<pre>${codeHTML}</pre>
 				</div>
 			`;

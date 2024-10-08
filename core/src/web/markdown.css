@@ -10,9 +10,10 @@ $details-padding-h: 14px;
 
 $table-border-color: #cacbcc;
 $table-border-width: 1px;
+$line-height: 1.8;
 
 .markdown {
-	line-height: 1.8;
+	line-height: $line-height;
 
 	/* 暂时不在全站用，因为在一些动画上会造成文字移动 */
 	letter-spacing: .5px;
@@ -44,9 +45,20 @@ $table-border-width: 1px;
 	}
 
 	.hljs {
+		display: grid;
+		grid-template-rows: auto auto;
+
 		overflow: hidden;
 		margin: 1em 0;
 		border-radius: 5px;
+	}
+
+	.overlay {
+		display: grid;
+		grid-template-rows: repeat(auto-fill, calc(1em * $line-height * 0.875));
+		grid-row: 2/3;
+		grid-column: 1;
+		font-family: monospace;
 	}
 
 	.footnotes::before {
@@ -56,7 +68,11 @@ $table-border-width: 1px;
 	pre {
 		overflow-x: auto;
 		margin: 0;
-		padding: 0.5em;
+		padding-left: 1.5em;
+
+		grid-row: 2/3;
+		grid-column: 1;
+		z-index: 2;
 
 		/* 使用小一号的字体，以便能看到更多代码。 */
 		font-size: .875em;

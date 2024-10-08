@@ -7,8 +7,8 @@
 }
 
 .hljs-insert {
-	display: block;
 	background: rgba(0, 255, 128, .15);
+	padding-left: 6px;
 
 	&::before {
 		content: "+";
@@ -17,8 +17,8 @@
 }
 
 .hljs-delete {
-	display: block;
 	background: rgba(255, 50, 50, .25);
+	padding-left: 6px;
 
 	&::before {
 		content: "-";

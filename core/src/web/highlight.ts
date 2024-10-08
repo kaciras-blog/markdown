@@ -68,55 +68,9 @@ hljs.registerLanguage("vue", vue);
  * https://github.com/highlightjs/highlight.js/issues/480
  */
 
-export default function (code: string, language: string, attrs?: string) {
+export default function (code: string, language: string) {
 	if (!hljs.getLanguage(language)) {
 		language = "text";
 	}
-	if (attrs !== "diff") {
-		return hljs.highlight(code, { language }).value;
-	}
-
-	// 遍历每一行，记录以差分符号（+/-）开头的行号。
-	let lines = code.split("\n");
-	const changes = new Map<number, boolean>();
-
-	for (let i = 0; i < lines.length; i++) {
-		switch (lines[i].charCodeAt(0)) {
-			case 43: /* + */
-				changes.set(i, true);
-				break;
-			case 45: /* - */
-				changes.set(i, false);
-				break;
-			default:
-				continue;
-		}
-		// 去掉差分符号使 highlight.js 能够处理。
-		lines[i] = lines[i].slice(1);
-	}
-
-	// 去除了差分符号后的代码给下层高亮库处理。
-	code = lines.join("\n");
-	code = hljs.highlight(code, { language }).value;
-	lines = code.split("\n");
-
-	// 高亮完重新按行分割，并给记录的行加上标签。
-	const htmlFragments = [];
-	for (let i = 0; i < lines.length; i++) {
-		if (changes.has(i - 1)) {
-			htmlFragments.push("</span>");
-		}
-		switch (changes.get(i)) {
-			case true:
-				htmlFragments.push("<span class='hljs-insert'>");
-				break;
-			case false:
-				htmlFragments.push("<span class='hljs-delete'>");
-				break;
-		}
-		htmlFragments.push(lines[i], "\n");
-	}
-
-	htmlFragments.pop();
-	return htmlFragments.join(""); // 最后合并行，相当于两次高亮处理。
+	return hljs.highlight(code, { language }).value;
 }
