@@ -29,7 +29,7 @@
 		"@tabler/icons-vue": "^3.19.0",
 		"@vueuse/core": "^11.1.0",
 		"monaco-editor": "^0.52.0",
-		"vue": "^3.5.10"
+		"vue": "^3.5.11"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^5.1.4",
