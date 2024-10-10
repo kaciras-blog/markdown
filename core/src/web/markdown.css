@@ -45,9 +45,6 @@ $line-height: 1.8;
 	}
 
 	.hljs {
-		display: grid;
-		grid-template-rows: auto auto;
-
 		overflow: hidden;
 		margin: 1em 0;
 		border-radius: 5px;
@@ -55,24 +52,24 @@ $line-height: 1.8;
 
 	.overlay {
 		display: grid;
-		grid-template-rows: repeat(auto-fill, calc(1em * $line-height * 0.875));
-		grid-row: 2/3;
-		grid-column: 1;
+		grid-template-rows: repeat(auto-fill, calc(1em * $line-height));
+		grid-row: 2;
+		grid-column: 1/3;
 		font-family: monospace;
 	}
 
-	.footnotes::before {
-		content: "References";
+	.code {
+		grid-row: 2;
+		grid-column: 2;
 	}
 
 	pre {
-		overflow-x: auto;
-		margin: 0;
-		padding-left: 1.5em;
+		display: grid;
+		grid-template-columns: 1em 1fr;
+		grid-template-rows: 1em 1fr 1em;
 
-		grid-row: 2/3;
-		grid-column: 1;
-		z-index: 2;
+		margin: 0;
+		overflow-x: auto;
 
 		/* 使用小一号的字体，以便能看到更多代码。 */
 		font-size: .875em;
@@ -83,6 +80,10 @@ $line-height: 1.8;
 			tab-size: 3;
 			font-size: .75em;
 		}
+	}
+
+	.footnotes::before {
+		content: "References";
 	}
 
 	blockquote {

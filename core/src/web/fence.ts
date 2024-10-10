@@ -83,12 +83,14 @@ export default function (md: MarkdownIt) {
 							${CopyIcon}Copy
 						</button>
 					</div>
-					${background}
-					<pre>${codeHTML}</pre>
+					<pre class='stack-view'>
+						${background}
+						<div class='code'>${codeHTML}</div>
+					</pre>
 				</div>
 			`;
 		} else {
-			return `<pre ${wrapperAttrs}>${codeHTML}</pre>`;
+			return `<pre ${wrapperAttrs}><div class='code'>${codeHTML}</div></pre>`;
 		}
 	};
 }
