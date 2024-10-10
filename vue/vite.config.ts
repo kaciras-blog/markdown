@@ -23,6 +23,9 @@ export default defineConfig(({ mode }) => {
 				generateScopedName: "[hash:base64:5]",
 			},
 		},
+		build: {
+			target: "esnext",
+		},
 		plugins: [
 			vue(),
 			mode === "lib" && dts({
