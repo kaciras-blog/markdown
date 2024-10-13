@@ -25,7 +25,6 @@ import shell from "highlight.js/lib/languages/shell";
 import sql from "highlight.js/lib/languages/sql";
 import yaml from "highlight.js/lib/languages/yaml";
 import typescript from "highlight.js/lib/languages/typescript";
-import vue from "./hljs-vue.ts";
 
 hljs.registerLanguage("c", c);
 hljs.registerLanguage("cpp", cpp);
@@ -51,7 +50,71 @@ hljs.registerLanguage("shell", shell);
 hljs.registerLanguage("sql", sql);
 hljs.registerLanguage("yaml", yaml);
 hljs.registerLanguage("typescript", typescript);
-hljs.registerLanguage("vue", vue);
+
+/**
+ * Author: Sara Lissette Luis Ibáñez <lissette.ibnz@gmail.com>
+ * Modified by Kaciras <Kaciras@outlook.com>
+ *
+ * The original source:
+ * https://github.com/highlightjs/highlightjs-vue/blob/master/vue.js
+ *
+ * highlight.js 的 Vue SFC 插件，支持解析顶层的语言块（language blocks）。
+ *
+ * 块支持那些语言由构建工具决定，这里只包含了常用的几种。
+ * https://vuejs.org/api/sfc-spec.html#pre-processors
+ *
+ * highlight.js 的类型里有个 vuePlugin 属性，但却是 undefined。
+ */
+hljs.registerLanguage("vue", hljs => ({
+	subLanguage: "xml",
+	contains: [
+		hljs.COMMENT("<!--", "-->", {
+			relevance: 10,
+		}),
+		{
+			begin: /^\s*<script\s.*?lang=(["'])ts\1.*?>/gm,
+			end: /^\s*<\/script>/gm,
+			excludeBegin: true,
+			excludeEnd: true,
+			subLanguage: "typescript",
+		},
+		{
+			begin: /^\s*<script.*?>/gm,
+			end: /^\s*<\/script>/gm,
+			excludeBegin: true,
+			excludeEnd: true,
+			subLanguage: "javascript",
+		},
+		{
+			begin: /^\s*<style\s.*?lang=(["'])s[ca]ss\1.*?>/gm,
+			end: /^\s*<\/style>/gm,
+			excludeBegin: true,
+			excludeEnd: true,
+			subLanguage: "scss",
+		},
+		{
+			begin: /^\s*<style\s.*?lang=(["'])less\1.*?>/gm,
+			end: /^\s*<\/style>/gm,
+			excludeBegin: true,
+			excludeEnd: true,
+			subLanguage: "less",
+		},
+		{
+			begin: /^\s*<style\s.*?lang=(["'])stylus\1.*?>/gm,
+			end: /^\s*<\/style>/gm,
+			excludeBegin: true,
+			excludeEnd: true,
+			subLanguage: "stylus",
+		},
+		{
+			begin: /^\s*<style.*?>/gm,
+			end: /^\s*<\/style>/gm,
+			excludeBegin: true,
+			excludeEnd: true,
+			subLanguage: "css",
+		},
+	],
+}));
 
 /*
  * 适配三方的高亮库，同时添加了对差分语法的支持，在讲解代码时挺有用的一功能。
