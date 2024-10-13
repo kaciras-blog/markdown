@@ -22,22 +22,17 @@ function extractDiff(code: string) {
 		lines[i] = lines[i].slice(1);
 	}
 
-	let background = "<div class='overlay'>";
-	for (let i = 0; i < lines.length; i++) {
-		switch (changes.get(i)) {
-			case true:
-				background += `<div class='hljs-insert' style='grid-row: ${i + 1}'></div>`;
-				break;
-			case false:
-				background += `<div class='hljs-delete' style='grid-row: ${i + 1}'></div>`;
-				break;
-		}
+	let rowsBackground = "<div class='overlay'>";
+	for (const [i, type] of changes) {
+		const suffix = type ? "insert" : "delete";
+		rowsBackground += `<div class='hljs-${suffix}' style='grid-row: ${i + 1}'></div>`;
 	}
-	background += "</div>";
 
 	// 去除了差分符号后的代码给下层高亮库处理。
-	const content = changes.size ? lines.join("\n") : code;
-	return { content, background };
+	return {
+		content: lines.join("\n"),
+		background: rowsBackground + "</div>",
+	};
 }
 
 /**
@@ -62,18 +57,19 @@ export default function (md: MarkdownIt) {
 		const token = tokens[idx];
 		let { content } = token;
 		let background = "";
-		const [language, attrs = ""] = unescapeAll(token.info).split(/\s+/g, 2);
 
+		const [language, attrs = ""] = unescapeAll(token.info).split(/\s+/g, 2);
 		if (attrs === "diff") {
-			const t = extractDiff(content);
-			content = t.content;
-			background = t.background;
+			const tuple = extractDiff(content);
+			content = tuple.content;
+			background = tuple.background;
 		}
+
 		const codeHTML = highlight(content, language, attrs);
 		token.attrJoin("class", "hljs");
 		const wrapperAttrs = self.renderAttrs(token).trimStart();
 
-		// Copy 是个很常见的单词，谁都看得懂，就不做本地化了。
+		// 因为标题栏跟内容不同步滚动，所以不能直接拿最外层做层叠容器。
 		if (language) {
 			return $HTML`
 				<div ${wrapperAttrs}>
@@ -90,11 +86,12 @@ export default function (md: MarkdownIt) {
 				</div>
 			`;
 		} else {
-			return `<pre ${wrapperAttrs}><div class='code'>${codeHTML}</div></pre>`;
+			return `<pre ${wrapperAttrs}>${codeHTML}</pre>`;
 		}
 	};
 }
 
+// Copy 是个很常见的单词，谁都看得懂，就不做本地化了。
 async function handleCopy(event: Event) {
 	const button = event.currentTarget as HTMLButtonElement;
 	const pre = button.parentNode!.parentNode!.lastElementChild!;
