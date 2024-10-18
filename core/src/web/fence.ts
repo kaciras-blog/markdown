@@ -79,10 +79,10 @@ export default function (md: MarkdownIt) {
 							${CopyIcon}Copy
 						</button>
 					</div>
-					<pre class='stack-view'>
+					<div class='stack-view'>
 						${background}
-						<div class='code'>${codeHTML}</div>
-					</pre>
+						<pre>${codeHTML}</pre>
+					</div>
 				</div>
 			`;
 		} else {

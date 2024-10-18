@@ -50,6 +50,19 @@ $line-height: 1.8;
 		border-radius: 5px;
 	}
 
+	.stack-view {
+		display: grid;
+		grid-template-columns: 1em 1fr;
+		grid-template-rows: 1em 1fr 1em;
+		overflow-x: auto;
+
+		& > pre {
+			grid-row: 2;
+			grid-column: 2;
+			padding: 0;
+		}
+	}
+
 	.overlay {
 		display: grid;
 		grid-template-rows: repeat(auto-fill, calc(1em * $line-height));
@@ -58,22 +71,16 @@ $line-height: 1.8;
 		font-family: monospace;
 	}
 
-	.code {
-		grid-row: 2;
-		grid-column: 2;
-	}
-
 	pre {
-		display: grid;
-		grid-template-columns: 1em 1fr;
-		grid-template-rows: 1em 1fr 1em;
-
+		padding: 1em;
 		margin: 0;
-		overflow-x: auto;
 
 		/* 使用小一号的字体，以便能看到更多代码。 */
-		font-size: .875em;
 		tab-size: 4;
+	}
+
+	pre, .overlay {
+		font-size: .875em;
 
 		/* 照顾手机，进一步减小字号。 */
 		@media (max-width: 768px) {
