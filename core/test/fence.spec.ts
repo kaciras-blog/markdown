@@ -18,8 +18,8 @@ it("should output minimized HTML", () => {
 	expect(fn).toHaveBeenCalledWith("Test\n", "html", "");
 });
 
-it("should parse diff languages", () => {
-	const html = md.render("```html diff\nTest\n```");
+it("should highlight diff lines", () => {
+	const html = md.render("```html diff\n+A\nB\n-C\n```");
 	expect(html).toMatchSnapshot();
-	expect(fn).toHaveBeenCalledWith("Test\n", "html", "diff");
+	expect(fn).toHaveBeenCalledWith("A\nB\nC", "html", "");
 });

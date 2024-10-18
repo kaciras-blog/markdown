@@ -53,7 +53,6 @@ export default defineConfig(({ mode }) => {
 			},
 			external: new RegExp(`^(?:${deps.join("|")})`),
 		},
-		target: "esnext",
 		outDir: "lib",
 		copyPublicDir: false,
 		lib: {
