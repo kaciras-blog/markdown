@@ -20,5 +20,3 @@ jobs:
 
       - run: pnpm test -- --coverage
         working-directory: core
-
-      - uses: codecov/codecov-action@v4

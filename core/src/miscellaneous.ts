@@ -31,6 +31,8 @@ export function ugc(md: MarkdownIt) {
  * 给标题加上锚点，是对 markdown-it-anchor 的简单封装，做了一些自定义：
  * - 链接元素放到了后面，让布局更容易。
  * - 可以设置 env.docId 参数来给链接加前缀，避免单页里多个文章的锚点重复。
+ *
+ * TODO: TOC 还不支持 docId，生成的锚点无法点击导航。
  */
 export function anchor(md: MarkdownIt) {
 	md.use<AnchorRaw.AnchorOptions>(AnchorRaw, {

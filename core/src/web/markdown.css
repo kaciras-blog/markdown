@@ -11,6 +11,7 @@ $details-padding-h: 14px;
 $table-border-color: #cacbcc;
 $table-border-width: 1px;
 $line-height: 1.8;
+$fence-padding-vert: 0.5em;
 
 .markdown {
 	line-height: $line-height;
@@ -52,8 +53,8 @@ $line-height: 1.8;
 
 	.stack-view {
 		display: grid;
-		grid-template-columns: 1em 1fr;
-		grid-template-rows: 1em 1fr 1em;
+		grid-template-columns: 0.8em 1fr;
+		grid-template-rows: $fence-padding-vert 1fr $fence-padding-vert;
 		overflow-x: auto;
 
 		& > pre {
@@ -72,14 +73,13 @@ $line-height: 1.8;
 	}
 
 	pre {
-		padding: 1em;
+		padding: $fence-padding-vert;
 		margin: 0;
-
-		/* 使用小一号的字体，以便能看到更多代码。 */
 		tab-size: 4;
 	}
 
 	pre, .overlay {
+		/* 使用小一号的字体，以便能看到更多代码。 */
 		font-size: .875em;
 
 		/* 照顾手机，进一步减小字号。 */

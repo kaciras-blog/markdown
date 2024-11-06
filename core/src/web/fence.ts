@@ -65,7 +65,7 @@ export default function (md: MarkdownIt) {
 			background = tuple.background;
 		}
 
-		const codeHTML = highlight(content, language, attrs);
+		const codeHTML = highlight(content, language, "");
 		token.attrJoin("class", "hljs");
 		const wrapperAttrs = self.renderAttrs(token).trimStart();
 
