@@ -36,10 +36,10 @@
 		"@vitest/coverage-v8": "^2.1.8",
 		"dedent": "^1.5.3",
 		"html-minifier-terser": "^7.2.0",
-		"magic-string": "^0.30.14",
+		"magic-string": "^0.30.15",
 		"postcss-nested": "^7.0.2",
 		"postcss-simple-vars": "^7.0.1",
-		"vite": "^6.0.2",
+		"vite": "^6.0.3",
 		"vitest": "^2.1.8"
 	}
 }
