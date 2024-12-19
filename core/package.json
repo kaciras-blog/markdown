@@ -24,7 +24,7 @@
 	"dependencies": {
 		"@kaciras/utilities": "^1.0.4",
 		"bootstrap-icons": "^1.11.3",
-		"highlight.js": "^11.10.0",
+		"highlight.js": "^11.11.0",
 		"markdown-it": "^14.1.0",
 		"markdown-it-anchor": "^9.2.0",
 		"markdown-it-footnote": "^4.0.0",
@@ -36,7 +36,7 @@
 		"@vitest/coverage-v8": "^2.1.8",
 		"dedent": "^1.5.3",
 		"html-minifier-terser": "^7.2.0",
-		"magic-string": "^0.30.15",
+		"magic-string": "^0.30.17",
 		"postcss-nested": "^7.0.2",
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^6.0.3",
