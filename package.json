@@ -2,15 +2,15 @@
 	"private": true,
 	"type": "module",
 	"devDependencies": {
-		"@kaciras/eslint-config-core": "^3.2.1",
-		"@kaciras/eslint-config-typescript": "^3.2.1",
-		"@kaciras/eslint-config-vue": "^3.2.1",
-		"@types/node": "^22.13.9",
+		"@kaciras/eslint-config-core": "^3.3.0",
+		"@kaciras/eslint-config-typescript": "^3.3.0",
+		"@kaciras/eslint-config-vue": "^3.3.0",
+		"@types/node": "^22.13.10",
 		"@types/prismjs": "^1.26.5",
 		"esbench": "^0.8.0",
 		"eslint": "^9.22.0",
-		"prismjs": "^1.29.0",
-		"shiki": "^3.1.0",
+		"prismjs": "^1.30.0",
+		"shiki": "^3.2.1",
 		"typescript": "^5.8.2",
 		"vue": "^3.5.13"
 	}
