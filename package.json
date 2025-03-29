@@ -5,7 +5,7 @@
 		"@kaciras/eslint-config-core": "^3.3.0",
 		"@kaciras/eslint-config-typescript": "^3.3.0",
 		"@kaciras/eslint-config-vue": "^3.3.0",
-		"@types/node": "^22.13.11",
+		"@types/node": "^22.13.14",
 		"@types/prismjs": "^1.26.5",
 		"esbench": "^0.8.0",
 		"eslint": "^9.23.0",
