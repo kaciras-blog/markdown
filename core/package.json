@@ -34,12 +34,12 @@
 		"@types/html-minifier-terser": "^7.0.2",
 		"@types/markdown-it": "^14.1.2",
 		"@vitest/coverage-v8": "^3.1.2",
-		"dedent": "^1.5.3",
+		"dedent": "^1.6.0",
 		"html-minifier-terser": "^7.2.0",
 		"magic-string": "^0.30.17",
 		"postcss-nested": "^7.0.2",
 		"postcss-simple-vars": "^7.0.1",
-		"vite": "^6.3.3",
+		"vite": "^6.3.4",
 		"vitest": "^3.1.2"
 	}
 }
