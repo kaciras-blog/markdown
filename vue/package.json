@@ -27,7 +27,7 @@
 		"@kaciras-blog/markdown": "workspace:^",
 		"@kaciras/utilities": "^1.0.4",
 		"@tabler/icons-vue": "^3.34.0",
-		"@vueuse/core": "^13.4.0",
+		"@vueuse/core": "^13.5.0",
 		"monaco-editor": "^0.52.2",
 		"vue": "^3.5.17"
 	},
