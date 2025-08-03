@@ -26,6 +26,7 @@ export default defineConfig({
 				"src/activate.ts",
 			],
 			formats: ["es"],
+			cssFileName: "style"
 		},
 		target: "esnext",
 		outDir: "lib",
