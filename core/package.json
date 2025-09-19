@@ -39,7 +39,7 @@
 		"magic-string": "^0.30.19",
 		"postcss-nested": "^7.0.2",
 		"postcss-simple-vars": "^7.0.1",
-		"vite": "^7.1.5",
+		"vite": "^7.1.6",
 		"vitest": "^3.2.4"
 	}
 }
