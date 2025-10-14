@@ -28,13 +28,13 @@
 		"@kaciras/utilities": "^1.0.4",
 		"@tabler/icons-vue": "^3.35.0",
 		"@vueuse/core": "^13.9.0",
-		"monaco-editor": "^0.53.0",
+		"monaco-editor": "^0.54.0",
 		"vue": "^3.5.22"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^6.0.1",
-		"rollup-plugin-visualizer": "^6.0.3",
-		"vite": "^7.1.7",
+		"rollup-plugin-visualizer": "^6.0.4",
+		"vite": "^7.1.9",
 		"vite-plugin-dts": "4.5.4"
 	}
 }
