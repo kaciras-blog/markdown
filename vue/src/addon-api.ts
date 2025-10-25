@@ -17,6 +17,7 @@ export interface AddonContext {
 
 	// 修改选区请使用 `editor.setSelection()`
 	selection: ShallowRef<Selection>;
+	tocVisible: Ref<boolean>;
 
 	// 仅用于监听，`修改内容请用 editor.executeCommand()`
 	text: Ref<string>;

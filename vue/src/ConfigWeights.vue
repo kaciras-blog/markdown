@@ -11,6 +11,9 @@
 
 	<VerticalSeparator/>
 
+	<ToolButton title='导航面板' :active='tocVisible' @click='toggleNavigation'>
+		<IconListTree/>
+	</ToolButton>
 	<ToolButton title='同步滚动' :active='scrollSynced' @click='scrollSynced = !scrollSynced'>
 		<IconArrowsUpDown/>
 	</ToolButton>
@@ -23,12 +26,24 @@
 </template>
 
 <script setup lang="ts">
-import { IconArrowsUpDown, IconColumns2, IconCompass, IconEdit, IconFileSearch, IconTextWrap } from "@tabler/icons-vue";
+import {
+	IconArrowsUpDown,
+	IconColumns2,
+	IconCompass,
+	IconEdit,
+	IconFileSearch,
+	IconListTree,
+	IconTextWrap
+} from "@tabler/icons-vue";
 import ToolButton from "./ToolButton.vue";
 import { useAddonContext } from "./addon-api.ts";
 import VerticalSeparator from "./VerticalSeparator.vue";
 
-const { viewMode, scrollSynced, options } = useAddonContext();
+const { viewMode, scrollSynced, options, tocVisible } = useAddonContext();
+
+function toggleNavigation() {
+	tocVisible.value = !tocVisible.value;
+}
 
 function toggleMinimap() {
 	const minimap = options.value.minimap!;
