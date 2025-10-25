@@ -43,7 +43,11 @@
 				>
 					<button
 						type='button'
-						:class='$style.navigationLink'
+						:class='[
+							$style.navigationLink,
+							activeHeadingId === item.id && $style.navigationLinkActive,
+						]'
+						:aria-current='activeHeadingId === item.id ? "true" : undefined'
 						:style='{ paddingLeft: `${(item.level - 1) * 12 + 12}px` }'
 						@click='scrollToHeading(item)'
 					>
@@ -158,6 +162,9 @@ const previewEl = shallowRef<ComponentPublicInstance>();
 const viewMode = shallowRef(ViewMode.Split);
 const scrollSynced = shallowRef(true);
 const tocVisible = shallowRef(false);
+const previewScrollEl = shallowRef<HTMLElement>();
+const activeHeadingId = ref<string>("");
+let scrollFrame = 0;
 
 interface HeadingItem {
 	id: string;
@@ -208,6 +215,7 @@ function handleDrop(event: DragEvent) {
 function collectHeadings() {
 	if (!isNavVisible.value) {
 		headings.value = [];
+		activeHeadingId.value = "";
 		return;
 	}
 
@@ -227,11 +235,61 @@ function collectHeadings() {
 		})).filter(item => item.id && item.title);
 
 		headings.value = items;
+		updateActiveHeading();
 	});
 }
 
 function scrollToHeading(item: HeadingItem) {
 	item.el.scrollIntoView({ behavior: "smooth", block: "start" });
+	activeHeadingId.value = item.id;
+}
+
+function setupPreviewScrollListener() {
+	previewScrollEl.value?.removeEventListener("scroll", handlePreviewScroll);
+
+	const root = previewEl.value?.$el as HTMLElement | undefined;
+	if (!root) {
+		previewScrollEl.value = undefined;
+		return;
+	}
+
+	previewScrollEl.value = root;
+	previewScrollEl.value.addEventListener("scroll", handlePreviewScroll, { passive: true });
+}
+
+function handlePreviewScroll() {
+	if (scrollFrame) {
+		return;
+	}
+	scrollFrame = requestAnimationFrame(() => {
+		scrollFrame = 0;
+		updateActiveHeading();
+	});
+}
+
+function updateActiveHeading() {
+	const container = previewScrollEl.value;
+	const list = headings.value;
+
+	if (!container || !list.length) {
+		activeHeadingId.value = "";
+		return;
+	}
+
+	const containerRect = container.getBoundingClientRect();
+	const anchorOffset = 48;
+	let current = list[0];
+
+	for (const item of list) {
+		const offset = item.el.getBoundingClientRect().top - containerRect.top;
+		if (offset <= anchorOffset) {
+			current = item;
+		} else {
+			break;
+		}
+	}
+
+	activeHeadingId.value = current?.id ?? "";
 }
 
 watch(addonContext.options, o => editor.updateOptions(o), { deep: true });
@@ -239,13 +297,26 @@ watch(viewMode, () => {
 	nextTick(() => editor.layout());
 	collectHeadings();
 });
+watch(previewEl, () => {
+	nextTick(() => {
+		setupPreviewScrollListener();
+		updateActiveHeading();
+	});
+});
 watch(content, value => value !== contentSnapshot && editor.setValue(value));
 watch([debounced, isNavVisible], () => collectHeadings(), {
 	flush: "post",
 	immediate: true,
 });
 
-onUnmounted(() => editor.dispose());
+onUnmounted(() => {
+	editor.dispose();
+	previewScrollEl.value?.removeEventListener("scroll", handlePreviewScroll);
+	if (scrollFrame) {
+		cancelAnimationFrame(scrollFrame);
+		scrollFrame = 0;
+	}
+});
 
 onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
@@ -272,6 +343,8 @@ onMounted(() => {
 	});
 
 	setupScrollSync(editor, previewEl.value!.$el, scrollSynced);
+	setupPreviewScrollListener();
+	updateActiveHeading();
 });
 </script>
 
@@ -372,6 +445,12 @@ onMounted(() => {
 .navigationLink:focus-visible {
 	background-color: rgba(15, 76, 129, 0.12);
 	outline: none;
+}
+
+.navigationLinkActive {
+	background-color: rgba(0, 116, 232, 0.14);
+	color: #0f4c81;
+	font-weight: 600;
 }
 
 .navigationEmpty {
