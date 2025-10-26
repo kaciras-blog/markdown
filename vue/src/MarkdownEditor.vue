@@ -31,6 +31,7 @@
 			v-if='isNavVisible'
 			:class='$style.navigation'
 			aria-label='文档导航'
+			ref='navigationEl'
 		>
 			<h2 :class='$style.navigationTitle'>目录</h2>
 			<ul
@@ -47,6 +48,7 @@
 							$style.navigationLink,
 							activeHeadingId === item.id && $style.navigationLinkActive,
 						]'
+						:data-id='item.id'
 						:aria-current='activeHeadingId === item.id ? "true" : undefined'
 						:style='{ paddingLeft: `${(item.level - 1) * 12 + 12}px` }'
 						@click='scrollToHeading(item)'
@@ -175,6 +177,7 @@ interface HeadingItem {
 
 const headings = shallowRef<HeadingItem[]>([]);
 const isNavVisible = computed(() => tocVisible.value && viewMode.value !== ViewMode.Edit);
+const navigationEl = shallowRef<HTMLElement>();
 
 const editorRenderer = computed(() => {
 	switch (props.renderer) {
@@ -236,6 +239,7 @@ function collectHeadings() {
 
 		headings.value = items;
 		updateActiveHeading();
+		nextTick(() => scrollActiveIntoView());
 	});
 }
 
@@ -292,6 +296,30 @@ function updateActiveHeading() {
 	activeHeadingId.value = current?.id ?? "";
 }
 
+function scrollActiveIntoView() {
+	if (!isNavVisible.value) {
+		return;
+	}
+	const container = navigationEl.value;
+	if (!container) {
+		return;
+	}
+
+	const currentId = activeHeadingId.value;
+	if (!currentId) {
+		return;
+	}
+
+	const target = Array.from(container.querySelectorAll<HTMLButtonElement>("button[data-id]"))
+		.find(button => button.dataset.id === currentId);
+
+	if (!target) {
+		return;
+	}
+
+	target.scrollIntoView({ block: "nearest" });
+}
+
 watch(addonContext.options, o => editor.updateOptions(o), { deep: true });
 watch(viewMode, () => {
 	nextTick(() => editor.layout());
@@ -304,6 +332,9 @@ watch(previewEl, () => {
 	});
 });
 watch(content, value => value !== contentSnapshot && editor.setValue(value));
+watch(activeHeadingId, () => nextTick(() => scrollActiveIntoView()), {
+	flush: "post",
+});
 watch([debounced, isNavVisible], () => collectHeadings(), {
 	flush: "post",
 	immediate: true,
