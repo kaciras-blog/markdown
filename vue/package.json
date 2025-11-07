@@ -29,12 +29,12 @@
 		"@tabler/icons-vue": "^3.35.0",
 		"@vueuse/core": "^14.0.0",
 		"monaco-editor": "^0.54.0",
-		"vue": "^3.5.22"
+		"vue": "^3.5.23"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^6.0.1",
 		"rollup-plugin-visualizer": "^6.0.5",
-		"vite": "^7.1.12",
+		"vite": "^7.2.1",
 		"vite-plugin-dts": "4.5.4"
 	}
 }
