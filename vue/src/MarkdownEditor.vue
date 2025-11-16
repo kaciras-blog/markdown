@@ -27,43 +27,11 @@
 				viewMode === ViewMode.Preview && isNavVisible && $style.previewWide,
 			]'
 		/>
-		<aside
+		<PreviewNavigation
 			v-if='isNavVisible'
-			:class='$style.navigation'
-			aria-label='文档导航'
-			ref='navigationEl'
-		>
-			<h2 :class='$style.navigationTitle'>目录</h2>
-			<ul
-				v-if='headings.length'
-				:class='$style.navigationList'
-			>
-				<li
-					v-for='item in headings'
-					:key='item.id'
-				>
-					<button
-						type='button'
-						:class='[
-							$style.navigationLink,
-							activeHeadingId === item.id && $style.navigationLinkActive,
-						]'
-						:data-id='item.id'
-						:aria-current='activeHeadingId === item.id ? "true" : undefined'
-						:style='{ paddingLeft: `${(item.level - 1) * 12 + 12}px` }'
-						@click='scrollToHeading(item)'
-					>
-						{{ item.title }}
-					</button>
-				</li>
-			</ul>
-			<p
-				v-else
-				:class='$style.navigationEmpty'
-			>
-				当前预览没有标题
-			</p>
-		</aside>
+			:preview-root='previewEl'
+			:content='debounced'
+		/>
 
 		<div :class='$style.status' role='toolbar'>
 			<slot name='status-left'/>
@@ -125,6 +93,7 @@ import "monaco-editor/esm/vs/editor/contrib/dnd/browser/dnd.js";
 import "monaco-editor/esm/vs/editor/contrib/multicursor/browser/multicursor.js";
 import "monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js";
 import MarkdownView, { Renderer } from "./MarkdownView.vue";
+import PreviewNavigation from "./PreviewNavigation.vue";
 import setupScrollSync from "./sync-scroll.ts";
 import { createAddonContext, ViewMode } from "./addon-api.ts";
 
@@ -164,20 +133,7 @@ const previewEl = shallowRef<ComponentPublicInstance>();
 const viewMode = shallowRef(ViewMode.Split);
 const scrollSynced = shallowRef(true);
 const tocVisible = shallowRef(false);
-const previewScrollEl = shallowRef<HTMLElement>();
-const activeHeadingId = ref<string>("");
-let scrollFrame = 0;
-
-interface HeadingItem {
-	id: string;
-	title: string;
-	level: number;
-	el: HTMLElement;
-}
-
-const headings = shallowRef<HeadingItem[]>([]);
 const isNavVisible = computed(() => tocVisible.value && viewMode.value !== ViewMode.Edit);
-const navigationEl = shallowRef<HTMLElement>();
 
 const editorRenderer = computed(() => {
 	switch (props.renderer) {
@@ -215,139 +171,13 @@ function handleDrop(event: DragEvent) {
 	}
 }
 
-function collectHeadings() {
-	if (!isNavVisible.value) {
-		headings.value = [];
-		activeHeadingId.value = "";
-		return;
-	}
-
-	nextTick(() => {
-		const root = previewEl.value?.$el as HTMLElement | undefined;
-		if (!root) {
-			headings.value = [];
-			return;
-		}
-
-		const nodes = Array.from(root.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6"));
-		const items = nodes.map(element => ({
-			id: element.id,
-			title: element.textContent?.trim() ?? "",
-			level: Number(element.tagName.slice(1)),
-			el: element,
-		})).filter(item => item.id && item.title);
-
-		headings.value = items;
-		updateActiveHeading();
-		nextTick(() => scrollActiveIntoView());
-	});
-}
-
-function scrollToHeading(item: HeadingItem) {
-	item.el.scrollIntoView({ behavior: "smooth", block: "start" });
-	activeHeadingId.value = item.id;
-}
-
-function setupPreviewScrollListener() {
-	previewScrollEl.value?.removeEventListener("scroll", handlePreviewScroll);
-
-	const root = previewEl.value?.$el as HTMLElement | undefined;
-	if (!root) {
-		previewScrollEl.value = undefined;
-		return;
-	}
-
-	previewScrollEl.value = root;
-	previewScrollEl.value.addEventListener("scroll", handlePreviewScroll, { passive: true });
-}
-
-function handlePreviewScroll() {
-	if (scrollFrame) {
-		return;
-	}
-	scrollFrame = requestAnimationFrame(() => {
-		scrollFrame = 0;
-		updateActiveHeading();
-	});
-}
-
-function updateActiveHeading() {
-	const container = previewScrollEl.value;
-	const list = headings.value;
-
-	if (!container || !list.length) {
-		activeHeadingId.value = "";
-		return;
-	}
-
-	const containerRect = container.getBoundingClientRect();
-	const anchorOffset = 48;
-	let current = list[0];
-
-	for (const item of list) {
-		const offset = item.el.getBoundingClientRect().top - containerRect.top;
-		if (offset <= anchorOffset) {
-			current = item;
-		} else {
-			break;
-		}
-	}
-
-	activeHeadingId.value = current?.id ?? "";
-}
-
-function scrollActiveIntoView() {
-	if (!isNavVisible.value) {
-		return;
-	}
-	const container = navigationEl.value;
-	if (!container) {
-		return;
-	}
-
-	const currentId = activeHeadingId.value;
-	if (!currentId) {
-		return;
-	}
-
-	const target = Array.from(container.querySelectorAll<HTMLButtonElement>("button[data-id]"))
-		.find(button => button.dataset.id === currentId);
-
-	if (!target) {
-		return;
-	}
-
-	target.scrollIntoView({ block: "nearest" });
-}
-
 watch(addonContext.options, o => editor.updateOptions(o), { deep: true });
 watch(viewMode, () => {
 	nextTick(() => editor.layout());
-	collectHeadings();
-});
-watch(previewEl, () => {
-	nextTick(() => {
-		setupPreviewScrollListener();
-		updateActiveHeading();
-	});
 });
 watch(content, value => value !== contentSnapshot && editor.setValue(value));
-watch(activeHeadingId, () => nextTick(() => scrollActiveIntoView()), {
-	flush: "post",
-});
-watch([debounced, isNavVisible], () => collectHeadings(), {
-	flush: "post",
-	immediate: true,
-});
 
-onUnmounted(() => {
-	editor.dispose();
-	previewScrollEl.value?.removeEventListener("scroll", handlePreviewScroll);
-	if (scrollFrame) {
-		cancelAnimationFrame(scrollFrame);
-		scrollFrame = 0;
-	}
-});
+onUnmounted(() => editor.dispose());
 
 onMounted(() => {
 	editor = monaco.editor.create(editorEl.value!, {
@@ -374,8 +204,6 @@ onMounted(() => {
 	});
 
 	setupScrollSync(editor, previewEl.value!.$el, scrollSynced);
-	setupPreviewScrollListener();
-	updateActiveHeading();
 });
 </script>
 
@@ -428,65 +256,5 @@ onMounted(() => {
 
 .previewWide {
 	grid-column: 1/3;
-}
-
-.navigation {
-	grid-row: 2;
-	grid-column: 3;
-	display: flex;
-	flex-direction: column;
-	padding: 16px 12px;
-	row-gap: 12px;
-	border-left: 1px solid #e0e0e0;
-	background-color: #f6f8fa;
-	overflow-y: auto;
-}
-
-.navigationTitle {
-	margin: 0;
-	font-size: 14px;
-	font-weight: 600;
-	color: #333;
-}
-
-.navigationList {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	flex-direction: column;
-	row-gap: 4px;
-}
-
-.navigationLink {
-	width: 100%;
-	padding: 6px 8px;
-	border: none;
-	background: none;
-	text-align: left;
-	font-size: 13px;
-	line-height: 1.4;
-	color: #1f2328;
-	border-radius: 4px;
-	cursor: pointer;
-	transition: background-color 0.2s ease;
-}
-
-.navigationLink:hover,
-.navigationLink:focus-visible {
-	background-color: rgba(15, 76, 129, 0.12);
-	outline: none;
-}
-
-.navigationLinkActive {
-	background-color: rgba(0, 116, 232, 0.14);
-	color: #0f4c81;
-	font-weight: 600;
-}
-
-.navigationEmpty {
-	margin: 0;
-	font-size: 12px;
-	color: #909090;
 }
 </style>
