@@ -9,7 +9,7 @@ export type IEditOperationBuilder = editor.IEditOperationBuilder;
 export type ITextModel = editor.ITextModel;
 export type ICursorStateComputerData = editor.ICursorStateComputerData;
 
-export enum ViewMode { Split, Edit, Preview}
+export enum ViewMode { Split, Edit, Preview }
 
 export interface AddonContext {
 	// 编辑器在 Mounted 阶段才创建，setup 阶段不可用。

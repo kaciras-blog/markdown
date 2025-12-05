@@ -15,7 +15,7 @@
 					class='navigationLink'
 					:class='{ navigationLinkActive: activeHeadingId === item.id }'
 					:data-id='item.id'
-					:style='{ paddingLeft: `${(item.level - 1) * 12 + 12}px` }'
+					:style='{ paddingLeft: `${item.level * 12}px` }'
 					:aria-current='activeHeadingId === item.id ? "true" : undefined'
 					@click='scrollToHeading(item)'
 				>
@@ -67,22 +67,39 @@ function collectHeadings() {
 	}
 
 	const nodes = Array.from(root.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6"));
-	const items = nodes.map(element => ({
+	headings.value = nodes.map(element => ({
 		id: element.id,
-		title: element.textContent?.trim() ?? "",
-		level: Number(element.tagName.slice(1)),
+		title: element.textContent,
 		el: element,
-	})).filter(item => item.id && item.title);
+		level: Number(element.tagName.slice(1)),
+	}));
 
-	headings.value = items;
-	setupObserver();
-	nextTick(scrollActiveIntoView);
+	observer.value?.disconnect();
+	visibleHeadings.clear();
+
+	const list = headings.value;
+
+	if (!list.length) {
+		activeHeadingId.value = "";
+		return;
+	}
+
+	observer.value = new IntersectionObserver(handleIntersections, {
+		root: previewElement.value,
+		rootMargin: "-48px 0px -75% 0px",
+		threshold: [0, 0.2, 0.5, 1],
+	});
+
+	for (const item of list) {
+		observer.value.observe(item.el);
+	}
+
+	updateActiveHeading();
+	nextTick(scrollToActiveButton);
 }
 
 function teardownObserver() {
 	observer.value?.disconnect();
-	observer.value = undefined;
-	visibleHeadings.clear();
 }
 
 function scrollToHeading(item: HeadingItem) {
@@ -90,35 +107,10 @@ function scrollToHeading(item: HeadingItem) {
 	activeHeadingId.value = item.id;
 }
 
-function setupObserver() {
-	observer.value?.disconnect();
-	visibleHeadings.clear();
-
-	const root = previewElement.value;
-	const list = headings.value;
-
-	if (!root || !list.length) {
-		activeHeadingId.value = "";
-		return;
-	}
-
-	const instance = new IntersectionObserver(handleIntersections, {
-		root,
-		rootMargin: "-48px 0px -75% 0px",
-		threshold: [0, 0.2, 0.5, 1],
-	});
-	observer.value = instance;
-	for (const item of list) {
-		instance.observe(item.el);
-	}
-
-	updateActiveHeading();
-}
-
 function handleIntersections(entries: IntersectionObserverEntry[]) {
 	let changed = false;
 	for (const entry of entries) {
-		const id = (entry.target as HTMLElement).id;
+		const id = entry.target.id;
 		if (!id) {
 			continue;
 		}
@@ -164,7 +156,7 @@ function updateActiveHeading() {
 	activeHeadingId.value = current?.id ?? "";
 }
 
-function scrollActiveIntoView() {
+function scrollToActiveButton() {
 	const container = listEl.value;
 	const currentId = activeHeadingId.value;
 
@@ -172,7 +164,7 @@ function scrollActiveIntoView() {
 		return;
 	}
 
-	const target = Array.from(container.querySelectorAll<HTMLButtonElement>("button[data-id]"))
+	const target = Array.from(container.querySelectorAll<HTMLButtonElement>("button"))
 		.find(button => button.dataset.id === currentId);
 
 	target?.scrollIntoView({ block: "nearest" });
@@ -184,7 +176,7 @@ watch(() => props.content, () => nextTick(collectHeadings), {
 	flush: "post",
 });
 
-watch(activeHeadingId, () => nextTick(scrollActiveIntoView), {
+watch(activeHeadingId, () => nextTick(scrollToActiveButton), {
 	flush: "post",
 });
 
@@ -193,14 +185,11 @@ onBeforeUnmount(teardownObserver);
 
 <style scoped>
 .navigation {
-	grid-row: 2;
-	grid-column: 3;
 	display: flex;
 	flex-direction: column;
 	padding: 16px 12px;
 	row-gap: 12px;
-	border-left: 1px solid #e0e0e0;
-	background-color: #f6f8fa;
+	background-color: whitesmoke;
 	overflow-y: auto;
 }
 
@@ -241,8 +230,8 @@ onBeforeUnmount(teardownObserver);
 }
 
 .navigationLinkActive {
-	background-color: rgba(0, 116, 232, 0.14);
-	color: #0f4c81;
+	background-color: rgba(90, 172, 230, 0.14);
+	color: #0074e8;
 	font-weight: 600;
 }
 

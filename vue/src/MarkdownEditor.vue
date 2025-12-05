@@ -31,6 +31,7 @@
 		<!-- 有更多的组件的话考虑把左右面板也插件化，但目前先写在这里 -->
 		<PreviewNavigation
 			v-if='isNavVisible'
+			:class='$style.nav'
 			:preview-root='previewEl'
 			:content='debounced'
 		/>
@@ -88,7 +89,6 @@ import { ComponentPublicInstance, computed, nextTick, onMounted, onUnmounted, re
 import { refDebounced } from "@vueuse/core";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api.js";
 import "monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution.js";
-import "monaco-editor/esm/vs/base/browser/ui/codicons/codiconStyles.js";
 import "monaco-editor/esm/vs/editor/contrib/wordOperations/browser/wordOperations.js";
 import "monaco-editor/esm/vs/editor/contrib/linesOperations/browser/linesOperations.js";
 import "monaco-editor/esm/vs/editor/contrib/dnd/browser/dnd.js";
@@ -253,6 +253,11 @@ onMounted(() => {
 .preview {
 	padding: 0 max(12px, calc(50% - 450px));
 	overflow-y: scroll;
+}
+
+.nav {
+	grid-row: 2;
+	grid-column: 3;
 }
 
 .previewWide {
