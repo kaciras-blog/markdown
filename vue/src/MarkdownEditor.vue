@@ -190,6 +190,9 @@ onMounted(() => {
 		scrollbar: {
 			useShadows: false,
 		},
+		unicodeHighlight: {
+			ambiguousCharacters: false,
+		},
 		wordSeparators: WORD_SEPARATORS,
 		...addonContext.options.value,
 	});
