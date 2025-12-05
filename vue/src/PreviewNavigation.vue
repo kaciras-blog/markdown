@@ -35,11 +35,6 @@
 <script setup lang='ts'>
 import { ComponentPublicInstance, computed, nextTick, onBeforeUnmount, ref, shallowRef, watch } from "vue";
 
-interface PreviewNavigationProps {
-	previewRoot?: ComponentPublicInstance | null;
-	content: string;
-}
-
 interface HeadingItem {
 	id: string;
 	title: string;
@@ -47,13 +42,18 @@ interface HeadingItem {
 	el: HTMLElement;
 }
 
+interface PreviewNavigationProps {
+	content: string;
+	previewRoot?: ComponentPublicInstance | null;
+}
+
 const props = defineProps<PreviewNavigationProps>();
 
 const headings = shallowRef<HeadingItem[]>([]);
 const activeHeadingId = ref("");
 const listEl = ref<HTMLUListElement>();
-const scrollContainer = ref<HTMLElement>();
-let scrollFrame = 0;
+const observer = shallowRef<IntersectionObserver>();
+const visibleHeadings = new Set<string>();
 
 const previewElement = computed(() => props.previewRoot?.$el as HTMLElement | undefined);
 
@@ -62,6 +62,7 @@ function collectHeadings() {
 	if (!root) {
 		headings.value = [];
 		activeHeadingId.value = "";
+		teardownObserver();
 		return;
 	}
 
@@ -74,8 +75,14 @@ function collectHeadings() {
 	})).filter(item => item.id && item.title);
 
 	headings.value = items;
-	updateActiveHeading();
+	setupObserver();
 	nextTick(scrollActiveIntoView);
+}
+
+function teardownObserver() {
+	observer.value?.disconnect();
+	observer.value = undefined;
+	visibleHeadings.clear();
 }
 
 function scrollToHeading(item: HeadingItem) {
@@ -83,53 +90,77 @@ function scrollToHeading(item: HeadingItem) {
 	activeHeadingId.value = item.id;
 }
 
-function setupPreviewScrollListener() {
+function setupObserver() {
+	observer.value?.disconnect();
+	visibleHeadings.clear();
+
 	const root = previewElement.value;
-
-	if (scrollContainer.value === root) {
-		return;
-	}
-
-	scrollContainer.value?.removeEventListener("scroll", handlePreviewScroll);
-	scrollContainer.value = root ?? undefined;
-
-	if (root) {
-		root.addEventListener("scroll", handlePreviewScroll, { passive: true });
-	}
-}
-
-function handlePreviewScroll() {
-	if (scrollFrame) {
-		return;
-	}
-	scrollFrame = requestAnimationFrame(() => {
-		scrollFrame = 0;
-		updateActiveHeading();
-	});
-}
-
-function updateActiveHeading() {
-	const container = scrollContainer.value;
 	const list = headings.value;
 
-	if (!container || !list.length) {
+	if (!root || !list.length) {
 		activeHeadingId.value = "";
 		return;
 	}
 
-	const containerRect = container.getBoundingClientRect();
-	const anchorOffset = 48;
-	let current = list[0];
-
+	const instance = new IntersectionObserver(handleIntersections, {
+		root,
+		rootMargin: "-48px 0px -75% 0px",
+		threshold: [0, 0.2, 0.5, 1],
+	});
+	observer.value = instance;
 	for (const item of list) {
-		const offset = item.el.getBoundingClientRect().top - containerRect.top;
-		if (offset <= anchorOffset) {
+		instance.observe(item.el);
+	}
+
+	updateActiveHeading();
+}
+
+function handleIntersections(entries: IntersectionObserverEntry[]) {
+	let changed = false;
+	for (const entry of entries) {
+		const id = (entry.target as HTMLElement).id;
+		if (!id) {
+			continue;
+		}
+		if (entry.isIntersecting) {
+			if (!visibleHeadings.has(id)) {
+				visibleHeadings.add(id);
+				changed = true;
+			}
+		} else if (visibleHeadings.delete(id)) {
+			changed = true;
+		}
+	}
+
+	if (changed) {
+		updateActiveHeading();
+	}
+}
+
+function updateActiveHeading() {
+	const root = previewElement.value;
+	const list = headings.value;
+
+	if (!root || !list.length) {
+		activeHeadingId.value = "";
+		return;
+	}
+
+	const intersecting = list.find(item => visibleHeadings.has(item.id));
+	if (intersecting) {
+		activeHeadingId.value = intersecting.id;
+		return;
+	}
+
+	const anchorTop = root.getBoundingClientRect().top + 48;
+	let current = list[0];
+	for (const item of list) {
+		if (item.el.getBoundingClientRect().top <= anchorTop) {
 			current = item;
 		} else {
 			break;
 		}
 	}
-
 	activeHeadingId.value = current?.id ?? "";
 }
 
@@ -147,12 +178,7 @@ function scrollActiveIntoView() {
 	target?.scrollIntoView({ block: "nearest" });
 }
 
-watch(previewElement, () => {
-	nextTick(() => {
-		setupPreviewScrollListener();
-		collectHeadings();
-	});
-}, { immediate: true });
+watch(previewElement, () => nextTick(collectHeadings), { immediate: true });
 
 watch(() => props.content, () => nextTick(collectHeadings), {
 	flush: "post",
@@ -162,13 +188,7 @@ watch(activeHeadingId, () => nextTick(scrollActiveIntoView), {
 	flush: "post",
 });
 
-onBeforeUnmount(() => {
-	scrollContainer.value?.removeEventListener("scroll", handlePreviewScroll);
-	if (scrollFrame) {
-		cancelAnimationFrame(scrollFrame);
-		scrollFrame = 0;
-	}
-});
+onBeforeUnmount(teardownObserver);
 </script>
 
 <style scoped>

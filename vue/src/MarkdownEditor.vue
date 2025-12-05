@@ -27,6 +27,8 @@
 				viewMode === ViewMode.Preview && isNavVisible && $style.previewWide,
 			]'
 		/>
+
+		<!-- 有更多的组件的话考虑把左右面板也插件化，但目前先写在这里 -->
 		<PreviewNavigation
 			v-if='isNavVisible'
 			:preview-root='previewEl'
@@ -133,6 +135,7 @@ const previewEl = shallowRef<ComponentPublicInstance>();
 const viewMode = shallowRef(ViewMode.Split);
 const scrollSynced = shallowRef(true);
 const tocVisible = shallowRef(false);
+
 const isNavVisible = computed(() => tocVisible.value && viewMode.value !== ViewMode.Edit);
 
 const editorRenderer = computed(() => {
@@ -172,9 +175,7 @@ function handleDrop(event: DragEvent) {
 }
 
 watch(addonContext.options, o => editor.updateOptions(o), { deep: true });
-watch(viewMode, () => {
-	nextTick(() => editor.layout());
-});
+watch([viewMode, tocVisible], () => nextTick(() => editor.layout()));
 watch(content, value => value !== contentSnapshot && editor.setValue(value));
 
 onUnmounted(() => editor.dispose());
