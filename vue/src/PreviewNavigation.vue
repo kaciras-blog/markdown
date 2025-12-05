@@ -1,36 +1,28 @@
 <template>
 	<aside :class='$style.navigation' aria-label='文档导航'>
-		<h2 :class='$style.navigationTitle'>目录</h2>
-		<ul
+		<h2 :class='$style.title'>目录</h2>
+		<div
 			v-if='headings.length'
-			:class='$style.navigationList'
+			:class='$style.list'
 			ref='listEl'
 		>
-			<li
+			<button
 				v-for='item in headings'
 				:key='item.id'
+				type='button'
+				:class='[
+					$style.link,
+					activeHeadingId === item.id && $style.active,
+				]'
+				:data-id='item.id'
+				:style='{ paddingLeft: `${item.level * 12}px` }'
+				:aria-current='activeHeadingId === item.id ? "true" : undefined'
+				@click='scrollToHeading(item)'
 			>
-				<button
-					type='button'
-					:class='[
-						$style.navigationLink,
-						activeHeadingId === item.id && $style.navigationLinkActive,
-					]'
-					:data-id='item.id'
-					:style='{ paddingLeft: `${item.level * 12}px` }'
-					:aria-current='activeHeadingId === item.id ? "true" : undefined'
-					@click='scrollToHeading(item)'
-				>
-					{{ item.title }}
-				</button>
-			</li>
-		</ul>
-		<p
-			v-else
-			:class='$style.navigationEmpty'
-		>
-			当前预览没有标题
-		</p>
+				{{ item.title }}
+			</button>
+		</div>
+		<p v-else :class='$style.empty'>当前预览没有标题</p>
 	</aside>
 </template>
 
@@ -69,12 +61,14 @@ function collectHeadings() {
 	}
 
 	const nodes = Array.from(root.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6"));
-	headings.value = nodes.map(element => ({
-		id: element.id,
-		title: element.textContent.slice(0, -2), // 去掉锚点的#
-		el: element,
-		level: Number(element.tagName.slice(1)),
-	}));
+	headings.value = nodes
+		.filter(node => node.id)
+		.map(element => ({
+			id: element.id,
+			title: element.textContent.slice(0, -2), // 去掉锚点的#
+			el: element,
+			level: Number(element.tagName.slice(1)),
+		}));
 
 	observer.value?.disconnect();
 	visibleHeadings.clear();
@@ -195,23 +189,20 @@ onBeforeUnmount(teardownObserver);
 	overflow-y: auto;
 }
 
-.navigationTitle {
+.title {
 	margin: 0;
 	font-size: 14px;
 	font-weight: 600;
 	color: #333;
 }
 
-.navigationList {
-	list-style: none;
-	margin: 0;
-	padding: 0;
+.list {
 	display: flex;
 	flex-direction: column;
 	row-gap: 4px;
 }
 
-.navigationLink {
+.link {
 	width: 100%;
 	padding: 6px 8px;
 	border: none;
@@ -225,19 +216,19 @@ onBeforeUnmount(teardownObserver);
 	transition: background-color 0.2s ease;
 }
 
-.navigationLink:hover,
-.navigationLink:focus-visible {
+.link:hover,
+.link:focus-visible {
 	background-color: rgba(15, 76, 129, 0.12);
 	outline: none;
 }
 
-.navigationLinkActive {
+.active {
 	background-color: rgba(90, 172, 230, 0.14);
 	color: #0074e8;
 	font-weight: 600;
 }
 
-.navigationEmpty {
+.empty {
 	margin: 0;
 	font-size: 12px;
 	color: #909090;
