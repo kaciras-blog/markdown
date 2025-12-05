@@ -1,9 +1,9 @@
 <template>
-	<aside class='navigation' aria-label='文档导航'>
-		<h2 class='navigationTitle'>目录</h2>
+	<aside :class='$style.navigation' aria-label='文档导航'>
+		<h2 :class='$style.navigationTitle'>目录</h2>
 		<ul
 			v-if='headings.length'
-			class='navigationList'
+			:class='$style.navigationList'
 			ref='listEl'
 		>
 			<li
@@ -12,8 +12,10 @@
 			>
 				<button
 					type='button'
-					class='navigationLink'
-					:class='{ navigationLinkActive: activeHeadingId === item.id }'
+					:class='[
+						$style.navigationLink,
+						activeHeadingId === item.id && $style.navigationLinkActive,
+					]'
 					:data-id='item.id'
 					:style='{ paddingLeft: `${item.level * 12}px` }'
 					:aria-current='activeHeadingId === item.id ? "true" : undefined'
@@ -25,7 +27,7 @@
 		</ul>
 		<p
 			v-else
-			class='navigationEmpty'
+			:class='$style.navigationEmpty'
 		>
 			当前预览没有标题
 		</p>
@@ -69,7 +71,7 @@ function collectHeadings() {
 	const nodes = Array.from(root.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6"));
 	headings.value = nodes.map(element => ({
 		id: element.id,
-		title: element.textContent,
+		title: element.textContent.slice(0, -2), // 去掉锚点的#
 		el: element,
 		level: Number(element.tagName.slice(1)),
 	}));
@@ -183,7 +185,7 @@ watch(activeHeadingId, () => nextTick(scrollToActiveButton), {
 onBeforeUnmount(teardownObserver);
 </script>
 
-<style scoped>
+<style module>
 .navigation {
 	display: flex;
 	flex-direction: column;
