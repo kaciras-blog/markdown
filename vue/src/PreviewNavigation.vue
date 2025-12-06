@@ -14,12 +14,13 @@
 					$style.link,
 					activeIndex === i && $style.active,
 				]'
-				:data-index='i.toString()'
-				:style='{ paddingLeft: `${item.level * 12}px` }'
+				:data-index='i'
+				:style='{ paddingLeft: `${Number(item.tagName.slice(1)) * 12}px` }'
 				:aria-current='activeIndex === i ? "true" : undefined'
 				@click='scrollToHeading'
 			>
-				{{ item.title }}
+				<!-- slice(0, -2) 去掉锚点的# -->
+				{{ item.textContent.slice(0, -2) }}
 			</button>
 		</div>
 		<p v-else :class='$style.empty'>当前预览没有标题</p>
@@ -29,13 +30,6 @@
 <script setup lang='ts'>
 import { ComponentPublicInstance, computed, nextTick, onBeforeUnmount, shallowRef, watch } from "vue";
 
-interface HeadingItem {
-	id: string;
-	title: string;
-	level: number;
-	el: HTMLElement;
-}
-
 interface PreviewNavigationProps {
 	content: string;
 	previewRoot?: ComponentPublicInstance | null;
@@ -43,9 +37,9 @@ interface PreviewNavigationProps {
 
 const props = defineProps<PreviewNavigationProps>();
 
-const headings = shallowRef<HeadingItem[]>([]);
-const activeIndex = shallowRef(0);
 const navEl = shallowRef<HTMLElement>();
+const headings = shallowRef<HTMLElement[]>([]);
+const activeIndex = shallowRef(0);
 
 let observer: IntersectionObserver | null = null;
 
@@ -59,15 +53,9 @@ function collectHeadings() {
 		return;
 	}
 
-	const nodes = Array.from(root.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6"));
-	headings.value = nodes
-		.filter(node => node.id)
-		.map(element => ({
-			id: element.id,
-			title: element.textContent.slice(0, -2), // 去掉锚点的#
-			el: element,
-			level: Number(element.tagName.slice(1)),
-		}));
+	headings.value = Array
+		.from(root.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6"))
+		.filter(node => node.id);
 
 	observer?.disconnect();
 
@@ -83,13 +71,13 @@ function collectHeadings() {
 	});
 
 	for (const item of list) {
-		observer.observe(item.el);
+		observer.observe(item);
 	}
 
 	const anchorTop = root.getBoundingClientRect().top + 48;
 	let current = 0;
 	for (let i = 0; i < list.length; i++) {
-		if (list[i].el.getBoundingClientRect().top <= anchorTop) {
+		if (list[i].getBoundingClientRect().top <= anchorTop) {
 			current = i;
 		} else {
 			break;
@@ -101,7 +89,7 @@ function collectHeadings() {
 function scrollToHeading(event: MouseEvent) {
 	const i = parseInt((event.target as HTMLElement).dataset.index as string);
 	activeIndex.value = i;
-	headings.value[i].el.scrollIntoView({ behavior: "smooth", block: "start" });
+	headings.value[i].scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function intersect(entries: IntersectionObserverEntry[]) {
