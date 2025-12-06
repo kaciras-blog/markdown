@@ -1,29 +1,19 @@
 <template>
-	<aside :class='$style.navigation' aria-label='文档导航'>
-		<h2 :class='$style.title'>目录</h2>
-		<div
-			v-if='headings.length'
-			:class='$style.list'
-			ref='navEl'
+	<aside :class='$style.navigation' aria-label='文档导航' ref='navEl'>
+		<button
+			v-for='(item, i) in headings'
+			:key='item.id'
+			type='button'
+			:class='$style.link'
+			:data-index='i'
+			:style='{ paddingLeft: `${Number(item.tagName.slice(1)) * 12}px` }'
+			:aria-current='activeIndex === i ? "true" : undefined'
+			@click='scrollToHeading'
 		>
-			<button
-				v-for='(item, i) in headings'
-				:key='item.id'
-				type='button'
-				:class='[
-					$style.link,
-					activeIndex === i && $style.active,
-				]'
-				:data-index='i'
-				:style='{ paddingLeft: `${Number(item.tagName.slice(1)) * 12}px` }'
-				:aria-current='activeIndex === i ? "true" : undefined'
-				@click='scrollToHeading'
-			>
-				<!-- slice(0, -2) 去掉锚点的# -->
-				{{ item.textContent.slice(0, -2) }}
-			</button>
-		</div>
-		<p v-else :class='$style.empty'>当前预览没有标题</p>
+			<!-- slice(0, -2) 去掉锚点的# -->
+			{{ item.textContent.slice(0, -2) }}
+		</button>
+		<p v-if='headings.length === 0' :class='$style.empty'>当前预览没有标题</p>
 	</aside>
 </template>
 
@@ -129,32 +119,22 @@ onBeforeUnmount(() => observer?.disconnect());
 	display: flex;
 	flex-direction: column;
 	padding: 16px 12px;
-	row-gap: 12px;
-	background-color: whitesmoke;
-	overflow-y: auto;
-}
-
-.title {
-	margin: 0;
-	font-size: 14px;
-	font-weight: 600;
-	color: #333;
-}
-
-.list {
-	display: flex;
-	flex-direction: column;
 	row-gap: 4px;
+
+	overflow-y: auto;
+	background-color: whitesmoke;
 }
 
 .link {
 	width: 100%;
-	padding: 6px 8px;
+	padding: 8px;
+
 	border: none;
 	background: none;
+
 	text-align: left;
-	font-size: 13px;
-	line-height: 1.4;
+	font-size: 0.8em;
+
 	color: #1f2328;
 	border-radius: 4px;
 	cursor: pointer;
@@ -167,7 +147,7 @@ onBeforeUnmount(() => observer?.disconnect());
 	outline: none;
 }
 
-.active {
+.link[aria-current="true"] {
 	background-color: rgba(90, 172, 230, 0.14);
 	color: #0074e8;
 	font-weight: 600;
