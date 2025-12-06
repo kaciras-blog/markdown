@@ -7,17 +7,17 @@
 			ref='navEl'
 		>
 			<button
-				v-for='item in headings'
+				v-for='(item, i) in headings'
 				:key='item.id'
 				type='button'
 				:class='[
 					$style.link,
-					activeHeadingId === item.id && $style.active,
+					activeIndex === i && $style.active,
 				]'
-				:data-id='item.id'
+				:data-index='i.toString()'
 				:style='{ paddingLeft: `${item.level * 12}px` }'
-				:aria-current='activeHeadingId === item.id ? "true" : undefined'
-				@click='scrollToHeading(item)'
+				:aria-current='activeIndex === i ? "true" : undefined'
+				@click='scrollToHeading'
 			>
 				{{ item.title }}
 			</button>
@@ -44,7 +44,7 @@ interface PreviewNavigationProps {
 const props = defineProps<PreviewNavigationProps>();
 
 const headings = shallowRef<HeadingItem[]>([]);
-const activeHeadingId = shallowRef("");
+const activeIndex = shallowRef(0);
 const navEl = shallowRef<HTMLElement>();
 
 let observer: IntersectionObserver | null = null;
@@ -55,7 +55,6 @@ function collectHeadings() {
 	const root = previewElement.value;
 	if (!root) {
 		headings.value = [];
-		activeHeadingId.value = "";
 		observer?.disconnect();
 		return;
 	}
@@ -73,9 +72,7 @@ function collectHeadings() {
 	observer?.disconnect();
 
 	const list = headings.value;
-
 	if (!list.length) {
-		activeHeadingId.value = "";
 		return;
 	}
 
@@ -90,20 +87,21 @@ function collectHeadings() {
 	}
 
 	const anchorTop = root.getBoundingClientRect().top + 48;
-	let current = list[0];
-	for (const item of list) {
-		if (item.el.getBoundingClientRect().top <= anchorTop) {
-			current = item;
+	let current = 0;
+	for (let i = 0; i < list.length; i++) {
+		if (list[i].el.getBoundingClientRect().top <= anchorTop) {
+			current = i;
 		} else {
 			break;
 		}
 	}
-	activeHeadingId.value = current?.id ?? "";
+	activeIndex.value = current;
 }
 
-function scrollToHeading(item: HeadingItem) {
-	item.el.scrollIntoView({ behavior: "smooth", block: "start" });
-	activeHeadingId.value = item.id;
+function scrollToHeading(event: MouseEvent) {
+	const i = parseInt((event.target as HTMLElement).dataset.index as string);
+	activeIndex.value = i;
+	headings.value[i].el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function intersect(entries: IntersectionObserverEntry[]) {
@@ -120,29 +118,20 @@ function intersect(entries: IntersectionObserverEntry[]) {
 	}
 
 	if (visibleHeadings.size) {
-		activeHeadingId.value = headings.value.find(item => visibleHeadings.has(item.id))?.id ?? "";
+		activeIndex.value = headings.value.findIndex(item => visibleHeadings.has(item.id));
 	}
 }
 
 function scrollToActiveButton() {
-	const container = navEl.value;
-	const currentId = activeHeadingId.value;
-
-	if (!container || !currentId) {
-		return;
-	}
-
-	const target = Array.from(container.querySelectorAll<HTMLButtonElement>("button"))
-		.find(button => button.dataset.id === currentId);
-
-	target?.scrollIntoView({ block: "nearest" });
+	const nodes = navEl.value!.querySelectorAll("button");
+	nodes[activeIndex.value]?.scrollIntoView({ block: "nearest" });
 }
 
 watch(previewElement, () => nextTick(collectHeadings), { immediate: true });
 
 watch(() => props.content, () => nextTick(collectHeadings), { flush: "post" });
 
-watch(activeHeadingId, () => nextTick(scrollToActiveButton), { flush: "post" });
+watch(activeIndex, () => nextTick(scrollToActiveButton), { flush: "post" });
 
 onBeforeUnmount(() => observer?.disconnect());
 </script>
