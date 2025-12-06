@@ -5,7 +5,6 @@
 			:key='item.id'
 			type='button'
 			:class='$style.link'
-			:data-index='i'
 			:style='{ paddingLeft: `${Number(item.tagName.slice(1)) * 12}px` }'
 			:aria-current='activeIndex === i ? "true" : undefined'
 			@click='scrollToHeading'
@@ -19,6 +18,7 @@
 
 <script setup lang='ts'>
 import { ComponentPublicInstance, computed, nextTick, onBeforeUnmount, shallowRef, watch } from "vue";
+import { nthInChildren } from "@kaciras/utilities/browser";
 
 interface PreviewNavigationProps {
 	content: string;
@@ -57,7 +57,6 @@ function collectHeadings() {
 	observer = new IntersectionObserver(intersect, {
 		root: previewElement.value,
 		rootMargin: "-48px 0px -75% 0px",
-		threshold: [0, 0.2, 0.5, 1],
 	});
 
 	for (const item of list) {
@@ -77,8 +76,7 @@ function collectHeadings() {
 }
 
 function scrollToHeading(event: MouseEvent) {
-	const i = parseInt((event.target as HTMLElement).dataset.index as string);
-	activeIndex.value = i;
+	const i = activeIndex.value = nthInChildren(event.target as HTMLElement);
 	headings.value[i].scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
