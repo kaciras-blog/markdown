@@ -4,7 +4,7 @@
 		<div
 			v-if='headings.length'
 			:class='$style.list'
-			ref='listEl'
+			ref='navEl'
 		>
 			<button
 				v-for='item in headings'
@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ComponentPublicInstance, computed, nextTick, onBeforeUnmount, ref, shallowRef, watch } from "vue";
+import { ComponentPublicInstance, computed, nextTick, onBeforeUnmount, shallowRef, watch } from "vue";
 
 interface HeadingItem {
 	id: string;
@@ -44,10 +44,10 @@ interface PreviewNavigationProps {
 const props = defineProps<PreviewNavigationProps>();
 
 const headings = shallowRef<HeadingItem[]>([]);
-const activeHeadingId = ref("");
-const listEl = ref<HTMLUListElement>();
-const observer = shallowRef<IntersectionObserver>();
-const visibleHeadings = new Set<string>();
+const activeHeadingId = shallowRef("");
+const navEl = shallowRef<HTMLElement>();
+
+let observer: IntersectionObserver | null = null;
 
 const previewElement = computed(() => props.previewRoot?.$el as HTMLElement | undefined);
 
@@ -56,7 +56,7 @@ function collectHeadings() {
 	if (!root) {
 		headings.value = [];
 		activeHeadingId.value = "";
-		teardownObserver();
+		observer?.disconnect();
 		return;
 	}
 
@@ -70,8 +70,7 @@ function collectHeadings() {
 			level: Number(element.tagName.slice(1)),
 		}));
 
-	observer.value?.disconnect();
-	visibleHeadings.clear();
+	observer?.disconnect();
 
 	const list = headings.value;
 
@@ -80,64 +79,14 @@ function collectHeadings() {
 		return;
 	}
 
-	observer.value = new IntersectionObserver(handleIntersections, {
+	observer = new IntersectionObserver(intersect, {
 		root: previewElement.value,
 		rootMargin: "-48px 0px -75% 0px",
 		threshold: [0, 0.2, 0.5, 1],
 	});
 
 	for (const item of list) {
-		observer.value.observe(item.el);
-	}
-
-	updateActiveHeading();
-	nextTick(scrollToActiveButton);
-}
-
-function teardownObserver() {
-	observer.value?.disconnect();
-}
-
-function scrollToHeading(item: HeadingItem) {
-	item.el.scrollIntoView({ behavior: "smooth", block: "start" });
-	activeHeadingId.value = item.id;
-}
-
-function handleIntersections(entries: IntersectionObserverEntry[]) {
-	let changed = false;
-	for (const entry of entries) {
-		const id = entry.target.id;
-		if (!id) {
-			continue;
-		}
-		if (entry.isIntersecting) {
-			if (!visibleHeadings.has(id)) {
-				visibleHeadings.add(id);
-				changed = true;
-			}
-		} else if (visibleHeadings.delete(id)) {
-			changed = true;
-		}
-	}
-
-	if (changed) {
-		updateActiveHeading();
-	}
-}
-
-function updateActiveHeading() {
-	const root = previewElement.value;
-	const list = headings.value;
-
-	if (!root || !list.length) {
-		activeHeadingId.value = "";
-		return;
-	}
-
-	const intersecting = list.find(item => visibleHeadings.has(item.id));
-	if (intersecting) {
-		activeHeadingId.value = intersecting.id;
-		return;
+		observer.observe(item.el);
 	}
 
 	const anchorTop = root.getBoundingClientRect().top + 48;
@@ -152,8 +101,31 @@ function updateActiveHeading() {
 	activeHeadingId.value = current?.id ?? "";
 }
 
+function scrollToHeading(item: HeadingItem) {
+	item.el.scrollIntoView({ behavior: "smooth", block: "start" });
+	activeHeadingId.value = item.id;
+}
+
+function intersect(entries: IntersectionObserverEntry[]) {
+	const visibleHeadings = new Set<string>();
+
+	for (const entry of entries) {
+		const id = entry.target.id;
+		if (!id) {
+			continue;
+		}
+		if (entry.isIntersecting) {
+			visibleHeadings.add(id);
+		}
+	}
+
+	if (visibleHeadings.size) {
+		activeHeadingId.value = headings.value.find(item => visibleHeadings.has(item.id))?.id ?? "";
+	}
+}
+
 function scrollToActiveButton() {
-	const container = listEl.value;
+	const container = navEl.value;
 	const currentId = activeHeadingId.value;
 
 	if (!container || !currentId) {
@@ -168,15 +140,11 @@ function scrollToActiveButton() {
 
 watch(previewElement, () => nextTick(collectHeadings), { immediate: true });
 
-watch(() => props.content, () => nextTick(collectHeadings), {
-	flush: "post",
-});
+watch(() => props.content, () => nextTick(collectHeadings), { flush: "post" });
 
-watch(activeHeadingId, () => nextTick(scrollToActiveButton), {
-	flush: "post",
-});
+watch(activeHeadingId, () => nextTick(scrollToActiveButton), { flush: "post" });
 
-onBeforeUnmount(teardownObserver);
+onBeforeUnmount(() => observer?.disconnect());
 </script>
 
 <style module>
