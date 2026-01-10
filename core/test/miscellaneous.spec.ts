@@ -4,7 +4,7 @@ import * as exports from "../src/index.ts";
 
 const all = Object.values(exports);
 
-it("should set the attribute", () => {
+it("should set UGC attributes for guest link", () => {
 	const markdownIt = new MarkdownIt();
 	markdownIt.use(exports.ugc);
 
@@ -58,6 +58,7 @@ it.each([{
 		exports.directive,
 		exports.styling,
 		exports.toc,
+		exports.cjkFriendly,
 		exports.div,
 		exports.footnote,
 		exports.collapsible,
@@ -68,6 +69,7 @@ it.each([{
 		exports.kfmPreset,
 		exports.directive,
 		exports.toc,
+		exports.cjkFriendly,
 		exports.div,
 		exports.footnote,
 		exports.collapsible,
@@ -81,6 +83,7 @@ it.each([{
 		exports.directive,
 		exports.styling,
 		exports.ugc,
+		exports.cjkFriendly,
 		exports.div,
 		exports.footnote,
 		exports.collapsible,

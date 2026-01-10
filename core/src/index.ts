@@ -10,6 +10,7 @@ export * from "./diagnostics.js";
 export { default as MarkdownIt } from "markdown-it";
 
 export { default as toc } from "markdown-it-toc-done-right";
+export { default as cjkFriendly } from "markdown-it-cjk-friendly";
 export { default as directive } from "./directive.js";
 export { default as div } from "./div.js";
 export { default as collapsible } from "./collapsible.js";

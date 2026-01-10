@@ -1,4 +1,5 @@
 import MarkdownIt from "markdown-it";
+import cjkFriendly from "markdown-it-cjk-friendly";
 import toc from "markdown-it-toc-done-right";
 import AnchorRaw from "markdown-it-anchor";
 import FootnoteRaw from "markdown-it-footnote";
@@ -130,5 +131,5 @@ export function kfmPreset(md: MarkdownIt, options: PresetOptions = {}) {
 		md.use(toc);
 	}
 
-	return md.use(div).use(footnote).use(collapsible);
+	return md.use(cjkFriendly).use(div).use(footnote).use(collapsible);
 }
