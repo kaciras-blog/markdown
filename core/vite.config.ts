@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import nested from "postcss-nested";
 import vars from "postcss-simple-vars";
 import inlineHTML from "./html-string.ts";
@@ -26,7 +26,7 @@ export default defineConfig({
 				"src/activate.ts",
 			],
 			formats: ["es"],
-			cssFileName: "style"
+			cssFileName: "style",
 		},
 		target: "esnext",
 		outDir: "lib",
