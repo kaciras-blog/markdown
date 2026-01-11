@@ -1,8 +1,6 @@
-import { readFileSync } from "fs";
 import { defineSuite } from "esbench";
 import { MarkdownIt, media } from "../core/lib/index.js";
-
-const article = readFileSync("vue/demo/KFM-zh.md", "utf8");
+import article from "../vue/demo/KFM-zh.md?raw";
 
 /*
  * JS 写的解析器（356.02ms）比正则（56.43ms）慢了7倍。

@@ -1,8 +1,6 @@
-import { readFileSync } from "fs";
 import { defineSuite } from "esbench";
 import { collapsible, MarkdownIt } from "../core/lib/index.js";
-
-const article = readFileSync("vue/demo/KFM-zh.md", "utf8");
+import article from "../vue/demo/KFM-zh.md?raw";
 
 const markdownIt = new MarkdownIt("zero");
 markdownIt.use(collapsible);

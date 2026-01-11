@@ -1,17 +1,15 @@
-import { readFileSync } from "fs";
 import { defineSuite } from "esbench";
-import { kfmPreset, MarkdownIt } from "../core/lib/index.ts";
-
-const article = readFileSync("vue/demo/KFM-zh.md", "utf8");
+import { kfmPreset, MarkdownIt } from "../core/src/index.ts";
+import article from "../vue/demo/KFM-zh.md?raw";
 
 /**
- * 综合测试下预设的性能，AMD Ryzen 5 5625U，DDR4-1600。
+ * 综合测试下预设的性能，AMD Ryzen 5 5625U，DDR4-1600, Firefox 146。
  *
- * | No. |   Name | preset |    time |  time.SD |
- * | --: | -----: | -----: | ------: | -------: |
- * |   0 | render |  plain | 2.18 ms | 31.73 us |
- * |   1 | render |  guest | 2.21 ms | 11.38 us |
- * |   2 | render |   rich |  2.5 ms | 61.32 us |
+ * | No. | preset |        time |  time.SD |
+ * | --: | -----: | ----------: | -------: |
+ * |   0 |  plain |   926.46 us | 11.38 us |
+ * |   1 |  guest |   989.08 us |  7.35 us |
+ * |   2 |   rich | 1,160.16 us |  9.71 us |
  */
 export default defineSuite({
 	params: {
