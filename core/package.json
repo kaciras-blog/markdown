@@ -25,9 +25,9 @@
 		"@kaciras/utilities": "^1.0.5",
 		"bootstrap-icons": "^1.13.1",
 		"highlight.js": "^11.11.1",
-		"markdown-it": "^14.1.0",
+		"markdown-it": "^14.1.1",
 		"markdown-it-anchor": "^9.2.0",
-		"markdown-it-cjk-friendly": "^2.0.1",
+		"markdown-it-cjk-friendly": "^2.0.2",
 		"markdown-it-footnote": "^4.0.0",
 		"markdown-it-toc-done-right": "^4.2.0"
 	},
