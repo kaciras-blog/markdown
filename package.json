@@ -5,13 +5,13 @@
 		"@kaciras/eslint-config-core": "^3.4.2",
 		"@kaciras/eslint-config-typescript": "^3.4.2",
 		"@kaciras/eslint-config-vue": "^3.4.2",
-		"@types/node": "^25.3.0",
+		"@types/node": "^25.3.1",
 		"@types/prismjs": "^1.26.6",
 		"esbench": "^0.8.1",
-		"eslint": "^10.0.0",
+		"eslint": "^10.0.2",
 		"prismjs": "^1.30.0",
-		"shiki": "^3.22.0",
+		"shiki": "^3.23.0",
 		"typescript": "^5.9.3",
-		"vue": "^3.5.28"
+		"vue": "^3.5.29"
 	}
 }
