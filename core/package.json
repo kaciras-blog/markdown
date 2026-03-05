@@ -35,7 +35,7 @@
 		"@types/html-minifier-terser": "^7.0.2",
 		"@types/markdown-it": "^14.1.2",
 		"@vitest/coverage-v8": "^4.0.18",
-		"dedent": "^1.7.1",
+		"dedent": "^1.7.2",
 		"html-minifier-terser": "^7.2.0",
 		"magic-string": "^0.30.21",
 		"postcss-nested": "^7.0.2",
