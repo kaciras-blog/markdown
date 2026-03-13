@@ -7,13 +7,6 @@ import packageJson from "./package.json" with { type: "json" };
 
 const deps = Object.keys(packageJson.dependencies);
 
-/**
- * 通过 Rollup 的 manualChunk 手动配置下文件名，避免 Vue 产生额外的 JS 文件。
- * 22 年的问题到现在都不解决：https://github.com/vitejs/vite-plugin-vue/issues/19
- */
-function preventReExports(id: string) {
-	return /(MarkdownView|MarkdownBox)\.vue/.exec(id)?.[1];
-}
 
 export default defineConfig(({ mode }) => {
 	const overrides = defineConfig({
@@ -47,10 +40,12 @@ export default defineConfig(({ mode }) => {
 	 * 结果就是存在了两份 addon-api.ts，导致了一些无聊的问题，且仅在开发模式下发生。
 	 */
 	coreConfig.build = {
-		rollupOptions: {
-			output: {
-				manualChunks: preventReExports,
-			},
+		rolldownOptions: {
+			/*
+			 * 避免 Vue 产生额外的 JS 文件，22 年的问题到现在都不解决：
+			 * https://github.com/vitejs/vite-plugin-vue/issues/19
+			 */
+			preserveEntrySignatures: "allow-extension",
 			external: new RegExp(`^(?:${deps.join("|")})`),
 		},
 		outDir: "lib",

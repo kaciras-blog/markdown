@@ -14,7 +14,7 @@ export default defineConfig({
 		},
 	},
 	build: {
-		rollupOptions: {
+		rolldownOptions: {
 			treeshake: {
 				moduleSideEffects: "no-external",
 			},
