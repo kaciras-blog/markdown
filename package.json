@@ -8,10 +8,10 @@
 		"@types/node": "^25.5.0",
 		"@types/prismjs": "^1.26.6",
 		"esbench": "^0.8.1",
-		"eslint": "^10.0.3",
+		"eslint": "^10.1.0",
 		"prismjs": "^1.30.0",
 		"shiki": "^4.0.2",
-		"typescript": "^5.9.3",
-		"vue": "^3.5.30"
+		"typescript": "^6.0.2",
+		"vue": "^3.5.31"
 	}
 }
