@@ -8,7 +8,7 @@
 		"@types/node": "^25.6.0",
 		"@types/prismjs": "^1.26.6",
 		"esbench": "^0.8.1",
-		"eslint": "^10.2.1",
+		"eslint": "^10.3.0",
 		"prismjs": "^1.30.0",
 		"shiki": "^4.0.2",
 		"typescript": "^6.0.3",
