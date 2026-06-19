@@ -22,7 +22,7 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"@kaciras/utilities": "^1.0.5",
+		"@kaciras/utilities": "^1.1.0",
 		"bootstrap-icons": "^1.13.1",
 		"highlight.js": "^11.11.1",
 		"markdown-it": "^14.2.0",
@@ -34,13 +34,13 @@
 	"devDependencies": {
 		"@types/html-minifier-terser": "^7.0.2",
 		"@types/markdown-it": "^14.1.2",
-		"@vitest/coverage-v8": "^4.1.8",
+		"@vitest/coverage-v8": "^4.1.9",
 		"dedent": "^1.7.2",
 		"html-minifier-terser": "^7.2.0",
 		"magic-string": "^0.30.21",
 		"postcss-nested": "^7.0.2",
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^8.0.16",
-		"vitest": "^4.1.8"
+		"vitest": "^4.1.9"
 	}
 }

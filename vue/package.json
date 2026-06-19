@@ -25,11 +25,11 @@
 	},
 	"dependencies": {
 		"@kaciras-blog/markdown": "workspace:^",
-		"@kaciras/utilities": "^1.0.5",
+		"@kaciras/utilities": "^1.1.0",
 		"@tabler/icons-vue": "^3.44.0",
 		"@vueuse/core": "^14.3.0",
 		"monaco-editor": "^0.55.1",
-		"vue": "^3.5.35"
+		"vue": "^3.5.38"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^6.0.7",
