@@ -26,15 +26,15 @@
 	"dependencies": {
 		"@kaciras-blog/markdown": "workspace:^",
 		"@kaciras/utilities": "^1.1.0",
-		"@tabler/icons-vue": "^3.44.0",
+		"@tabler/icons-vue": "^3.45.0",
 		"@vueuse/core": "^14.3.0",
-		"monaco-editor": "^0.55.1",
-		"vue": "^3.5.39"
+		"monaco-editor": "^0.56.0",
+		"vue": "^3.5.40"
 	},
 	"devDependencies": {
-		"@vitejs/plugin-vue": "^6.0.7",
+		"@vitejs/plugin-vue": "^6.0.8",
 		"rollup-plugin-visualizer": "^7.0.1",
-		"vite": "^8.1.4",
+		"vite": "^8.1.5",
 		"vite-plugin-dts": "5.0.3"
 	}
 }
