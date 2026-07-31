@@ -26,8 +26,8 @@
 	"dependencies": {
 		"@kaciras-blog/markdown": "workspace:^",
 		"@kaciras/utilities": "^1.1.0",
-		"@tabler/icons-vue": "^3.45.0",
-		"@vueuse/core": "^14.3.0",
+		"@tabler/icons-vue": "^3.46.0",
+		"@vueuse/core": "^14.4.0",
 		"monaco-editor": "^0.56.0",
 		"vue": "^3.5.40"
 	},
