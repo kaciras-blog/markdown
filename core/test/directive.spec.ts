@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import MarkdownIt from "markdown-it";
-import Token from "markdown-it/lib/token.mjs";
+import MarkdownIt, { Token } from "markdown-it";
 import directive, { DirectiveMap } from "../src/directive.ts";
 import dedent from "dedent";
 

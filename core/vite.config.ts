@@ -15,6 +15,7 @@ export default defineConfig({
 	},
 	build: {
 		rolldownOptions: {
+			preserveEntrySignatures: "allow-extension",
 			treeshake: {
 				moduleSideEffects: "no-external",
 			},

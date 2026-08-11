@@ -1,5 +1,4 @@
-import MarkdownIt from "markdown-it";
-import Token from "markdown-it/lib/token.mjs";
+import MarkdownIt, { Token } from "markdown-it";
 
 /**
  * 给块语法渲染的结果中添加原文行号信息，这样就能定位哪一行渲染出了哪个元素，可用于同步滚动。

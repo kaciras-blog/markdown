@@ -22,11 +22,7 @@
  *
  * https://gitlab.com/help/user/markdown#videos
  */
-import StateBlock from "markdown-it/lib/rules_block/state_block.mjs";
-import Token from "markdown-it/lib/token.mjs";
-import Renderer from "markdown-it/lib/renderer.mjs";
-import MarkdownIt from "markdown-it";
-import { unescapeMd } from "markdown-it/lib/common/utils.mjs";
+import MarkdownIt, { Renderer, StateBlock, Token } from "markdown-it";
 
 function parse(state: StateBlock, startLine: number, _: number, silent: boolean) {
 	const offset = state.tShift[startLine] + state.bMarks[startLine];
@@ -36,7 +32,7 @@ function parse(state: StateBlock, startLine: number, _: number, silent: boolean)
 
 	let directive: GenericDirective;
 	try {
-		directive = parseGenericDirective(src);
+		directive = parseGenericDirective(state.md, src);
 	} catch {
 		return false;
 	}
@@ -69,7 +65,7 @@ export interface GenericDirective {
  * @return 包含各个部分的对象
  * @throws 如果给定的文本不符合指令语法
  */
-export function parseGenericDirective(line: string) {
+export function parseGenericDirective(md: MarkdownIt, line: string) {
 	const match = /^@([a-z][a-z0-9\-_]*)/i.exec(line);
 	if (!match) {
 		throw new Error("Not a directive syntax.");
@@ -79,8 +75,8 @@ export function parseGenericDirective(line: string) {
 	const labelEnd = readBracket(line, length, 0x5B, 0x5D);
 	const hrefEnd = readBracket(line, labelEnd + 1, 0x28, 0x29);
 
-	const label = unescapeMd(line.slice(length + 1, labelEnd));
-	const href = unescapeMd(line.slice(labelEnd + 2, hrefEnd));
+	const label = md.utils.unescapeMd(line.slice(length + 1, labelEnd));
+	const href = md.utils.unescapeMd(line.slice(labelEnd + 2, hrefEnd));
 
 	const attrStart = hrefEnd + 1;
 	let attrs = {};

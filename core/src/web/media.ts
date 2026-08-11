@@ -1,6 +1,4 @@
-import MarkdownIt from "markdown-it";
-import Renderer from "markdown-it/lib/renderer.mjs";
-import Token from "markdown-it/lib/token.mjs";
+import MarkdownIt, { Renderer, Token } from "markdown-it";
 import { default as directive, DirectiveMap } from "../directive.js";
 
 /**
