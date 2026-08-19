@@ -1,4 +1,4 @@
-import MarkdownIt, { Renderer, Token } from "markdown-it";
+import { MarkdownIt, Renderer, Token } from "markdown-it";
 import { default as directive, DirectiveMap } from "../directive.js";
 
 /**
@@ -28,7 +28,7 @@ function getSizeStyle(url: string) {
  */
 function blockAttrs(renderer: Renderer, token: Token) {
 	const i = token.attrIndex("src");
-	const src = token.attrs![i][1];
+	const src = token.attrs![i][1] as string;
 	token.attrs!.splice(i, 1);
 	token.attrJoin("class", "center");
 	return [src, renderer.renderAttrs(token).trimStart()];
@@ -64,11 +64,11 @@ function renderImage(this: MarkdownIt, tokens: Token[], i: number, _: any, __: a
 			<a
 				${getSizeStyle(src)}
 				class='md-inspect'
-				href="${src}"
+				href='${src}'
 				target='_blank'
 				rel='noopener,nofollow'
 			>
-				<img data-src="${src}" alt="${label}" class='md-img' crossorigin>
+				<img data-src='${src}' alt='${label}' class='md-img' crossorigin>
 			</a>
 			${label ? `<span class='md-alt'>${label}</span>` : ""}
 		</span>
@@ -111,8 +111,8 @@ const mediaMap: DirectiveMap = {
 					class='md-video'
 					controls
 					crossorigin
-					poster="${poster}"
-					data-src="${src}"
+					poster='${poster}'
+					data-src='${src}'
 				/>
 			</p>
 		`;
@@ -122,7 +122,7 @@ const mediaMap: DirectiveMap = {
 		const [src, wrapperAttrs] = blockAttrs(this, token);
 		return $HTML`
 			<p ${wrapperAttrs}>
-				<audio controls data-src="${src}" crossorigin/>
+				<audio controls data-src='${src}' crossorigin/>
 				${alt ? `<span class='md-alt'>${alt}</span>` : ""}
 			</p>`;
 	},

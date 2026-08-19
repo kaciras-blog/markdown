@@ -1,4 +1,4 @@
-import MarkdownIt from "markdown-it";
+import { MarkdownIt } from "markdown-it";
 import cjkFriendly from "markdown-it-cjk-friendly";
 import toc from "markdown-it-toc-done-right";
 import AnchorRaw from "markdown-it-anchor";
@@ -36,7 +36,7 @@ export function ugc(md: MarkdownIt) {
  * TODO: TOC 还不支持 docId，生成的锚点无法点击导航。
  */
 export function anchor(md: MarkdownIt) {
-	md.use<AnchorRaw.AnchorOptions>(AnchorRaw, {
+	md.use(AnchorRaw, {
 		permalink: AnchorRaw.permalink.linkInsideHeader({
 			placement: "after",
 			class: "anchor-link",

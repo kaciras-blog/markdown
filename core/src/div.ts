@@ -1,4 +1,4 @@
-import MarkdownIt, { StateBlock } from "markdown-it";
+import { MarkdownIt, StateBlock } from "markdown-it";
 import { isWholeLine, parseChildren } from "./collapsible.ts";
 
 // 但凡涉及展示用户输入，必须考虑 XSS，最好用白名单筛选一下。

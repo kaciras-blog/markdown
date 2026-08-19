@@ -1,4 +1,4 @@
-import MarkdownIt, { StateBlock } from "markdown-it";
+import { MarkdownIt, StateBlock } from "markdown-it";
 
 export function isWholeLine(state: StateBlock, lineNum: number, text: string) {
 	const { src, bMarks, tShift, eMarks } = state;

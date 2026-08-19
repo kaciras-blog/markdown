@@ -22,7 +22,7 @@
  *
  * https://gitlab.com/help/user/markdown#videos
  */
-import MarkdownIt, { Renderer, StateBlock, Token } from "markdown-it";
+import { MarkdownIt, Renderer, StateBlock, Token } from "markdown-it";
 
 function parse(state: StateBlock, startLine: number, _: number, silent: boolean) {
 	const offset = state.tShift[startLine] + state.bMarks[startLine];

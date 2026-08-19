@@ -1,4 +1,4 @@
-import type MarkdownIt from "markdown-it";
+import type { MarkdownIt } from "markdown-it";
 import CopyIcon from "bootstrap-icons/icons/clipboard.svg?raw";
 import CopiedIcon from "bootstrap-icons/icons/clipboard-check.svg?raw";
 

@@ -1,4 +1,4 @@
-import MarkdownIt, { Token } from "markdown-it";
+import { MarkdownIt, Token } from "markdown-it";
 
 /**
  * 给块语法渲染的结果中添加原文行号信息，这样就能定位哪一行渲染出了哪个元素，可用于同步滚动。
@@ -33,11 +33,11 @@ export function collect(md: MarkdownIt, handler: (url: string) => void) {
 					check(token.children!);
 					break;
 				case "link_open":
-					handler(token.attrGet("href")!);
+					handler(token.attrGet("href") as string);
 					break;
 				case "image":
 				case "directive":
-					handler(token.attrGet("src")!);
+					handler(token.attrGet("src") as string);
 					break;
 			}
 		}

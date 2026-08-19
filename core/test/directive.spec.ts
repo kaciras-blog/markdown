@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import MarkdownIt, { Token } from "markdown-it";
-import directive, { DirectiveMap } from "../src/directive.ts";
+import directive from "../src/directive.ts";
 import dedent from "dedent";
 
 describe("tokenizer", () => {
@@ -143,7 +143,7 @@ describe("default renderer", () => {
 it("should support render custom type", () => {
 	const markdownIt = new MarkdownIt();
 
-	markdownIt.use<DirectiveMap>(directive, {
+	markdownIt.use(directive, {
 		CUSTOM: (token) => `Custom [src=${token.attrGet("src")}, label=${token.content}]`,
 	});
 
