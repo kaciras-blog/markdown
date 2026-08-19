@@ -24,10 +24,10 @@
 	"dependencies": {
 		"@kaciras/utilities": "^1.1.0",
 		"bootstrap-icons": "^1.13.1",
-		"highlight.js": "^11.11.1",
+		"highlight.js": "^11.12.0",
 		"markdown-it": "^15.0.0",
 		"markdown-it-anchor": "^9.2.1",
-		"markdown-it-cjk-friendly": "^2.0.2",
+		"markdown-it-cjk-friendly": "^2.0.3",
 		"markdown-it-footnote": "^4.0.0",
 		"markdown-it-toc-done-right": "^4.2.0"
 	},
@@ -36,7 +36,7 @@
 		"@vitest/coverage-v8": "^4.1.10",
 		"dedent": "^1.7.2",
 		"html-minifier-terser": "^7.2.0",
-		"magic-string": "^1.1.0",
+		"magic-string": "^1.2.0",
 		"postcss-nested": "^8.0.1",
 		"postcss-simple-vars": "^7.0.1",
 		"vite": "^8.2.1",
